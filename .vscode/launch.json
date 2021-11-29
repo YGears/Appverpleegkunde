@@ -8,7 +8,9 @@
             "name": "app_verpleegkunde",
             "cwd": "app_verpleegkunde",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            // New Line to start file manual
+            "program": "lib/screens/login/main.dart"
         },
         {
             "name": "app_verpleegkunde (profile mode)",
