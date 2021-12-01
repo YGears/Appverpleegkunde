@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'navbar.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -10,43 +11,33 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int selectedIndex = 0;
+
+  void onClicked(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Hanze Verpleeg App',
-        theme: ThemeData(
-          scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-          primarySwatch: Colors.blue,
-        ),
-        home: Builder(
+      title: 'Hanze Verpleeg App',
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFe3e6e8),
+        primarySwatch: Colors.blue,
+      ),
+      home: Builder(
           builder: (context) => Scaffold(
               appBar: AppBar(
                 title: const Text('Nurse - IT'),
               ),
               body: Center(child: build_content(context)),
-              bottomNavigationBar: BottomNavigationBar(
-                // List of icons : https://api.flutter.dev/flutter/material/Icons-class.html
-                // ignore: prefer_const_literals_to_create_immutables
-                items: [
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.bar_chart),
-                    backgroundColor: Colors.black,
-                    label: "Resultaten",
-                  ),
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: "Home",
-                  ),
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.mode),
-                    label: "Zet doel",
-                  ),
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.calendar_today),
-                    label: "Dagreflectie",
-                  )
-                ],
-              )),
-        ));
+              bottomNavigationBar: BottomMenu(
+                selectedIndex: selectedIndex,
+                onClicked: onClicked,
+              ))),
+    );
   }
 
   int _counter = 0;
