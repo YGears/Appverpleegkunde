@@ -62,6 +62,9 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  # kan ook de hele map zodat je niet elke img hoeft
+  assets :
+    - img/front_page_img_holder.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

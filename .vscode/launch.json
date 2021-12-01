@@ -5,14 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter_application_1",
-            "cwd": "flutter_application_1",
+            "name": "app_verpleegkunde",
+            "cwd": "app_verpleegkunde",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            // New Line to start file manual
+            "program": "lib/screens/login/main.dart"
         },
         {
-            "name": "flutter_application_1 (profile mode)",
-            "cwd": "flutter_application_1",
+            "name": "app_verpleegkunde (profile mode)",
+            "cwd": "app_verpleegkunde",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
