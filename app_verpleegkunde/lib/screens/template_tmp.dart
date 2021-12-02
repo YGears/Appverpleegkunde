@@ -1,15 +1,13 @@
-// ignore_for_file: camel_case_types
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class createLearningGoalPage extends StatefulWidget {
-  const createLearningGoalPage({Key? key}) : super(key: key);
+class MyThirdPage extends StatefulWidget {
+  const MyThirdPage({Key? key}) : super(key: key);
   @override
-  State<createLearningGoalPage> createState() => _createLearningGoalPageState();
+  State<MyThirdPage> createState() => _MyThirdPageState();
 }
 
-class _createLearningGoalPageState extends State<createLearningGoalPage> {
+class _MyThirdPageState extends State<MyThirdPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,7 +25,7 @@ class _createLearningGoalPageState extends State<createLearningGoalPage> {
             ),
             // Body of the application
             body: Column(children: const <Widget>[
-              Text("AANMAKEN LEERDOEL"),
+              Text("Testing"),
             ]),
           ),
         ));
