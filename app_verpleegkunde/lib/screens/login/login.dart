@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'image_cover.dart';
 import 'package:flutter/rendering.dart';
 import '../second.dart';
+import '../../functions/Api.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -102,12 +103,16 @@ class _MyAppState extends State<MyApp> {
                   controller: myController),
               //LOGIN BUTTON
               ElevatedButton(
-                  child: Text('Login'),
-                  onPressed: () {
-                    futureAlbum = fetchAlbum(myController.text, context);
-                    setState(() {
-                      error = "Failed to login";
-                    });
+                  child: Text('Login'),onPressed: () async {
+                    Api api = Api();
+                    var loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+                    if (loggedIn){
+                      Navigator.push(context,MaterialPageRoute( builder: (context) => const MyHomePage(title: 'wat')));
+                    }else{
+                      setState(() {
+                        error = "Failed to login";
+                      });
+                    }
                   }),
             ]),
           ),
