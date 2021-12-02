@@ -55,39 +55,37 @@ class _Leerdoelen extends State<Leerdoelen>{
   @override
   void initState(){
     super.initState();
-    _incrementStartup();
   }
-   Future<int> _getIntFromSharedPref() async{
+
+  List<String> favorieten = [];
+  void _updateFavorieten() async{
     final prefs = await SharedPreferences.getInstance();
-    final startupNumber = prefs.getInt('startupNumber');
-    if(startupNumber == null){
-      return 0;
-    }
-    return startupNumber;
-    
-     
+    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
+    if(favorieteLeerdoelen != null){    setState(() {favorieten = favorieteLeerdoelen!;});
+}   else{favorieteLeerdoelen = [''];}
   }
-  Future<void> _resetCounter() async{
+
+
+  Future<void> _removeFavorieteLeerdoel(String value) async{
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('startupNumber', 0);
+    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
+    favorieteLeerdoelen?.remove(value);
+    prefs.setStringList('Favorieten', favorieteLeerdoelen!);
   }
 
-  Future<void> _incrementStartup() async {
+  Future<void> _addFavorieteLeerdoel(String value) async{
     final prefs = await SharedPreferences.getInstance();
+    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
+    if(favorieteLeerdoelen == null){
+      favorieteLeerdoelen = [];}
+      favorieteLeerdoelen.add(value);
+    prefs.setStringList('Favorieten', favorieteLeerdoelen);    
 
-    int lastStartupNumber = await _getIntFromSharedPref();
-    int currentStartupNumber = ++lastStartupNumber;
-
-    await prefs.setInt('startupNumber', currentStartupNumber);
-
-    if (currentStartupNumber == 3){
-      setState(() => _haveStarted3Times = '$currentStartupNumber Times Completed');
-      await _resetCounter();
-    } else{
-      setState(() => _haveStarted3Times = '$currentStartupNumber Times started the app');
-
-    }
   }
+
+
+  
+
 
   @override
   Widget build(BuildContext context){
@@ -126,7 +124,8 @@ class _Leerdoelen extends State<Leerdoelen>{
     Navigator.of(this.context).push(
       MaterialPageRoute<void>(
         builder: (context) {
-          final tiles = _saved.map(
+          _updateFavorieten();
+          final tiles = favorieten.map(
             (leerdoel){
               return Card(
                 child: ListTile(
@@ -155,29 +154,35 @@ class _Leerdoelen extends State<Leerdoelen>{
       ),
     );
   }
-  Widget _buildRow(String pair) {
-  final alreadySaved = _saved.contains(pair);
+  Widget _buildRow(String value) {
+    _updateFavorieten();
+  final alreadySaved = favorieten.contains(value);
   return Card(
     child: ListTile(
   
     title: Text(
-      pair,
+      value,
       style: _biggerFont,
     ),
-    trailing: Icon (
-      alreadySaved ? Icons.favorite : Icons.favorite_border,
-      color: alreadySaved ? Colors.red: null,
-      semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
 
-    ),
-    onTap: (){
-      setState(() {
+    trailing: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(onPressed: () {
+             setState(() {
         if(alreadySaved){
-          _saved.remove(pair);
+          _removeFavorieteLeerdoel(value);
       } else {
-          _saved.add(pair);
+          _addFavorieteLeerdoel(value);
       }
       });
+        }, icon: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red: null,
+        semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',) ),
+      ],),
+
+    onTap: (){
     },
   ), );
 }
