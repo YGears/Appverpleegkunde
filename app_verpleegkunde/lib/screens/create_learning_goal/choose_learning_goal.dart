@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Class to create the Leerdoelen view, making a list of all leerdoelen available.
 /// can favorite leerdoel and look at leerdoelen at a different navigation
 /// Must run using flutter run --no-sound-null-safety because of shared_preferences
-void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

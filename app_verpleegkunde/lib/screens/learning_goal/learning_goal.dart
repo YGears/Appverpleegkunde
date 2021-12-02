@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/rendering.dart';
 import '../second.dart';
 import 'package:flutter/material.dart';
+import '../create_learning_goal/choose_learning_goal.dart';
 import 'package:http/http.dart' as http;
 
 class Leerdoel extends StatefulWidget {
@@ -87,6 +88,15 @@ class _LeerDoelState extends State<Leerdoel> {
                   })
                 }
               }
+            ),
+            ElevatedButton(
+              child: Text("selecteer leerdoel"),
+              onPressed: () => {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyApp()))
+              },
             ),
           ]),
         ),
