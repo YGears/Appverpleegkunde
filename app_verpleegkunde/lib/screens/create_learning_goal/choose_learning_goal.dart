@@ -31,9 +31,6 @@ class Leerdoelen extends StatefulWidget {
 
 class _Leerdoelen extends State<Leerdoelen>{
 
-  String _haveStarted3Times = '';
-
-  final _saved = <String>{};
   final _suggestions = <String>['Assertief Benaderen', 
   'Conflicthantering', 
   'vragen om hulp',
@@ -51,11 +48,6 @@ class _Leerdoelen extends State<Leerdoelen>{
     'Opvuller:',
     ];
   final _biggerFont = const TextStyle(fontSize: 18.0);
-
-  @override
-  void initState(){
-    super.initState();
-  }
 
   List<String> favorieten = [];
   void _updateFavorieten() async{
@@ -76,8 +68,7 @@ class _Leerdoelen extends State<Leerdoelen>{
   Future<void> _addFavorieteLeerdoel(String value) async{
     final prefs = await SharedPreferences.getInstance();
     List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
-    if(favorieteLeerdoelen == null){
-      favorieteLeerdoelen = [];}
+    favorieteLeerdoelen ??= [];
       favorieteLeerdoelen.add(value);
     prefs.setStringList('Favorieten', favorieteLeerdoelen);    
 
@@ -102,12 +93,12 @@ class _Leerdoelen extends State<Leerdoelen>{
         ),
         body: 
         SingleChildScrollView(
-          physics: ScrollPhysics(),
+          physics: const ScrollPhysics(),
           child: Column(
             children: <Widget>[
-          Text(_haveStarted3Times, style: _biggerFont),
+          Text('Hier is ruimte om iets aan te passen', style: _biggerFont),
           ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 10.0),
             itemCount: _suggestions.length,
