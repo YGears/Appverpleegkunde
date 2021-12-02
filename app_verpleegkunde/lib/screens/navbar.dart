@@ -13,25 +13,28 @@ class BottomMenu extends StatelessWidget {
       items: [
         const BottomNavigationBarItem(
           icon: Icon(Icons.bar_chart),
-          backgroundColor: Colors.black,
           label: "Resultaten",
+          backgroundColor: Colors.black,
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: "Home",
+          backgroundColor: Colors.black,
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.mode),
           label: "Zet doel",
+          backgroundColor: Colors.black,
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
           label: "Dagreflectie",
+          backgroundColor: Colors.black,
         )
       ],
       currentIndex: selectedIndex,
       onTap: onClicked,
-      selectedItemColor: Colors.red[800],
+      selectedItemColor: Colors.orange[800],
       backgroundColor: Colors.black,
       unselectedItemColor: Colors.white,
     );
