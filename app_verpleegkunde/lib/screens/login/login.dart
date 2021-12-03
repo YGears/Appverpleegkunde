@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'image_cover.dart';
 import 'package:flutter/rendering.dart';
 import '../second.dart';
+import '../learning_goal/learning_goal.dart';
 import '../../functions/Api.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -113,6 +114,14 @@ class _MyAppState extends State<MyApp> {
                         error = "Failed to login";
                       });
                     }
+                  }),
+              ElevatedButton(
+                  child: Text('leerdoel'),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Leerdoel(title: 'Leerdoel')));
                   }),
             ]),
           ),
