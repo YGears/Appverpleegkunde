@@ -18,16 +18,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //Start index of screen list
   int selectedIndex = 1;
-  //List of all screens
-  final List<Widget> screens = [
-    const overviewPage(),
+  //LIJST MET PAGINA"S
+  List<Widget> screens = [
+    const LineChartSample2(),
     const mainPage(),
     const createLearningGoalPage(),
     const dailyReflectionPage(),
   ];
-  //Function to switch index if navbar is touched
+
   void onClicked(int index) {
     setState(() {
       selectedIndex = index;

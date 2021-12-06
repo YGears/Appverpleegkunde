@@ -27,7 +27,7 @@ class _createLearningGoalPageState extends State<createLearningGoalPage> {
             ),
             // Body of the application
             body: Column(children: const <Widget>[
-              Text("AANMAKEN LEERDOEL"),
+              Text("REFLECTEREN OP DAG"),
             ]),
           ),
         ));
