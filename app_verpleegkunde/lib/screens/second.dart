@@ -25,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const overviewPage(),
     const mainPage(),
     const createLearningGoalPage(),
-    const dailyReflectionPage(),
+    dailyReflectionPage(selectedDate: DateTime.now()),
   ];
   //Function to switch index if navbar is touched
   void onClicked(int index) {
