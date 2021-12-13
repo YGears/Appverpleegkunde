@@ -15,11 +15,9 @@ class Leerdoel extends StatefulWidget {
 
 class _LeerDoelState extends State<Leerdoel> {
   DateTime beginDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  String endDate = "";
   String error = "";
-  String title = "";
   String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
-
   final myController = TextEditingController();
 
   @override
@@ -29,7 +27,17 @@ class _LeerDoelState extends State<Leerdoel> {
     super.dispose();
   }
 
-  Future<DateTime?> _selectDate(BuildContext context, DateTime date) async {
+  String dateFormating(DateTime date) {
+    // Function to change the formating of dates within the application
+    if (date == null) {
+      return "Error";
+    } else {
+      return "${date.day}/${date.month}/${date.year}";
+    }
+  }
+
+  Future<DateTime?> selectDate(BuildContext context, DateTime date) async {
+    // Function to select a date
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: date,
@@ -43,7 +51,6 @@ class _LeerDoelState extends State<Leerdoel> {
     DateTime? fl;
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: title,
         theme: ThemeData(
           //scaffoldBackgroundColor: const Color(0xFFe3e6e8),
           primarySwatch: Colors.orange,
@@ -52,16 +59,15 @@ class _LeerDoelState extends State<Leerdoel> {
           builder: (context) => Scaffold(
             //Topheader within the application
             appBar: AppBar(
-              title: Text("$title"),
               centerTitle: true,
             ),
             // Body of the application
             body: Column(children: <Widget>[
               //LOGIN BUTTON
               ElevatedButton(
-                  child: Text("$beginDate"),
+                  child: Text(dateFormating(beginDate)),
                   onPressed: () async => {
-                        fl = await _selectDate(context, beginDate),
+                        fl = await selectDate(context, beginDate),
                         if (fl != null)
                           {
                             setState(() {
@@ -79,7 +85,7 @@ class _LeerDoelState extends State<Leerdoel> {
               ElevatedButton(
                   child: Text("$endDate"),
                   onPressed: () async => {
-                        fl = await _selectDate(context, endDate),
+                        fl = await selectDate(context, endDate),
                         if (fl != null)
                           {
                             setState(() {
