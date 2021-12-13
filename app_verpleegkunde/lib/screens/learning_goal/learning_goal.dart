@@ -19,6 +19,8 @@ class _LeerDoelState extends State<Leerdoel> {
   DateTime endDate = DateTime.now();
   String error = "";
   String title = "";
+  String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
+
   final myController = TextEditingController();
 
   _LeerDoelState(String newTitle){
@@ -44,6 +46,7 @@ class _LeerDoelState extends State<Leerdoel> {
   Widget build(BuildContext context) {
     DateTime? fl;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: title,
       theme: ThemeData(
         //scaffoldBackgroundColor: const Color(0xFFe3e6e8),
@@ -70,7 +73,7 @@ class _LeerDoelState extends State<Leerdoel> {
                 }
               }
             ),
-            TextField(
+            TextFormField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Leerdoel',
@@ -89,18 +92,29 @@ class _LeerDoelState extends State<Leerdoel> {
                 }
               }
             ),
+            ListTile(
+              title: Center(child: Text(_geselecteerdLeerdoel))
+            ),
+  
             ElevatedButton(
-              child: Text("selecteer leerdoel"),
+              child: const Text("selecteer leerdoel"),
               onPressed: () => {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MyApp()))
+                _navigateAndDisplaySelection(context)
               },
             ),
           ]),
         ),
       )
     );
+  }
+  void _navigateAndDisplaySelection(BuildContext context) async{
+    final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const Leerdoelen()),);
+    ScaffoldMessenger.of(context)
+    ..removeCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+    setState(() {
+      if('$result' != 'null'){
+      _geselecteerdLeerdoel = ' $result';} 
+    });
   }
 }

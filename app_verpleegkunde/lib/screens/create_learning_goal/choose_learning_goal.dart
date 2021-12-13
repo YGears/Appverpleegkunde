@@ -9,19 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// can favorite leerdoel and look at leerdoelen at a different navigation
 /// Must run using flutter run --no-sound-null-safety because of shared_preferences
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Verpleegkunde app',
-      home: Leerdoelen(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
 class Leerdoelen extends StatefulWidget {
   const Leerdoelen({ Key? key }) : super(key: key);
 
@@ -73,6 +60,7 @@ class _Leerdoelen extends State<Leerdoelen>{
     prefs.setStringList('Favorieten', favorieteLeerdoelen);    
 
   }
+  void _addNewLeerdoel(){}
 
 
   
@@ -108,7 +96,11 @@ class _Leerdoelen extends State<Leerdoelen>{
               ),
             ],
           ),
-        ),    
+        ),
+        floatingActionButton:  FloatingActionButton(
+            onPressed: (){_addNewLeerdoel();},
+            child: const Icon(Icons.add),
+          )    
       );
   }
   void _pushSaved(){
@@ -174,6 +166,7 @@ class _Leerdoelen extends State<Leerdoelen>{
       ],),
 
     onTap: (){
+      Navigator.pop(this.context, value);
     },
   ), );
 }
