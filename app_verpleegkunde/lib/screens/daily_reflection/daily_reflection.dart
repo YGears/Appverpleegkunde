@@ -1,6 +1,8 @@
 // ignore_for_file: camel_case_types
 
 
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,8 +16,14 @@ class dailyReflectionPage extends StatefulWidget {
 class _dailyReflectionPageState extends State<dailyReflectionPage> {
   var selectedDate = DateTime.now();
   var selected_day = "";
+  String activatedMainTag = "";
   List selectedTags = [];
-  Column generatedBody = Column();
+  List<Row> generatedBody = [];
+  List<Row> generatedTagBody = [];
+  List<Row> generatedSubTagBody = [];
+  Map subtags = HashMap<String, List<String>>();
+  List<List<Row>> bodies = [];
+  int activatedPage = 1;
   final dagRatingController = TextEditingController();
 
   _dailyReflectionPageState(this.selectedDate){
@@ -44,44 +52,106 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     }
   }
 
-  wow(context){
-    setState(() {
-      selected_day = "changed";
-    });
-  }
-
   List getTags(){
     List list = ["Leerdoel1", "stage", "tag1", "tag2", "leuk"];
     return list;
   }
-  gotoDailyReflection(tag){
-    selectedTags.add(tag);
-    // generateBody(context);
+
+  gotoTagBody(){
+    setState(() {
+      activatedPage = 0;
+    });
   }
 
-  generateTagBody(){
+  gotoSubTag(tag){
+    setState(() {
+      activatedMainTag = tag;
+      activatedPage = 2;
+    });
+    
+  }
+
+  gotoDailyReflection(){
+    setState(() {
+      activatedPage = 1;
+    });
+  }
+
+  addSubTag(String tag){
+    if(!subtags.containsKey(activatedMainTag)){
+      setState(() {
+        subtags[activatedMainTag] =  [tag];
+      });
+    }
+    
+    List<String> tempList = subtags[activatedMainTag];
+    if(!tempList.contains(tag)){
+      setState(() {
+        tempList.add(tag);
+        subtags[activatedMainTag] =  tempList;
+      });
+    }
+    
+    generateSubTagBody();
+  }
+
+  addMainTag(tag){
+    setState(() {
+      if(!selectedTags.contains(tag)){
+        selectedTags.add(tag);
+      }
+    });
+    gotoDailyReflection();
+  }
+
+  generateSubTagBody(){
     List tags = getTags();
-    List<Row> generatingBody = [];
+    List<Row> subTagBody = [Row(children:[TextButton(onPressed: ()=> {gotoDailyReflection()}, child: Text("Go Back"))])];
     for (String tag in tags){
-      generatingBody.add(
+      subTagBody.add(
         Row(
           children: [
             TextButton(
               child:Text(tag),
-              onPressed: ()=> {gotoDailyReflection(tag)},
+              onPressed: ()=> {addSubTag(tag)},
             )
           ]
         )
       );
     }
-    setState(() {
-      generatedBody = Column(children:generatingBody);
-      selected_day = "ass";
-    });
+    for(List<String> tag in subtags.values){
+      for(String subTag in tag){
+        subTagBody.add(
+          Row(
+            children: [
+              Text(subTag),
+            ]
+          )
+        );
+      }
+    }
+    generatedSubTagBody = subTagBody;
+  }
+  generateTagBody(){
+    List tags = getTags();
+    List<Row> tagBody = [];
+    for (String tag in tags){
+      tagBody.add(
+        Row(
+          children: [
+            TextButton(
+              child:Text(tag),
+              onPressed: ()=> {addMainTag(tag)},
+            )
+          ]
+        )
+      );
+    }
+    generatedTagBody = tagBody;
   }
 
-  generateBody(context) async{
-    generatedBody = Column(children: [
+  generateBody(){
+    List<Row> tempBody = [
       Row(
         children: [
           Text("Reflectie op dag: "),
@@ -107,22 +177,38 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         children:[
           TextButton(
             child: Text("Select tag"),
-            onPressed: ()=> {generateTagBody()},),
+            onPressed: ()=> {gotoTagBody()},),
         ],
-      )
-    ]);
+      ),
+    ];
+    
+    for (var item in selectedTags){
+      tempBody.add(
+        Row(
+          children:[
+            TextButton(child:Text(item),onPressed: ()=>{gotoSubTag(item)},)
+          ]
+        )
+      );
+    }
+    setState(() {
+      generatedBody = tempBody;
+    });
   }
 
-
+  
   @override
-  Widget build(BuildContext context) {generateBody(context);
-    return MaterialApp(
-        title: 'Hanze - Verpleegkunde',
-        theme: ThemeData(
-          //scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-          primarySwatch: Colors.orange,
-        ),
-        home: Builder(
+  Widget build(BuildContext context) {
+    
+    generateTagBody();
+    generateBody();
+    generateSubTagBody();
+    bodies.clear();
+    bodies.add(generatedTagBody);
+    bodies.add(generatedBody);
+    bodies.add(generatedSubTagBody);
+    return Scaffold(
+        body: Builder(
           builder: (context) => Scaffold(
             //Topheader within the application
             appBar: AppBar(
@@ -130,8 +216,9 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
               centerTitle: true,
             ),
             // Body of the application
-            body: generatedBody
-            
+            body: Column(
+              children: bodies[activatedPage]
+            )
           ),
         ));
   }
