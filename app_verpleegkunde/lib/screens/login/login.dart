@@ -104,24 +104,22 @@ class _MyAppState extends State<MyApp> {
                   controller: myController),
               //LOGIN BUTTON
               ElevatedButton(
-                  child: Text('Login'),onPressed: () async {
+                  child: Text('Login'),
+                  onPressed: () async {
                     Api api = Api();
-                    var loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-                    if (loggedIn){
-                      Navigator.push(context,MaterialPageRoute( builder: (context) => const MyHomePage(title: 'wat')));
-                    }else{
+                    var loggedIn = await api.login(
+                        myController.text, "KoekjesZijnGemaaktVanDeeg");
+                    if (loggedIn) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const MyHomePage(title: 'wat')));
+                    } else {
                       setState(() {
                         error = "Failed to login";
                       });
                     }
-                  }),
-              ElevatedButton(
-                  child: Text('leerdoel'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Leerdoel(title: 'Leerdoel')));
                   }),
             ]),
           ),
