@@ -51,13 +51,14 @@ class _LeerDoelState extends State<Leerdoel> {
         context: context,
         initialDate: date,
         firstDate: DateTime(now.year, now.month - 3),
-        lastDate: endDate);
+        lastDate: DateTime(now.year, now.month + 3));
 
     if (picked != null && picked != date) {
       // If date picked and date isn't the date picked than
       // CurrentDate becomes the selected date
       setState(() {
         currentDate = picked;
+        endDate = DateTime(picked.year, picked.month, picked.day + 7);
       });
     }
   }
