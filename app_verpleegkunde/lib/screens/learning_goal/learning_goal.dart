@@ -14,8 +14,10 @@ class Leerdoel extends StatefulWidget {
 }
 
 class _LeerDoelState extends State<Leerdoel> {
-  DateTime beginDate = DateTime.now();
-  String endDate = "";
+  DateTime currentDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+  DateTime now = DateTime.now();
+
   String error = "";
   String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
   final myController = TextEditingController();
@@ -36,19 +38,49 @@ class _LeerDoelState extends State<Leerdoel> {
     }
   }
 
-  Future<DateTime?> selectDate(BuildContext context, DateTime date) async {
+  //firstDate: DateTime(date.year, date.month - 1),
+
+  bool dateIsEmpty(DateTime date) {
+    bool valdate = date.isBefore(currentDate);
+    return valdate;
+  }
+
+  Future<void> selectStartDate(BuildContext context, DateTime date) async {
     // Function to select a date
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: date,
-        firstDate: DateTime(date.year, date.month - 1),
-        lastDate: DateTime(date.year + 1));
-    return picked;
+        firstDate: DateTime(now.year, now.month - 3),
+        lastDate: endDate);
+
+    if (picked != null && picked != date) {
+      // If date picked and date isn't the date picked than
+      // CurrentDate becomes the selected date
+      setState(() {
+        currentDate = picked;
+      });
+    }
+  }
+
+  Future<void> selectEndDate(BuildContext context) async {
+    // Function to select a date
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: currentDate,
+        firstDate: currentDate,
+        lastDate: DateTime(now.year, now.month + 3));
+
+    if (picked != null && picked != currentDate) {
+      // If date picked and date isn't the date picked than
+      // CurrentDate becomes the selected date
+      setState(() {
+        endDate = picked;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    DateTime? fl;
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -63,41 +95,28 @@ class _LeerDoelState extends State<Leerdoel> {
             ),
             // Body of the application
             body: Column(children: <Widget>[
-              //LOGIN BUTTON
+              //Date selection
               ElevatedButton(
-                  child: Text(dateFormating(beginDate)),
-                  onPressed: () async => {
-                        fl = await selectDate(context, beginDate),
-                        if (fl != null)
-                          {
-                            setState(() {
-                              beginDate = fl!;
-                            })
-                          }
-                      }),
+                  child: Text(dateFormating(currentDate)),
+                  onPressed: () async => selectStartDate(context, currentDate)),
+              ElevatedButton(
+                  child: Text(dateFormating(endDate)),
+                  onPressed: () async => selectEndDate(context)),
               TextFormField(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Leerdoel',
-                    hintText: 'Vul je leerdoel in',
+                    hintText: 'Selecteer een Leerdoel',
                   ),
                   controller: myController),
-              ElevatedButton(
-                  child: Text("$endDate"),
-                  onPressed: () async => {
-                        fl = await selectDate(context, endDate),
-                        if (fl != null)
-                          {
-                            setState(() {
-                              endDate = fl!;
-                            })
-                          }
-                      }),
               ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
-
               ElevatedButton(
                 child: const Text("selecteer leerdoel"),
                 onPressed: () => {_navigateAndDisplaySelection(context)},
+              ),
+              ElevatedButton(
+                child: const Text("Maak Leerdoel aan"),
+                onPressed: () => {null},
               ),
             ]),
           ),
