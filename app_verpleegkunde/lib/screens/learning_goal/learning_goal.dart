@@ -14,9 +14,13 @@ class Leerdoel extends StatefulWidget {
 }
 
 class _LeerDoelState extends State<Leerdoel> {
-  DateTime currentDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-  DateTime now = DateTime.now();
+  // startDate can't be null so will be current date
+  DateTime startDate = DateTime.now();
+  // endDate can't be null so will be one week later than startDate by default
+  DateTime endDate = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day + 7);
+  // Record of current Time that can't be changed
+  static DateTime now = DateTime.now();
 
   String error = "";
   String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
@@ -38,13 +42,6 @@ class _LeerDoelState extends State<Leerdoel> {
     }
   }
 
-  //firstDate: DateTime(date.year, date.month - 1),
-
-  bool dateIsEmpty(DateTime date) {
-    bool valdate = date.isBefore(currentDate);
-    return valdate;
-  }
-
   Future<void> selectStartDate(BuildContext context, DateTime date) async {
     // Function to select a date
     final DateTime? picked = await showDatePicker(
@@ -55,9 +52,9 @@ class _LeerDoelState extends State<Leerdoel> {
 
     if (picked != null && picked != date) {
       // If date picked and date isn't the date picked than
-      // CurrentDate becomes the selected date
+      // startDate becomes the selected date
       setState(() {
-        currentDate = picked;
+        startDate = picked;
         endDate = DateTime(picked.year, picked.month, picked.day + 7);
       });
     }
@@ -67,13 +64,13 @@ class _LeerDoelState extends State<Leerdoel> {
     // Function to select a date
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: currentDate,
-        firstDate: currentDate,
-        lastDate: DateTime(now.year, now.month + 3));
+        initialDate: startDate,
+        firstDate: startDate,
+        lastDate: DateTime(startDate.year, startDate.month + 3));
 
-    if (picked != null && picked != currentDate) {
+    if (picked != null && picked != startDate) {
       // If date picked and date isn't the date picked than
-      // CurrentDate becomes the selected date
+      // startDate becomes the selected date
       setState(() {
         endDate = picked;
       });
@@ -98,8 +95,8 @@ class _LeerDoelState extends State<Leerdoel> {
             body: Column(children: <Widget>[
               //Date selection
               ElevatedButton(
-                  child: Text(dateFormating(currentDate)),
-                  onPressed: () async => selectStartDate(context, currentDate)),
+                  child: Text(dateFormating(startDate)),
+                  onPressed: () async => selectStartDate(context, startDate)),
               ElevatedButton(
                   child: Text(dateFormating(endDate)),
                   onPressed: () async => selectEndDate(context)),
