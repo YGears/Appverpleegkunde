@@ -92,9 +92,23 @@ class _LeerDoelState extends State<Leerdoel> {
     });
   }
 
-  //TODO CREATE FUNCTION TO SAVE LEARNING GOALS
+  String convertToJSON() {
+    String json = "{";
+    String beginDate = dateFormating(startDate);
+    String lastDate = dateFormating(endDate);
+
+    json += "beginDate: \"$beginDate\",";
+    json += "endDate: \"$lastDate\",";
+    json += "learningGoal: \"$_geselecteerdLeerdoel\",";
+    json += "}";
+    print(json);
+    return json;
+  }
+
+  //TODO CREATE FUNCTION TO SAVE LEARNING GOALS make validation check before posting
   Future<void> createLearningGoal() async {
     print("printing.....");
+    convertToJSON();
     print("Done");
   }
 

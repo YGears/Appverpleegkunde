@@ -8,28 +8,6 @@ import '../../functions/Api.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<Album> fetchAlbum(title, context) async {
-  final response = await http.post(
-    Uri.parse('https://iabamun.nl/game/lab-andre/api/index.php/login'),
-    body: jsonEncode(<String, String>{
-      "name": title.toString(),
-      "password": "KoekjesZijnGemaaktVanDeeg",
-    }),
-  );
-  var data = jsonDecode(response.body);
-
-  if (data['response'] != null) {
-    if (data['response'] == "Logged in") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const MyHomePage(title: 'wat')));
-    }
-  }
-
-  return Album.fromJson(jsonDecode(response.body));
-}
-
 class Album {
   final String response;
 
