@@ -77,6 +77,27 @@ class _LeerDoelState extends State<Leerdoel> {
     }
   }
 
+  void _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Leerdoelen()),
+    );
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+    setState(() {
+      if ('$result' != 'null') {
+        _geselecteerdLeerdoel = ' $result';
+      }
+    });
+  }
+
+  //TODO CREATE FUNCTION TO SAVE LEARNING GOALS
+  Future<void> createLearningGoal() async {
+    print("printing.....");
+    print("Done");
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -114,25 +135,10 @@ class _LeerDoelState extends State<Leerdoel> {
               ),
               ElevatedButton(
                 child: const Text("Maak Leerdoel aan"),
-                onPressed: () => {null},
+                onPressed: () => {createLearningGoal()},
               ),
             ]),
           ),
         ));
-  }
-
-  void _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Leerdoelen()),
-    );
-    ScaffoldMessenger.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
-    setState(() {
-      if ('$result' != 'null') {
-        _geselecteerdLeerdoel = ' $result';
-      }
-    });
   }
 }
