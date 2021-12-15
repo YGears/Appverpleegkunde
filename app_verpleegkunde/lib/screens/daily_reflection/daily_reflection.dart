@@ -5,6 +5,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class dailyReflectionPage extends StatefulWidget {
   dailyReflectionPage({Key? key, required this.selectedDate}) : super(key: key);
@@ -25,6 +26,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   List<List<Row>> bodies = [];
   int activatedPage = 1;
   final dagRatingController = TextEditingController();
+  TextEditingController freeWriteController = TextEditingController();
 
   _dailyReflectionPageState(this.selectedDate){
     selected_day = selectedDate.year.toString() + "/" + selectedDate.month.toString() + "/" + selectedDate.day.toString(); 
@@ -85,6 +87,10 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     }
     
     List<String> tempList = subtags[activatedMainTag];
+    if(subtags[activatedMainTag][0] == ""){
+      tempList = [];
+    }
+
     if(!tempList.contains(tag)){
       setState(() {
         tempList.add(tag);
@@ -99,6 +105,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     setState(() {
       if(!selectedTags.contains(tag)){
         selectedTags.add(tag);
+        activatedMainTag = tag;
+        subtags[activatedMainTag] = [""];
       }
     });
     gotoDailyReflection();
@@ -119,15 +127,17 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         )
       );
     }
-    for(List<String> tag in subtags.values){
-      for(String subTag in tag){
-        subTagBody.add(
-          Row(
-            children: [
-              Text(subTag),
-            ]
-          )
-        );
+    if(subtags[activatedMainTag] != null){
+      if(subtags[activatedMainTag][0].toString() != ""){
+        for(String subTag in subtags[activatedMainTag]){
+          subTagBody.add(
+            Row(
+              children: [
+                Text(subTag),
+              ]
+            )
+          );
+        }
       }
     }
     generatedSubTagBody = subTagBody;
@@ -150,6 +160,49 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     generatedTagBody = tagBody;
   }
 
+  String convertToJSON(){
+    var rating = dagRatingController.value.text;
+    var freeWrite = freeWriteController.value.text;
+    String json = "{";
+    json += "datum: \"$selectedDate\",";
+    if(rating != ""){
+      json += "rating: $rating,";
+    }else{
+      json += "rating: 0,";
+    }
+    json += "freewrite: \"$freeWrite\",";
+    json += "tag: [";
+    for(String tag in selectedTags){
+      json += "\"$tag\",";
+    }
+    json += "],";
+    json += "subtags: [";
+    for(String mainTag in selectedTags){
+      json += "[";
+      for(String subTag in subtags[mainTag]){
+        if(subTag != ""){
+          json += "\"$subTag\",";
+        }
+      }
+      json += "],";
+    }
+    json += "],";
+    json += "}";
+    print(json);
+    return json;
+  }
+
+  Future<void> saveDailyReflection() async{
+    print("printing.....");
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? daily_reflections = prefs.getStringList('daily_reflection');
+    daily_reflections ??= [];
+    daily_reflections.add(convertToJSON());
+    
+    prefs.setStringList('daily_reflection', daily_reflections);
+    print("Done");
+  }
+
   generateBody(){
     List<Row> tempBody = [
       Row(
@@ -166,11 +219,29 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
               labelText: ""),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(1),
               ], // Only numbers can be entered
               controller: dagRatingController
             ),
           ),
+        ],
+      ),
+      Row(
+        children:[
+          Text("Freewrite")
+        ],
+      ),
+      Row(
+        children:[
+          Flexible(
+            child:
+              TextField(
+                maxLines: 8,
+                // decoration: InputDecoration.collapsed(hintText: "Enter your text here"),
+                controller: freeWriteController
+              ),
+          )
         ],
       ),
       Row(
@@ -191,6 +262,15 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         )
       );
     }
+
+    tempBody.add(
+      Row(
+        children: [
+          ElevatedButton(child: Text("Save Reflection"), onPressed: ()=> {saveDailyReflection()} )
+        ],
+      ),
+    );
+
     setState(() {
       generatedBody = tempBody;
     });
