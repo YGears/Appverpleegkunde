@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
       title: 'Hanze Verpleeg App',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
       ),
       home: Builder(
           builder: (context) => Scaffold(

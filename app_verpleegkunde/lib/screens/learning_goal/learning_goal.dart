@@ -24,12 +24,10 @@ class _LeerDoelState extends State<Leerdoel> {
 
   String error = "";
   String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
-  final myController = TextEditingController();
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    myController.dispose();
     super.dispose();
   }
 
@@ -115,45 +113,38 @@ class _LeerDoelState extends State<Leerdoel> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          //scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-          primarySwatch: Colors.orange,
-        ),
-        home: Builder(
-          builder: (context) => Scaffold(
-            //Topheader within the application
-            appBar: AppBar(
-              centerTitle: true,
-            ),
-            // Body of the application
-            body: Column(children: <Widget>[
-              //Date selection
-              ElevatedButton(
-                  child: Text(dateFormating(startDate)),
-                  onPressed: () async => selectStartDate(context, startDate)),
-              ElevatedButton(
-                  child: Text(dateFormating(endDate)),
-                  onPressed: () async => selectEndDate(context)),
-              TextFormField(
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Leerdoel',
-                    hintText: 'Selecteer een Leerdoel',
-                  ),
-                  controller: myController),
-              ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
-              ElevatedButton(
-                child: const Text("selecteer leerdoel"),
-                onPressed: () => {_navigateAndDisplaySelection(context)},
-              ),
-              ElevatedButton(
-                child: const Text("Maak Leerdoel aan"),
-                onPressed: () => {createLearningGoal()},
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Leerdoel"),
+        centerTitle: true,
+      ),
+      // Body of the application
+      body: Column(children: <Widget>[
+        Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const <Widget>[
+              Text("Startdatum"),
+              Text("Einddatum"),
             ]),
-          ),
-        ));
+        //Date selection
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          ElevatedButton(
+              child: Text(dateFormating(startDate)),
+              onPressed: () async => selectStartDate(context, startDate)),
+          ElevatedButton(
+              child: Text(dateFormating(endDate)),
+              onPressed: () async => selectEndDate(context))
+        ]),
+        ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
+        ElevatedButton(
+          child: const Text("selecteer leerdoel"),
+          onPressed: () => {_navigateAndDisplaySelection(context)},
+        ),
+        ElevatedButton(
+          child: const Text("Maak Leerdoel aan"),
+          onPressed: () => {createLearningGoal()},
+        ),
+      ]),
+    );
   }
 }
