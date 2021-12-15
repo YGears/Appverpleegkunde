@@ -92,24 +92,25 @@ class _LeerDoelState extends State<Leerdoel> {
     });
   }
 
-  String convertToJSON() {
-    String json = "{";
-    String beginDate = dateFormating(startDate);
-    String lastDate = dateFormating(endDate);
-
-    json += "beginDate: \"$beginDate\",";
-    json += "endDate: \"$lastDate\",";
-    json += "learningGoal: \"$_geselecteerdLeerdoel\",";
-    json += "}";
-    print(json);
-    return json;
-  }
-
   //TODO CREATE FUNCTION TO SAVE LEARNING GOALS make validation check before posting
   Future<void> createLearningGoal() async {
-    print("printing.....");
-    convertToJSON();
-    print("Done");
+    //Set dateTimes to Database format using dateFormating
+    String beginDate = dateFormating(startDate);
+    String lastDate = dateFormating(endDate);
+    //if selected learning goal - default value
+    if (_geselecteerdLeerdoel == 'Nog geen leerdoel geselecteerd') {
+      //POP UP THAT NO LEARNING GOAL HAS BEEN SELECETED
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                title: Text('Foutmelding'),
+                content: Text('Geen leerdoel geselecteerd'),
+              ));
+    } else {
+      String json =
+          "{beginDate: \"$beginDate\",endDate: \"$lastDate\",learningGoal: \"$_geselecteerdLeerdoel\"}";
+      print(json);
+    }
   }
 
   @override
