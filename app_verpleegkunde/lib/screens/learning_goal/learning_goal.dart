@@ -106,7 +106,7 @@ class _LeerDoelState extends State<Leerdoel> {
               ));
     } else {
       String json =
-          "{beginDate: \"$beginDate\",endDate: \"$lastDate\",learningGoal: \"$_geselecteerdLeerdoel\"}";
+          "{beginDate: \"$beginDate\",endDate: \"$lastDate\",tag: \"$_geselecteerdLeerdoel\"}";
       print(json);
     }
   }
@@ -120,20 +120,19 @@ class _LeerDoelState extends State<Leerdoel> {
       ),
       // Body of the application
       body: Column(children: <Widget>[
-        Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const <Widget>[
-              Text("Startdatum"),
-              Text("Einddatum"),
-            ]),
-        //Date selection
         Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          ElevatedButton(
-              child: Text(dateFormating(startDate)),
-              onPressed: () async => selectStartDate(context, startDate)),
-          ElevatedButton(
-              child: Text(dateFormating(endDate)),
-              onPressed: () async => selectEndDate(context))
+          Column(children: <Widget>[
+            const Text("Startdatum"),
+            ElevatedButton(
+                child: Text(dateFormating(startDate)),
+                onPressed: () async => selectStartDate(context, startDate))
+          ]),
+          Column(children: <Widget>[
+            const Text("Einddatum"),
+            ElevatedButton(
+                child: Text(dateFormating(endDate)),
+                onPressed: () async => selectEndDate(context))
+          ]),
         ]),
         ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
         ElevatedButton(
