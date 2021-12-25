@@ -12,51 +12,42 @@ class mainPage extends StatefulWidget {
 class _mainPageState extends State<mainPage> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Hanze - Verpleegkunde',
-        theme: ThemeData(
-          //scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-          primarySwatch: Colors.orange,
-        ),
-        home: Builder(
-          builder: (context) => Scaffold(
-            //Topheader within the application
-            appBar: AppBar(
-              title: const Text('Hanze Verpleegkunde'),
-              centerTitle: true,
-            ),
-            // Body of the application
-            body: Column(children: <Widget>[
-              build_content(context),
-            ]),
-          ),
-        ));
+    return Scaffold(
+      //Topheader within the application
+      appBar: AppBar(
+        title: const Text('Hanze Verpleegkunde'),
+        centerTitle: true,
+      ),
+      // Body of the application
+      body: content(context),
+    );
   }
 
-  int _counter = 0;
   int tableWidth = 10;
   int count = 0;
-  String blapi = "asf";
-  var days_in_week = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
-  DateTime selectedDate = DateTime.parse("2021-09-03 10:00");
+  var daysInWeek = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
+  DateTime selectedDate = DateTime.now();
 
   List<String> months = [
-    'January',
-    'February',
-    'March',
+    'Januari',
+    'Februari',
+    'Maart',
     'April',
-    'May',
-    'June',
-    'July',
-    'August',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Augustus',
     'September',
-    'October',
+    'Oktober',
     'November',
     'December'
   ];
+  Widget agendaHeader(BuildContext context) {
+    return Container();
+  }
 
   @override
-  Widget build_content(BuildContext context) {
+  Widget content(BuildContext context) {
     var year = selectedDate.year;
     var month = selectedDate.month;
     var day = selectedDate.day;
@@ -68,14 +59,12 @@ class _mainPageState extends State<mainPage> {
     _week() async {
       setState(() {
         count = count + 1;
-        blapi = "kliks: $blapi";
       });
     }
 
     dag() async {
       setState(() {
         count = count + 1;
-        blapi = "kliks: $blapi";
       });
     }
 
@@ -113,13 +102,13 @@ class _mainPageState extends State<mainPage> {
               onPressed: () {
                 dag();
               },
-              child: Text(days_in_week[i - 1],
+              child: Text(daysInWeek[i - 1],
                   style: const TextStyle(
                       color: Colors.black,
                       backgroundColor: Color(0xFFffdd00),
                       fontSize: 7)),
               style: TextButton.styleFrom(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   backgroundColor: const Color(0xFFffdd00))));
         } else {
           row.children!.add(const Text(""));
@@ -129,32 +118,36 @@ class _mainPageState extends State<mainPage> {
     }
 
     var container = Container(
-        margin: const EdgeInsets.only(left: 10.0, right: 10, top: 300),
         child: Column(children: [
-          Row(children: <Widget>[
-            Expanded(
-              flex: 2, // 20%
-              child: TextButton(
-                  onPressed: () => nextMonth(-1),
-                  child: const Text("previous Month")),
+      Container(
+        child: Row(children: <Widget>[
+          const Spacer(flex: 2),
+          Expanded(
+            flex: 2, // 20%
+            child: TextButton(
+                onPressed: () => nextMonth(-1),
+                child: const Icon(Icons.navigate_before)),
+          ),
+          Expanded(
+            flex: 4, // 60%
+            child: TextButton(
+                onPressed: () => {}, child: Text("$monthName $year")),
+          ),
+          Expanded(
+            flex: 2, // 20%
+            child: TextButton(
+              onPressed: () => nextMonth(1),
+              child: const Icon(Icons.navigate_next),
             ),
-            Expanded(
-              flex: 6, // 60%
-              child: TextButton(
-                  onPressed: () => {}, child: Text("$monthName $year")),
-            ),
-            Expanded(
-              flex: 2, // 20%
-              child: TextButton(
-                  onPressed: () => nextMonth(1),
-                  child: const Text("next Month")),
-            )
-          ]),
-          Table(
-              defaultColumnWidth: const FlexColumnWidth(1),
-              columnWidths: const {0: FlexColumnWidth(2)},
-              children: generatedTableChildren),
-        ]));
+          ),
+          const Spacer(flex: 2),
+        ]),
+      ),
+      Table(
+          defaultColumnWidth: const FlexColumnWidth(1),
+          columnWidths: const {0: FlexColumnWidth(2)},
+          children: generatedTableChildren),
+    ]));
 
     return container;
   }

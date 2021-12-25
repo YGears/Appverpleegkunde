@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'image_cover.dart';
 import 'package:flutter/rendering.dart';
 import '../second.dart';
-import '../learning_goal/learning_goal.dart';
 import '../../functions/Api.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class Album {
   final String response;
@@ -66,12 +64,12 @@ class _MyAppState extends State<MyApp> {
             // Body of the application
             body: Column(children: <Widget>[
               //IMAGE
-              ImageCover("../img/front_page_img_holder.jpg"),
+              const ImageCover("../img/front_page_img_holder.jpg"),
               //ERROR MSG
               Text(error,
                   style: const TextStyle(
                       color: Colors.red, fontWeight: FontWeight.bold)),
-              Text(""),
+              const Text(""),
               //INPUTFIELD
               TextField(
                   decoration: const InputDecoration(

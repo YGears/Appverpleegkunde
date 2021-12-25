@@ -24,7 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> screens = [
     const Overview(),
     const mainPage(),
-    const Leerdoel(),
+    Leerdoel(),
     dailyReflectionPage(selectedDate: DateTime.now()),
   ];
   //Function to switch index if navbar is touched
