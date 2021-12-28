@@ -1,19 +1,16 @@
 import 'dart:async';
-import 'package:flutter/rendering.dart';
-import '../second.dart';
 import 'package:flutter/material.dart';
 import 'choose_learning_goal.dart';
-import 'package:http/http.dart' as http;
 
-class Leerdoel extends StatefulWidget {
+class learninggoalPage extends StatefulWidget {
   // Iets voor de routes maar wat?
-  const Leerdoel({Key? key}) : super(key: key);
+  const learninggoalPage({Key? key}) : super(key: key);
 
   @override
-  _LeerDoelState createState() => _LeerDoelState();
+  _learninggoalPageState createState() => _learninggoalPageState();
 }
 
-class _LeerDoelState extends State<Leerdoel> {
+class _learninggoalPageState extends State<learninggoalPage> {
   // startDate can't be null so will be current date
   DateTime startDate = DateTime.now();
   // endDate can't be null so will be one week later than startDate by default

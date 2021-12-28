@@ -11,7 +11,7 @@
             "request": "launch",
             "type": "dart",
             // New Line to start file manual
-            "program": "lib/screens/login/login.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "app_verpleegkunde (profile mode)",
