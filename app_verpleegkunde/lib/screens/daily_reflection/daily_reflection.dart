@@ -203,58 +203,10 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     print("Done");
   }
 
-  generateBody(){
-    List<Row> tempBody = [
-      Row(
-        children: [
-          Text("Reflectie op dag: "),
-          ElevatedButton(child: Text(selected_day), onPressed: ()=> {_selectDate(context)} )
-        ],
-      ),
-      Row(
-        children:  [
-          Text("Rating van dag: "),
-          Flexible(child: 
-            TextField(decoration: InputDecoration(
-              labelText: ""),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(1),
-              ], // Only numbers can be entered
-              controller: dagRatingController
-            ),
-          ),
-        ],
-      ),
-      Row(
-        children:[
-          Text("Freewrite")
-        ],
-      ),
-      Row(
-        children:[
-          Flexible(
-            child:
-              TextField(
-                maxLines: 8,
-                // decoration: InputDecoration.collapsed(hintText: "Enter your text here"),
-                controller: freeWriteController
-              ),
-          )
-        ],
-      ),
-      Row(
-        children:[
-          TextButton(
-            child: Text("Select tag"),
-            onPressed: ()=> {gotoTagBody()},),
-        ],
-      ),
-    ];
-    
+  addTags(){
+    List<Row> tags_to_return = [];
     for (var item in selectedTags){
-      tempBody.add(
+      tags_to_return.add(
         Row(
           children:[
             TextButton(child:Text(item),onPressed: ()=>{gotoSubTag(item)},)
@@ -262,6 +214,41 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         )
       );
     }
+    return tags_to_return;
+  }
+
+  generateBody(){
+    List<Row> tempBody = [
+      Row(children: [
+          Text("Reflectie op dag: "),
+          ElevatedButton(child: Text(selected_day), onPressed: ()=> {_selectDate(context)} )
+        ],),
+      Row(
+        children:  [
+          Text("Rating van dag: "),
+          Flexible(child: 
+            TextField(
+              decoration: InputDecoration(labelText: ""), 
+              keyboardType: TextInputType.number, 
+              inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
+              controller: dagRatingController
+            ),
+          ),
+        ],
+      ),
+      Row(children:[ Text("Freewrite") ], ),
+      Row(children:[Flexible(child:
+        TextField(maxLines: 8, controller: freeWriteController ),
+      )],),
+      Row(children:[
+        TextButton(
+          child: Text("Select tag"),
+          onPressed: ()=> {gotoTagBody()},
+        ),
+      ],),
+    ];
+    
+    tempBody.addAll(addTags());
 
     tempBody.add(
       Row(
