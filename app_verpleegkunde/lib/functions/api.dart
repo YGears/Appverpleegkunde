@@ -20,14 +20,15 @@ class Response {
   }
 }
 
+// in order to use the group api, replace privateApi with groupApi on line 30, 
+// comment out line 32
 class Api {
   Future<bool> login(id, password) async {
+    var privateApi = "https://iabamun.nl/game/lab-andre/api/index.php/login";
+    var groupApi = "https://nurse-it.azurewebsites.net/api/test_login?name=$id&password=$password";
     final response = await http.post(
-      Uri.parse('https://iabamun.nl/game/lab-andre/api/index.php/login'),
-      body: jsonEncode(<String, String>{
-        "name": id,
-        "password": password,
-      }),
+      Uri.parse(privateApi),
+      body: jsonEncode(<String, String>{"name": id, "password": password, }),
     );
     var data = jsonDecode(response.body);
 

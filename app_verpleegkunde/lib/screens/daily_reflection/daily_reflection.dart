@@ -163,30 +163,43 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   String convertToJSON(){
     var rating = dagRatingController.value.text;
     var freeWrite = freeWriteController.value.text;
+    bool tagged = false;
     String json = "{";
-    json += "datum: \"$selectedDate\",";
+
+    json += "\"datum\": \"$selectedDate\",";
     if(rating != ""){
-      json += "rating: $rating,";
+      json += "\"rating\": $rating,";
     }else{
-      json += "rating: 0,";
+      json += "\"rating\": 0,";
     }
-    json += "freewrite: \"$freeWrite\",";
-    json += "tag: [";
+    json += "\"opmerking\": \"$freeWrite\",";
+    json += "\"tag\": [";
     for(String tag in selectedTags){
+      tagged = true;
       json += "\"$tag\",";
     }
+    if(tagged){
+      json = json.substring(0,json.length-1);
+    }
+    
     json += "],";
-    json += "subtags: [";
+    json += "\"sub_tags\": [";
+
     for(String mainTag in selectedTags){
+      tagged = false;
       json += "[";
       for(String subTag in subtags[mainTag]){
         if(subTag != ""){
           json += "\"$subTag\",";
+          tagged = true;
         }
       }
-      json += "],";
+      if(tagged){
+        json = json.substring(0,json.length-1);
+      }
+      json += "]";
     }
-    json += "],";
+    json += "]";
     json += "}";
     print(json);
     return json;
