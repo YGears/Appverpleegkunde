@@ -114,6 +114,7 @@ class _Leerdoelen extends State<Leerdoelen> {
     if(!justOnce){
       justOnce = true;
       _updateLeerdoelen();
+      _updateFavorieten();
     }
    
     return Scaffold(
@@ -229,6 +230,7 @@ class _Leerdoelen extends State<Leerdoelen> {
             _updateFavorieten();
           }
     final alreadySaved = favorieten.contains(value);
+    bool isPressed = false;
     return Card(
       child: ListTile(
         title: Text(
@@ -240,19 +242,47 @@ class _Leerdoelen extends State<Leerdoelen> {
           children: [
             IconButton(
                 onPressed: () {
-                  setState(() {
-                    if (alreadySaved) {
-                      _removeFavorieteLeerdoel(value);
-                    } else {
-                      _addFavorieteLeerdoel(value);
-                    }
-                  });
-                },
+                    setState(() {
+                      isPressed = true;
+                    showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Wil je dit leerdoel verwijderen?'),
+                        content: Text(value),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Annuleer',
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              //Hier leerdoel verwijder _removeLeerdoel(str value);
+                                ScaffoldMessenger.of(this.context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(const SnackBar(
+                                      content: Text('Leerdoel is verwijderd')));
+
+                            },
+                            child: const Text(
+                              'Verwijder leerdoel',
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ]));
+                  },
+                  );},
                 icon: Icon(
-                  alreadySaved ? Icons.delete : Icons.delete_outline,
-                  color: alreadySaved ? Colors.red : null,
-                  semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+                  isPressed ? Icons.delete : Icons.delete_outline,
+                  color: isPressed ? Colors.green : null,
+                  semanticLabel: isPressed ? 'Remove' : 'Keep',
                 )),
+                //end of Delete
                  IconButton(
                 onPressed: () {
                   setState(() {
