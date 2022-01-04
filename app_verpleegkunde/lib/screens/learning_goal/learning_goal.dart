@@ -72,21 +72,6 @@ class _learninggoalPageState extends State<learninggoalPage> {
     }
   }
 
-  void _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Leerdoelen()),
-    );
-    ScaffoldMessenger.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
-    setState(() {
-      if ('$result' != 'null') {
-        _geselecteerdLeerdoel = ' $result';
-      }
-    });
-  }
-
   //TODO CREATE FUNCTION TO SAVE LEARNING GOALS make validation check before posting
   Future<void> createLearningGoal() async {
     //Set dateTimes to Database format using dateFormating
@@ -106,6 +91,23 @@ class _learninggoalPageState extends State<learninggoalPage> {
           "{beginDate: \"$beginDate\",endDate: \"$lastDate\",tag: \"$_geselecteerdLeerdoel\"}";
       print(json);
     }
+  }
+
+  void _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Leerdoelen()),
+    );
+
+    setState(() {
+      if ('$result' != 'null') {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+              const SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+        _geselecteerdLeerdoel = ' $result';
+      }
+    });
   }
 
   //TEST

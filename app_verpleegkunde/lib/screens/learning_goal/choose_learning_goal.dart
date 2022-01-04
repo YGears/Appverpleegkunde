@@ -19,9 +19,12 @@ class Leerdoelen extends StatefulWidget {
 class _Leerdoelen extends State<Leerdoelen> {
 //setState(() {leerdoelen = gottenLeerdoelen!;});
   List<String> leerdoelen = [];
+
+  get onPressed => null;
   void _updateLeerdoelen() async {
     final prefs = await SharedPreferences.getInstance();
     List<String>? gottenLeerdoelen = prefs.getStringList('Leerdoelen');
+    print(gottenLeerdoelen);
     gottenLeerdoelen ??= [
       'Assertief Benaderen',
       'Conflicthantering',
@@ -38,9 +41,12 @@ class _Leerdoelen extends State<Leerdoelen> {
       'Opvuller:',
       'Opvuller:'
     ];
-    setState(() {
-      leerdoelen = gottenLeerdoelen!;
-    });
+
+    if (mounted) {
+      setState(() {
+        leerdoelen = gottenLeerdoelen!;
+      });
+    }
   }
 
   Future<void> _addLeerdoel(String value) async {
@@ -63,7 +69,7 @@ class _Leerdoelen extends State<Leerdoelen> {
       'Opvuller:'
     ];
     gottenLeerdoelen.add(value);
-    prefs.setStringList('Favorieten', gottenLeerdoelen);
+    prefs.setStringList('Leerdoelen', gottenLeerdoelen);
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -96,15 +102,14 @@ class _Leerdoelen extends State<Leerdoelen> {
     prefs.setStringList('Favorieten', favorieteLeerdoelen);
   }
 
-  void addNewLeerdoel() {}
-
   @override
   Widget build(BuildContext context) {
+    final myController = TextEditingController();
+
     _updateLeerdoelen();
     return Scaffold(
         appBar: AppBar(
           title: const Text('Leerdoelen'),
-          backgroundColor: Colors.orange,
           actions: [
             IconButton(
               icon: const Icon(Icons.list),
@@ -133,17 +138,46 @@ class _Leerdoelen extends State<Leerdoelen> {
           onPressed: () {
             showDialog(
                 context: context,
-                builder: (_) => const AlertDialog(
-                      title: Text('Dialog Title'),
-                      content: Text('This is my content'),
-                    ));
+                builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Nieuw Leerdoel:'),
+                        content: TextField(
+                          controller: myController,
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Annuleer',
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              if (myController.text.isNotEmpty) {
+                                _addLeerdoel(myController.text);
+                              } else {
+                                ScaffoldMessenger.of(this.context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(const SnackBar(
+                                      content: Text('Veld is leeg')));
+                              }
+                            },
+                            child: const Text(
+                              'Voeg toe',
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ]));
           },
           child: const Icon(Icons.add),
         ));
   }
 
   void _pushSaved() {
-    Navigator.of(this.context).push(
+    Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) {
           _updateFavorieten();
