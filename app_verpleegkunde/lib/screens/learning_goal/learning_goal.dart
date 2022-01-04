@@ -109,11 +109,12 @@ class _LeerDoelState extends State<Leerdoel> {
   }
   void _navigateAndDisplaySelection(BuildContext context) async{
     final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const Leerdoelen()),);
-    ScaffoldMessenger.of(context)
-    ..removeCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+    
     setState(() {
       if('$result' != 'null'){
+        ScaffoldMessenger.of(context)
+    ..removeCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
       _geselecteerdLeerdoel = ' $result';} 
     });
   }

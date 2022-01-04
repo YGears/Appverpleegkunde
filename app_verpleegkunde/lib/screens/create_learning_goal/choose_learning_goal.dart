@@ -1,5 +1,5 @@
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js';
+// // ignore: avoid_web_libraries_in_flutter
+// import 'dart:js';
 
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -18,22 +18,29 @@ class Leerdoelen extends StatefulWidget {
 
 class _Leerdoelen extends State<Leerdoelen>{
 
-  final _suggestions = <String>['Assertief Benaderen', 
-  'Conflicthantering', 
-  'vragen om hulp',
-   'interproffesionele communicatie',
-    'doen alsof je druk bezig bent',
-    'Opvuller1',
-    'Opvuller2',
-    'Opvuller3',
-    'Opvuller:',
-    'Opvuller:',
-    'Opvuller:',
-    'Opvuller:',
-    'Opvuller:',
-    'Opvuller:',
-    'Opvuller:',
-    ];
+//setState(() {leerdoelen = gottenLeerdoelen!;});
+  List<String> leerdoelen = [];
+
+  get onPressed => null;
+  void _updateLeerdoelen() async{
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? gottenLeerdoelen = prefs.getStringList('Leerdoelen');
+    print(gottenLeerdoelen);
+    gottenLeerdoelen ??= [
+      'Assertief Benaderen', 'Conflicthantering', 'vragen om hulp','interproffesionele communicatie','doen alsof je druk bezig bent','Opvuller1','Opvuller2','Opvuller3','Opvuller:','Opvuller:','Opvuller:','Opvuller:','Opvuller:','Opvuller:'];  
+    if(mounted){
+    setState(() {leerdoelen = gottenLeerdoelen!;});}
+  }
+    Future<void> _addLeerdoel(String value) async{
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? gottenLeerdoelen = prefs.getStringList('Leerdoelen');
+    gottenLeerdoelen ??= [
+      'Assertief Benaderen', 'Conflicthantering', 'vragen om hulp','interproffesionele communicatie','doen alsof je druk bezig bent','Opvuller1','Opvuller2','Opvuller3','Opvuller:','Opvuller:','Opvuller:','Opvuller:','Opvuller:','Opvuller:'];  
+    gottenLeerdoelen.add(value);
+    prefs.setStringList('Leerdoelen', gottenLeerdoelen);   
+  }
+  
+
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   List<String> favorieten = [];
@@ -60,14 +67,13 @@ class _Leerdoelen extends State<Leerdoelen>{
     prefs.setStringList('Favorieten', favorieteLeerdoelen);    
 
   }
-  void _addNewLeerdoel(){}
-
-
-  
 
 
   @override
   Widget build(BuildContext context){
+      final myController = TextEditingController();
+
+    _updateLeerdoelen();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Leerdoelen'),
@@ -89,22 +95,47 @@ class _Leerdoelen extends State<Leerdoelen>{
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 10.0),
-            itemCount: _suggestions.length,
+            itemCount: leerdoelen.length,
             itemBuilder: (context, index){
-             return _buildRow(_suggestions[index]);
+             return _buildRow(leerdoelen[index]);
               }
               ),
             ],
           ),
         ),
         floatingActionButton:  FloatingActionButton(
-            onPressed: (){_addNewLeerdoel();},
+            onPressed: (){
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Nieuw Leerdoel:'),
+                  content: TextField(controller: myController,),
+                  actions: <Widget>[
+                    TextButton(onPressed: (){
+                      Navigator.of(context).pop();
+                      },
+                    child: const Text('Annuleer', textAlign: TextAlign.left,),),
+                    TextButton(onPressed: (){
+                      Navigator.of(context).pop(); 
+                      if(myController.text.isNotEmpty) {
+                        _addLeerdoel(myController.text);
+                      }
+                      else{
+                       ScaffoldMessenger.of(this.context)
+    ..removeCurrentSnackBar()
+    ..showSnackBar(const SnackBar(content: Text('Veld is leeg')));}
+                       
+                       },
+                    child: const Text('Voeg toe', textAlign: TextAlign.right,),),
+                  ]
+        )
+    );},
             child: const Icon(Icons.add),
           )    
       );
   }
   void _pushSaved(){
-    Navigator.of(this.context).push(
+    Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) {
           _updateFavorieten();
@@ -166,7 +197,7 @@ class _Leerdoelen extends State<Leerdoelen>{
       ],),
 
     onTap: (){
-      Navigator.pop(this.context, value);
+      Navigator.pop(context, value);
     },
   ), );
 }
