@@ -4,7 +4,7 @@ import 'navbar.dart';
 import 'template_tmp.dart';
 
 //Import all screens
-import 'create_learning_goal/create_learning_goal.dart';
+import 'learning_goal/learning_goal.dart';
 import 'daily_reflection/daily_reflection.dart';
 import 'main/main.dart';
 import 'overview/overview.dart';
@@ -22,10 +22,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 1;
   //List of all screens
   final List<Widget> screens = [
-    const overviewPage(),
+    const Overview(),
     const mainPage(),
-    const createLearningGoalPage(),
-    const dailyReflectionPage(),
+    const Leerdoel(),
+    dailyReflectionPage(selectedDate: DateTime.now()),
   ];
   //Function to switch index if navbar is touched
   void onClicked(int index) {
@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
       title: 'Hanze Verpleeg App',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
       ),
       home: Builder(
           builder: (context) => Scaffold(

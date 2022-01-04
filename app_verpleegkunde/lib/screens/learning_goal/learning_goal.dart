@@ -2,120 +2,150 @@ import 'dart:async';
 import 'package:flutter/rendering.dart';
 import '../second.dart';
 import 'package:flutter/material.dart';
-import '../create_learning_goal/choose_learning_goal.dart';
+import 'choose_learning_goal.dart';
 import 'package:http/http.dart' as http;
 
 class Leerdoel extends StatefulWidget {
   // Iets voor de routes maar wat?
-  const Leerdoel({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const Leerdoel({Key? key}) : super(key: key);
 
   @override
-  _LeerDoelState createState() => _LeerDoelState(title);
+  _LeerDoelState createState() => _LeerDoelState();
 }
 
 class _LeerDoelState extends State<Leerdoel> {
-  DateTime beginDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  // startDate can't be null so will be current date
+  DateTime startDate = DateTime.now();
+  // endDate can't be null so will be one week later than startDate by default
+  DateTime endDate = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day + 7);
+  // Record of current Time that can't be changed
+  static DateTime now = DateTime.now();
+
   String error = "";
-  String title = "";
   String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
-
-  final myController = TextEditingController();
-
-  _LeerDoelState(String newTitle){
-    title = newTitle;
-  }
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    myController.dispose();
     super.dispose();
   }
 
-  Future<DateTime?> _selectDate(BuildContext context, DateTime date) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: date,
-      firstDate: DateTime(date.year, date.month-1),
-      lastDate: DateTime(date.year + 1));
-      return picked;
+  String dateFormating(DateTime date) {
+    // Function to change the formating of dates within the application
+    if (date == null) {
+      return "Error";
+    } else {
+      return "${date.day}/${date.month}/${date.year}";
+    }
   }
+
+  Future<void> selectStartDate(BuildContext context, DateTime date) async {
+    // Function to select a date
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: date,
+        firstDate: DateTime(now.year, now.month - 3),
+        lastDate: DateTime(now.year, now.month + 3));
+
+    if (picked != null && picked != date) {
+      // If date picked and date isn't the date picked than
+      // startDate becomes the selected date
+      setState(() {
+        startDate = picked;
+        endDate = DateTime(picked.year, picked.month, picked.day + 7);
+      });
+    }
+  }
+
+  Future<void> selectEndDate(BuildContext context) async {
+    // Function to select a date
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: startDate,
+        firstDate: startDate,
+        lastDate: DateTime(startDate.year, startDate.month + 3));
+
+    if (picked != null && picked != startDate) {
+      // If date picked and date isn't the date picked than
+      // startDate becomes the selected date
+      setState(() {
+        endDate = picked;
+      });
+    }
+  }
+
+  //TODO CREATE FUNCTION TO SAVE LEARNING GOALS make validation check before posting
+  Future<void> createLearningGoal() async {
+    //Set dateTimes to Database format using dateFormating
+    String beginDate = dateFormating(startDate);
+    String lastDate = dateFormating(endDate);
+    //if selected learning goal - default value
+    if (_geselecteerdLeerdoel == 'Nog geen leerdoel geselecteerd') {
+      //POP UP THAT NO LEARNING GOAL HAS BEEN SELECETED
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                title: Text('Foutmelding'),
+                content: Text('Geen leerdoel geselecteerd'),
+              ));
+    } else {
+      String json =
+          "{beginDate: \"$beginDate\",endDate: \"$lastDate\",tag: \"$_geselecteerdLeerdoel\"}";
+      print(json);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    DateTime? fl;
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: title,
-      theme: ThemeData(
-        //scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-        primarySwatch: Colors.orange,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Leerdoel"),
+        centerTitle: true,
       ),
-      home: Builder(
-        builder: (context) => Scaffold(
-          //Topheader within the application
-          appBar: AppBar(
-            title: Text("$title"),
-            centerTitle: true,
-          ),
-          // Body of the application
-          body: Column(children: <Widget>[
-            //LOGIN BUTTON
+      // Body of the application
+      body: Column(children: <Widget>[
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          Column(children: <Widget>[
+            const Text("Startdatum"),
             ElevatedButton(
-              child:Text("$beginDate"),
-              onPressed:  () async => {
-                fl = await _selectDate(context, beginDate),
-                if (fl != null){
-                  setState(() {
-                    beginDate = fl!;
-                  })
-                }
-              }
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Leerdoel',
-                hintText: 'Vul je leerdoel in',
-              ),
-              controller: myController
-            ),
-            ElevatedButton(
-              child:Text("$endDate"),
-              onPressed:  () async => {
-                fl = await _selectDate(context, endDate),
-                if (fl != null){
-                  setState(() {
-                    endDate = fl!;
-                  })
-                }
-              }
-            ),
-            ListTile(
-              title: Center(child: Text(_geselecteerdLeerdoel))
-            ),
-  
-            ElevatedButton(
-              child: const Text("selecteer leerdoel"),
-              onPressed: () => {
-                _navigateAndDisplaySelection(context)
-              },
-            ),
+                child: Text(dateFormating(startDate)),
+                onPressed: () async => selectStartDate(context, startDate))
           ]),
+          Column(children: <Widget>[
+            const Text("Einddatum"),
+            ElevatedButton(
+                child: Text(dateFormating(endDate)),
+                onPressed: () async => selectEndDate(context))
+          ]),
+        ]),
+        ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
+        ElevatedButton(
+          child: const Text("selecteer leerdoel"),
+          onPressed: () => {_navigateAndDisplaySelection(context)},
         ),
-      )
+        ElevatedButton(
+          child: const Text("Maak Leerdoel aan"),
+          onPressed: () => {createLearningGoal()},
+        ),
+      ]),
     );
   }
-  void _navigateAndDisplaySelection(BuildContext context) async{
-    final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const Leerdoelen()),);
-    
+
+  void _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Leerdoelen()),
+    );
+
     setState(() {
-      if('$result' != 'null'){
+      if ('$result' != 'null') {
         ScaffoldMessenger.of(context)
-    ..removeCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
-      _geselecteerdLeerdoel = ' $result';} 
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+              SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+        _geselecteerdLeerdoel = ' $result';
+      }
     });
   }
 }

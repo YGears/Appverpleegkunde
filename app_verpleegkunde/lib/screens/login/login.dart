@@ -8,28 +8,6 @@ import '../../functions/Api.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<Album> fetchAlbum(title, context) async {
-  final response = await http.post(
-    Uri.parse('https://iabamun.nl/game/lab-andre/api/index.php/login'),
-    body: jsonEncode(<String, String>{
-      "name": title.toString(),
-      "password": "KoekjesZijnGemaaktVanDeeg",
-    }),
-  );
-  var data = jsonDecode(response.body);
-
-  if (data['response'] != null) {
-    if (data['response'] == "Logged in") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const MyHomePage(title: 'wat')));
-    }
-  }
-
-  return Album.fromJson(jsonDecode(response.body));
-}
-
 class Album {
   final String response;
 
@@ -104,24 +82,22 @@ class _MyAppState extends State<MyApp> {
                   controller: myController),
               //LOGIN BUTTON
               ElevatedButton(
-                  child: Text('Login'),onPressed: () async {
+                  child: Text('Login'),
+                  onPressed: () async {
                     Api api = Api();
-                    var loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-                    if (loggedIn){
-                      Navigator.push(context,MaterialPageRoute( builder: (context) => const MyHomePage(title: 'wat')));
-                    }else{
+                    var loggedIn = await api.login(
+                        myController.text, "KoekjesZijnGemaaktVanDeeg");
+                    if (loggedIn) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const MyHomePage(title: 'wat')));
+                    } else {
                       setState(() {
                         error = "Failed to login";
                       });
                     }
-                  }),
-              ElevatedButton(
-                  child: Text('leerdoel'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Leerdoel(title: 'Leerdoel')));
                   }),
             ]),
           ),

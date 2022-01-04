@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:http/http.dart' as http; 
+import 'package:http/http.dart' as http;
 
 class Response {
   final String response;
@@ -18,9 +18,9 @@ class Response {
       response: json['response'],
     );
   }
-} 
+}
 
-class Api{
+class Api {
   Future<bool> login(id, password) async {
     final response = await http.post(
       Uri.parse('https://iabamun.nl/game/lab-andre/api/index.php/login'),
