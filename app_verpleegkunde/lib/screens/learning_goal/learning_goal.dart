@@ -125,6 +125,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Het zetten van een leerdoel"),
+        backgroundColor: Colors.orange,
         centerTitle: true,
       ),
       // Body of the application

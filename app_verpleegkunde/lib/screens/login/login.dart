@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'image_cover.dart';
-import '../main.dart';
+import '../content.dart';
 import '../../functions/Api.dart';
 import 'package:flutter/material.dart';
 
@@ -22,17 +22,16 @@ class Album {
   }
 }
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatefulWidget {
+class loginScreen extends StatefulWidget {
   // Iets voor de routes maar wat?
-  const MyApp({Key? key}) : super(key: key);
+  const loginScreen({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _loginScreenState createState() => _loginScreenState();
 }
 
-class _MyAppState extends State<MyApp> {
+// ignore: camel_case_types
+class _loginScreenState extends State<loginScreen> {
   late Future<Album> futureAlbum;
   String error = "";
   final myController = TextEditingController();
@@ -46,58 +45,50 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Hanze Verpleegkunde',
-        theme: ThemeData(
-          //scaffoldBackgroundColor: const Color(0xFFe3e6e8),
-          primarySwatch: Colors.orange,
-        ),
-        home: Builder(
-          builder: (context) => Scaffold(
-            //Topheader within the application
-            appBar: AppBar(
-              title: const Text('Hanze Verpleegkunde'),
-              centerTitle: true,
-            ),
-            // Body of the application
-            body: Column(children: <Widget>[
-              //IMAGE
-              const ImageCover("assets/images/front_page_img_holder.jpg"),
-              //ERROR MSG
-              Container(
-                height: 30,
-                child: Center(
-                  child: Text(error,
-                      style: const TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold)),
-                ),
-              ),
-              //INPUTFIELD
-              Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  width: 400,
-                  decoration: BoxDecoration(
-                    color: Colors.orange[200],
-                    borderRadius: BorderRadius.circular(29),
-                  ),
-                  child: TextField(
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        icon: Icon(
-                          Icons.person,
-                          color: Colors.orange[900],
-                        ),
-                        hintText: 'Inlogcode',
-                        border: InputBorder.none,
-                      ),
-                      controller: myController)),
-
-              loginButton(context),
-            ]),
+    return Scaffold(
+      //Topheader within the application
+      appBar: AppBar(
+        title: const Text('Hanze Verpleegkunde'),
+        backgroundColor: Colors.orange,
+        centerTitle: true,
+      ),
+      // Body of the application
+      body: Column(children: <Widget>[
+        //IMAGE
+        const ImageCover("assets/images/front_page_img_holder.jpg"),
+        //ERROR MSG
+        Container(
+          height: 30,
+          child: Center(
+            child: Text(error,
+                style: const TextStyle(
+                    color: Colors.red, fontWeight: FontWeight.bold)),
           ),
-        ));
+        ),
+        //INPUTFIELD
+        Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: 400,
+            decoration: BoxDecoration(
+              color: Colors.orange[200],
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextField(
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.orange[900],
+                  ),
+                  hintText: 'Inlogcode',
+                  border: InputBorder.none,
+                ),
+                controller: myController)),
+
+        loginButton(context),
+      ]),
+    );
   }
 
   login(BuildContext context) {
@@ -138,5 +129,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-//MSG SHOULDNT ALWAYS APPEAR

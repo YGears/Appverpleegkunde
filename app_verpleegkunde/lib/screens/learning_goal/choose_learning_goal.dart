@@ -104,6 +104,7 @@ class _Leerdoelen extends State<Leerdoelen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Leerdoelen'),
+          backgroundColor: Colors.orange,
           actions: [
             IconButton(
               icon: const Icon(Icons.list),

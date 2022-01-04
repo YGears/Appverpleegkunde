@@ -10,19 +10,6 @@ class calendarPage extends StatefulWidget {
 }
 
 class _calendarPageState extends State<calendarPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      //Topheader within the application
-      appBar: AppBar(
-        title: const Text('Hanze Verpleegkunde'),
-        centerTitle: true,
-      ),
-      // Body of the application
-      body: content(context),
-    );
-  }
-
   int tableWidth = 10;
   int count = 0;
   var daysInWeek = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
@@ -42,11 +29,29 @@ class _calendarPageState extends State<calendarPage> {
     'November',
     'December'
   ];
-  Widget agendaHeader(BuildContext context) {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      //Topheader within the application
+      appBar: AppBar(
+        title: const Text('Hanze Verpleegkunde'),
+        backgroundColor: Colors.orange,
+        centerTitle: true,
+      ),
+      // Body of the application
+      body: content(context),
+    );
+  }
+
+  Widget calendarHeader(BuildContext context) {
     return Container();
   }
 
-  @override
+  Widget calendar(BuildContext context) {
+    return Container();
+  }
+
   Widget content(BuildContext context) {
     var year = selectedDate.year;
     var month = selectedDate.month;

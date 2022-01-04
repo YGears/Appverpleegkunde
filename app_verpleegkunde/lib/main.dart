@@ -14,7 +14,7 @@ class HanzeVerpleegkundeApp extends StatelessWidget {
         primaryColor: Colors.orange,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: const MyApp(),
+      home: const loginScreen(),
     );
   }
 }
