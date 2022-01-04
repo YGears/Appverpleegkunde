@@ -19,6 +19,7 @@ class Leerdoelen extends StatefulWidget {
 class _Leerdoelen extends State<Leerdoelen> {
 //setState(() {leerdoelen = gottenLeerdoelen!;});
   List<String> leerdoelen = [];
+  bool justOnce = false;
 
   get onPressed => null;
   void _updateLeerdoelen() async {
@@ -69,6 +70,8 @@ class _Leerdoelen extends State<Leerdoelen> {
     ];
     gottenLeerdoelen.add(value);
     prefs.setStringList('Leerdoelen', gottenLeerdoelen);
+    _updateLeerdoelen();
+
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -91,6 +94,8 @@ class _Leerdoelen extends State<Leerdoelen> {
     List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
     favorieteLeerdoelen?.remove(value);
     prefs.setStringList('Favorieten', favorieteLeerdoelen!);
+    _updateFavorieten();
+
   }
 
   Future<void> _addFavorieteLeerdoel(String value) async {
@@ -99,13 +104,18 @@ class _Leerdoelen extends State<Leerdoelen> {
     favorieteLeerdoelen ??= [];
     favorieteLeerdoelen.add(value);
     prefs.setStringList('Favorieten', favorieteLeerdoelen);
+    _updateFavorieten();
   }
 
   @override
   Widget build(BuildContext context) {
     final myController = TextEditingController();
 
-    _updateLeerdoelen();
+    if(!justOnce){
+      justOnce = true;
+      _updateLeerdoelen();
+    }
+   
     return Scaffold(
         appBar: AppBar(
           title: const Text('Leerdoelen'),
@@ -179,7 +189,10 @@ class _Leerdoelen extends State<Leerdoelen> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) {
-          _updateFavorieten();
+          if(!justOnce){
+            justOnce = true;
+            _updateFavorieten();
+          }
           final tiles = favorieten.map(
             (leerdoel) {
               return Card(
@@ -211,7 +224,10 @@ class _Leerdoelen extends State<Leerdoelen> {
   }
 
   Widget _buildRow(String value) {
-    _updateFavorieten();
+        if(!justOnce){
+            justOnce = true;
+            _updateFavorieten();
+          }
     final alreadySaved = favorieten.contains(value);
     return Card(
       child: ListTile(
@@ -223,6 +239,21 @@ class _Leerdoelen extends State<Leerdoelen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
+                onPressed: () {
+                  setState(() {
+                    if (alreadySaved) {
+                      _removeFavorieteLeerdoel(value);
+                    } else {
+                      _addFavorieteLeerdoel(value);
+                    }
+                  });
+                },
+                icon: Icon(
+                  alreadySaved ? Icons.delete : Icons.delete_outline,
+                  color: alreadySaved ? Colors.red : null,
+                  semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+                )),
+                 IconButton(
                 onPressed: () {
                   setState(() {
                     if (alreadySaved) {
