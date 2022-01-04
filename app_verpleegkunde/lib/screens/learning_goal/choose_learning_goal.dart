@@ -42,6 +42,7 @@ class _Leerdoelen extends State<Leerdoelen> {
       'Opvuller:',
       'Opvuller:'
     ];
+
     if (mounted) {
       setState(() {
         leerdoelen = gottenLeerdoelen!;
