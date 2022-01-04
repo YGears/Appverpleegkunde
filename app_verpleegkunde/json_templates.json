@@ -1,0 +1,35 @@
+{
+    "id": "test_id",
+    "naam": "user",
+    "reflectie": [
+        {
+            "datum": "2022-01-03",
+            "rating": 3,
+            "opmerking": "TEST",
+            "tag": [
+                "leuk"
+            ],
+            "sub_tags": [
+	            ["tag1", "stage", "Leerdoel1"]
+            ]
+        }
+    ],
+
+    "leerdoel":[
+        {
+            "begin_datum": "23-01-2021",
+            "eind_datum": "24-01-2021",
+            "onderwerp": "leerdoel1"
+        }
+    ],
+
+    "week_reflectie": [
+        {
+            "datum": "23-01-2021",
+            "weeknummer": "48",
+            "rating": 2,
+            "leerdoel": "leuk",
+            "vooruitblik": "TEST"
+    	}
+    ]
+}

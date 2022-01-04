@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter/rendering.dart';
+import 'overview.dart';
 import 'package:flutter/material.dart';
 import 'choose_learning_goal.dart';
 
@@ -216,6 +218,14 @@ class _learninggoalPageState extends State<learninggoalPage> {
         ElevatedButton(
           child: const Text("Selecteer leerdoel"),
           onPressed: () => {_navigateAndDisplaySelection(context)},
+        ),
+        ElevatedButton(
+          child: const Text("Maak Leerdoel aan"),
+          onPressed: () => {createLearningGoal()},
+        ),
+        ElevatedButton(
+          child: const Text("Overzicht van leerdoelen"),
+          onPressed: () => {Navigator.of(context).push(MaterialPageRoute(builder: (context) => learninGoalOverview()))},
         ),
       ]),
     );

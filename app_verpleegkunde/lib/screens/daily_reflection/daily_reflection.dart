@@ -164,30 +164,43 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   String convertToJSON() {
     var rating = dagRatingController.value.text;
     var freeWrite = freeWriteController.value.text;
+    bool tagged = false;
     String json = "{";
-    json += "datum: \"$selectedDate\",";
-    if (rating != "") {
-      json += "rating: $rating,";
-    } else {
-      json += "rating: 0,";
+
+    json += "\"datum\": \"$selectedDate\",";
+    if(rating != ""){
+      json += "\"rating\": $rating,";
+    }else{
+      json += "\"rating\": 0,";
     }
-    json += "freewrite: \"$freeWrite\",";
-    json += "tag: [";
-    for (String tag in selectedTags) {
+    json += "\"opmerking\": \"$freeWrite\",";
+    json += "\"tag\": [";
+    for(String tag in selectedTags){
+      tagged = true;
       json += "\"$tag\",";
     }
+    if(tagged){
+      json = json.substring(0,json.length-1);
+    }
+    
     json += "],";
-    json += "subtags: [";
-    for (String mainTag in selectedTags) {
+    json += "\"sub_tags\": [";
+
+    for(String mainTag in selectedTags){
+      tagged = false;
       json += "[";
       for (String subTag in subtags[mainTag]) {
         if (subTag != "") {
           json += "\"$subTag\",";
+          tagged = true;
         }
       }
-      json += "],";
+      if(tagged){
+        json = json.substring(0,json.length-1);
+      }
+      json += "]";
     }
-    json += "],";
+    json += "]";
     json += "}";
     print(json);
     return json;
@@ -204,62 +217,52 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     print("Done");
   }
 
-  generateBody() {
-    List<Row> tempBody = [
-      Row(
-        children: [
-          Text("Reflectie op dag: "),
-          ElevatedButton(
-              child: Text(selected_day),
-              onPressed: () => {_selectDate(context)})
-        ],
-      ),
-      Row(
-        children: [
-          const Text("Rating van dag: "),
-          Flexible(
-            child: TextField(
-                decoration: const InputDecoration(labelText: ""),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(1),
-                ], // Only numbers can be entered
-                controller: dagRatingController),
-          ),
-        ],
-      ),
-      Row(
-        children: const [Text("Freewrite")],
-      ),
-      Row(
-        children: [
-          Flexible(
-            child: TextField(
-                maxLines: 8,
-                // decoration: InputDecoration.collapsed(hintText: "Enter your text here"),
-                controller: freeWriteController),
-          )
-        ],
-      ),
-      Row(
-        children: [
-          TextButton(
-            child: const Text("Select tag"),
-            onPressed: () => {gotoTagBody()},
-          ),
-        ],
-      ),
-    ];
-
-    for (var item in selectedTags) {
-      tempBody.add(Row(children: [
-        TextButton(
-          child: Text(item),
-          onPressed: () => {gotoSubTag(item)},
+  addTags(){
+    List<Row> tags_to_return = [];
+    for (var item in selectedTags){
+      tags_to_return.add(
+        Row(
+          children:[
+            TextButton(child:Text(item),onPressed: ()=>{gotoSubTag(item)},)
+          ]
         )
-      ]));
+      );
     }
+    return tags_to_return;
+  }
+
+  generateBody(){
+    List<Row> tempBody = [
+      Row(children: [
+          Text("Reflectie op dag: "),
+          ElevatedButton(child: Text(selected_day), onPressed: ()=> {_selectDate(context)} )
+        ],),
+      Row(
+        children:  [
+          Text("Rating van dag: "),
+          Flexible(child: 
+            TextField(
+              decoration: InputDecoration(labelText: ""), 
+              keyboardType: TextInputType.number, 
+              inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
+              controller: dagRatingController
+            ),
+          ),
+        ],
+      ),
+      Row(children:[ Text("Freewrite") ], ),
+      Row(children:[Flexible(child:
+        TextField(maxLines: 8, controller: freeWriteController ),
+      )],),
+      Row(children:[
+        TextButton(
+          child: Text("Select tag"),
+          onPressed: ()=> {gotoTagBody()},
+        ),
+      ],),
+    ];
+    
+    tempBody.addAll(addTags());
 
     tempBody.add(
       Row(
