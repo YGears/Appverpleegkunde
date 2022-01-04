@@ -12,11 +12,11 @@ class learninGoalOverview extends StatefulWidget {
 }
 
 class learninGoalOverviewState extends State<learninGoalOverview> {
+  List<Widget> generatedBody = [];
+  bool justOnce = false;
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> generatedBody = [];
-
 
     String convertToJSON(){
       String json = "";
@@ -30,9 +30,7 @@ class learninGoalOverviewState extends State<learninGoalOverview> {
       final prefs = await SharedPreferences.getInstance();
       List<String>? leerdoelen = prefs.getStringList('leerdoel');
       leerdoelen ??= [];
-      // leerdoelen.add(convertToJSON());
-      // leerdoelen.add(convertToJSON());
-      // leerdoelen.add(convertToJSON());
+      leerdoelen.add(convertToJSON());
       
       prefs.setStringList('leerdoel', leerdoelen);
       print("Done");
@@ -41,47 +39,46 @@ class learninGoalOverviewState extends State<learninGoalOverview> {
     getTags() async{
     final prefs = await SharedPreferences.getInstance();
       List<String>? leerdoelen = prefs.getStringList('leerdoel');
-      print(leerdoelen);
       return leerdoelen;
       // return "\"leerdoel\":[{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},]";
     }
-
     fillBody() async{
-      await createDefault();
+      // await createDefault();
       List<String>? leerdoelen = await getTags();
       List<Widget> listToReturn = [];
 
       if(leerdoelen == null){ return;}
       
       for(String vari in leerdoelen){
-        // Map<String, dynamic> decodedLearningGoals = jsonDecode(vari);
-        print(vari);
-        // listToReturn.add(
-        //   Row(
-        //     children: [
-        //       Column(
-        //         children:[
-        //           Text(decodedLearningGoals["name"]),
-        //           Row(
-        //             children: [
-        //               Text(decodedLearningGoals["beginDate"]),
-        //               Text(" - "),
-        //               Text(decodedLearningGoals["endDate"])
-        //             ],
-        //           )
-        //         ]
-        //       )
-        //     ],
-        //   )
-        // );
-      }
-
-      setState(() {
+        Map<String, dynamic> decodedLearningGoals = jsonDecode(vari);
+        print(decodedLearningGoals);
+        listToReturn.add(
+          Row(
+            children: [
+              Column(
+                children:[
+                  Text(decodedLearningGoals["onderwerp"]),
+                  Row(
+                    children: [
+                      Text(decodedLearningGoals["begin_datum"]),
+                      Text(" - "),
+                      Text(decodedLearningGoals["eind_datum"])
+                    ],
+                  )
+                ]
+              )
+            ],
+          )
+        );
+      }setState(() {
         generatedBody = listToReturn;
       });
     }
-
-    fillBody();
+    
+    if(!justOnce){print("wat");
+      justOnce = true;
+      fillBody();
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Leerdoel"),
