@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/rendering.dart';
-import '../second.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'choose_learning_goal.dart';
-import 'package:http/http.dart' as http;
 
 class learninGoalOverview extends StatefulWidget {
   // Iets voor de routes maar wat?
@@ -20,32 +17,63 @@ class learninGoalOverviewState extends State<learninGoalOverview> {
   Widget build(BuildContext context) {
     List<Widget> generatedBody = [];
 
-    getTags(){
-      return "{\"leerdoe01\":{\"name\": \"leerdoel1\", \"beginDate\": \"23-01-2021\", \"endDate\": \"24-01-2021\"},\"leerdoel02\": {\"name\": \"leerdoel2\", \"beginDate\": \"23-01-2021\", \"endDate\": \"24-01-2021\"}}";}
 
-    fillBody(){
-      Map<String, dynamic> decodedLearningGoals = jsonDecode(getTags());
+    String convertToJSON(){
+      String json = "";
+
+      json += "{ \"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\" }";
+
+      return json;
+    }
+    Future<void> createDefault() async{
+      print("printing.....");
+      final prefs = await SharedPreferences.getInstance();
+      List<String>? leerdoelen = prefs.getStringList('leerdoel');
+      leerdoelen ??= [];
+      // leerdoelen.add(convertToJSON());
+      // leerdoelen.add(convertToJSON());
+      // leerdoelen.add(convertToJSON());
+      
+      prefs.setStringList('leerdoel', leerdoelen);
+      print("Done");
+    }
+
+    getTags() async{
+    final prefs = await SharedPreferences.getInstance();
+      List<String>? leerdoelen = prefs.getStringList('leerdoel');
+      print(leerdoelen);
+      return leerdoelen;
+      // return "\"leerdoel\":[{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},{\"begin_datum\": \"23-01-2021\", \"eind_datum\": \"24-01-2021\", \"onderwerp\": \"leerdoel1\"},]";
+    }
+
+    fillBody() async{
+      await createDefault();
+      List<String>? leerdoelen = await getTags();
       List<Widget> listToReturn = [];
-      for(String vari in decodedLearningGoals.keys){
-        print(decodedLearningGoals[vari]);
-        listToReturn.add(
-          Row(
-            children: [
-              Column(
-                children:[
-                  Text(decodedLearningGoals[vari]["name"]),
-                  Row(
-                    children: [
-                      Text(decodedLearningGoals[vari]["beginDate"]),
-                      Text(" - "),
-                      Text(decodedLearningGoals[vari]["endDate"])
-                    ],
-                  )
-                ]
-              )
-            ],
-          )
-        );
+
+      if(leerdoelen == null){ return;}
+      
+      for(String vari in leerdoelen){
+        // Map<String, dynamic> decodedLearningGoals = jsonDecode(vari);
+        print(vari);
+        // listToReturn.add(
+        //   Row(
+        //     children: [
+        //       Column(
+        //         children:[
+        //           Text(decodedLearningGoals["name"]),
+        //           Row(
+        //             children: [
+        //               Text(decodedLearningGoals["beginDate"]),
+        //               Text(" - "),
+        //               Text(decodedLearningGoals["endDate"])
+        //             ],
+        //           )
+        //         ]
+        //       )
+        //     ],
+        //   )
+        // );
       }
 
       setState(() {
