@@ -39,7 +39,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
         print(decodedLearningGoals);
         listToReturn.add(Row(
           children: [
-            selectPeriod(
+            itembox(
                 context,
                 decodedLearningGoals["begin_datum"],
                 decodedLearningGoals["eind_datum"],
@@ -60,7 +60,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Overzicht van leerdoelen"),
+        title: const Text("Overzicht van leerdoelen"),
         backgroundColor: Colors.orange,
         centerTitle: true,
       ),
@@ -95,7 +95,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
   }
 
   //Widget for selecting a period in which that learning goal will be set
-  Widget selectPeriod(
+  Widget itembox(
       BuildContext context, String startDate, String endDate, String testie) {
     return Container(
         margin: const EdgeInsets.only(left: 40.0, right: 40.0),
