@@ -57,13 +57,30 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       justOnce = true;
       fillBody();
     }
+
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Overzicht van leerdoelen"),
-          backgroundColor: Colors.orange,
-          centerTitle: true,
+      appBar: AppBar(
+        title: Text("Overzicht van leerdoelen"),
+        backgroundColor: Colors.orange,
+        centerTitle: true,
+      ),
+      //body: Column(children: generatedBody));
+      body: SingleChildScrollView(
+        physics: const ScrollPhysics(),
+        child: Column(
+          children: <Widget>[
+            ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 10.0),
+                itemCount: generatedBody.length,
+                itemBuilder: (context, index) {
+                  return generatedBody[index];
+                }),
+          ],
         ),
-        body: Column(children: generatedBody));
+      ),
+    );
   }
 
   //TEST
