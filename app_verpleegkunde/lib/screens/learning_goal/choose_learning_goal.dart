@@ -160,9 +160,9 @@ class _Leerdoelen extends State<Leerdoelen> {
         ));
   }
 
-  void _pushSaved() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
+  void _pushSaved() async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute<String>(
         builder: (context) {
           if(!justOnce){
             justOnce = true;
@@ -175,7 +175,9 @@ class _Leerdoelen extends State<Leerdoelen> {
                   title: Text(
                     leerdoel,
                     style: _biggerFont,
-                  ),
+                  ), onTap: () {
+          Navigator.pop(context, leerdoel);
+          },
                 ),
               );
             },
@@ -196,6 +198,10 @@ class _Leerdoelen extends State<Leerdoelen> {
         },
       ),
     );
+    setState(() {
+      if ('$result' != 'null') { Navigator.pop(context, result); 
+      }
+    });
   }
 
   Widget _buildRow(String value) {

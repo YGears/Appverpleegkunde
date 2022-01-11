@@ -147,7 +147,7 @@ class _LeerDoelState extends State<Leerdoel> {
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(
-              SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+              SnackBar(content: Text('Nieuw Leerdoel geselecteerd! - $result')));
         _geselecteerdLeerdoel = ' $result';
       }
     });
