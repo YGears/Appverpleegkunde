@@ -17,95 +17,68 @@ class Leerdoelen extends StatefulWidget {
 }
 
 class _Leerdoelen extends State<Leerdoelen> {
-//setState(() {leerdoelen = gottenLeerdoelen!;});
-  List<String> leerdoelen = [];
-  bool justOnce = false;
 
-  get onPressed => null;
-  void _updateLeerdoelen() async {
+  List leerdoelen = [];
+  List favorieten = [];
+  
+  bool justOnce = false;
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
+  Future<List<String>?> _getPreferences(String type) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String>? gottenLeerdoelen = prefs.getStringList('Leerdoelen');
-    print(gottenLeerdoelen);
-    gottenLeerdoelen ??= [
-      'Assertief Benaderen',
-      'Conflicthantering',
-      'vragen om hulp',
-      'interproffesionele communicatie',
-      'doen alsof je druk bezig bent',
-      'Opvuller1',
-      'Opvuller2',
-      'Opvuller3',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:'
-    ];
+
+    List<String>? list = prefs.getStringList(type);
+    if(type == 'Leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
+    if(type == 'Favorieten'){list ??= [];}
+
+    return list;
+  }
+  Future<void> _setNewList(String type, List<String> list) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(type, list);
+    _updateLeerdoelen();
+    _updateFavorieten();
+  }
+
+  void _updateLeerdoelen() async {
+    List<String>? list = await _getPreferences('Leerdoelen');
 
     if (mounted) {
       setState(() {
-        leerdoelen = gottenLeerdoelen!;
+        leerdoelen = list as List;
       });
     }
   }
 
   Future<void> _addLeerdoel(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? gottenLeerdoelen = prefs.getStringList('Leerdoelen');
-    gottenLeerdoelen ??= [
-      'Assertief Benaderen',
-      'Conflicthantering',
-      'vragen om hulp',
-      'interproffesionele communicatie',
-      'doen alsof je druk bezig bent',
-      'Opvuller1',
-      'Opvuller2',
-      'Opvuller3',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:'
-    ];
-    gottenLeerdoelen.add(value);
-    prefs.setStringList('Leerdoelen', gottenLeerdoelen);
-    _updateLeerdoelen();
-
+    List<String>? list = await _getPreferences('Leerdoelen');
+    list!.add(value);
+    _setNewList('Leerdoelen', list);
   }
 
-  final _biggerFont = const TextStyle(fontSize: 18.0);
+  Future<void> _removeLeerdoel(String value) async {
+    List<String>? list = await _getPreferences('Leerdoelen');
+    list!.remove(value);
+    _setNewList('Leerdoelen', list);
+  }
 
-  List<String> favorieten = [];
   void _updateFavorieten() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
-    if (favorieteLeerdoelen != null) {
+    List<String>? list = await _getPreferences('Favorieten');
       setState(() {
-        favorieten = favorieteLeerdoelen!;
+        favorieten = list as List;
       });
-    } else {
-      favorieteLeerdoelen = [''];
     }
+  
+  Future<void> _addFavorieteLeerdoel(String value) async {
+    List<String>? list = await _getPreferences('Favorieten');
+    list!.add(value);
+    _setNewList('Favorieten', list);
   }
 
   Future<void> _removeFavorieteLeerdoel(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
-    favorieteLeerdoelen?.remove(value);
-    prefs.setStringList('Favorieten', favorieteLeerdoelen!);
-    _updateFavorieten();
-
-  }
-
-  Future<void> _addFavorieteLeerdoel(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
-    favorieteLeerdoelen ??= [];
-    favorieteLeerdoelen.add(value);
-    prefs.setStringList('Favorieten', favorieteLeerdoelen);
-    _updateFavorieten();
+    List<String>? list = await _getPreferences('Favorieten');
+    list?.remove(value);
+    _setNewList('Favorieten', list!);
   }
 
   @override
@@ -115,6 +88,7 @@ class _Leerdoelen extends State<Leerdoelen> {
     if(!justOnce){
       justOnce = true;
       _updateLeerdoelen();
+      _updateFavorieten();
     }
    
     return Scaffold(
@@ -123,7 +97,7 @@ class _Leerdoelen extends State<Leerdoelen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.list),
-              onPressed: _pushSaved,
+              onPressed: _favorietenLijst,
               tooltip: 'Favoriete leerdoelen',
             )
           ],
@@ -132,7 +106,6 @@ class _Leerdoelen extends State<Leerdoelen> {
           physics: const ScrollPhysics(),
           child: Column(
             children: <Widget>[
-              Text('Hier is ruimte om iets aan te passen', style: _biggerFont),
               ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -186,9 +159,10 @@ class _Leerdoelen extends State<Leerdoelen> {
         ));
   }
 
-  void _pushSaved() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
+  void _favorietenLijst() async {
+    
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute<String>(
         builder: (context) {
           if(!justOnce){
             justOnce = true;
@@ -202,6 +176,28 @@ class _Leerdoelen extends State<Leerdoelen> {
                     leerdoel,
                     style: _biggerFont,
                   ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                onPressed: () {
+                  setState(() {
+                    _removeFavorieteLeerdoel(leerdoel);
+                    Navigator.pop(context);  // pop current page
+                    ScaffoldMessenger.of(this.context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(SnackBar(
+                                      content: Text('$leerdoel uit favorieten gehaald')));
+                    
+                  });
+                },
+                icon: const Icon(
+                  Icons.favorite,
+                  color:  Colors.red,
+                )),
+                    ],), onTap: () {
+          Navigator.pop(context, leerdoel);
+          },
                 ),
               );
             },
@@ -222,6 +218,10 @@ class _Leerdoelen extends State<Leerdoelen> {
         },
       ),
     );
+    setState(() {
+      if ('$result' != 'null') { Navigator.pop(context, result); 
+      }
+    });
   }
 
   Widget _buildRow(String value) {
@@ -230,6 +230,7 @@ class _Leerdoelen extends State<Leerdoelen> {
             _updateFavorieten();
           }
     final alreadySaved = favorieten.contains(value);
+    bool isPressed = false;
     return Card(
       child: ListTile(
         title: Text(
@@ -241,19 +242,48 @@ class _Leerdoelen extends State<Leerdoelen> {
           children: [
             IconButton(
                 onPressed: () {
-                  setState(() {
-                    if (alreadySaved) {
-                      _removeFavorieteLeerdoel(value);
-                    } else {
-                      _addFavorieteLeerdoel(value);
-                    }
-                  });
-                },
+                    setState(() {
+                      isPressed = true;
+                    showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Wil je dit leerdoel verwijderen?'),
+                        content: Text(value),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Annuleer',
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              _removeLeerdoel(value);
+                              _removeFavorieteLeerdoel(value);
+                                ScaffoldMessenger.of(this.context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(const SnackBar(
+                                      content: Text('Leerdoel is verwijderd')));
+
+                            },
+                            child: const Text(
+                              'Verwijder leerdoel',
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ]));
+                  },
+                  );},
                 icon: Icon(
-                  alreadySaved ? Icons.delete : Icons.delete_outline,
-                  color: alreadySaved ? Colors.red : null,
-                  semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+                  isPressed ? Icons.delete : Icons.delete_outline,
+                  color: isPressed ? Colors.green : null,
+                  semanticLabel: isPressed ? 'Remove' : 'Keep',
                 )),
+                //end of Delete
                  IconButton(
                 onPressed: () {
                   setState(() {

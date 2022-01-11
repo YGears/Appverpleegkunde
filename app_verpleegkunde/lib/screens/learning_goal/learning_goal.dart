@@ -230,6 +230,16 @@ class _learninggoalPageState extends State<learninggoalPage> {
     );
   }
 
+    setState(() {
+      if ('$result' != 'null') {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+              SnackBar(content: Text('Nieuw Leerdoel geselecteerd! - $result')));
+        _geselecteerdLeerdoel = ' $result';
+      }
+    });
+
   Widget createButton(BuildContext context) {
     return SizedBox(
       height: 40,
@@ -246,5 +256,6 @@ class _learninggoalPageState extends State<learninggoalPage> {
         onPressed: () => {createLearningGoal()},
       ),
     );
+
   }
 }
