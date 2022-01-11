@@ -17,94 +17,68 @@ class Leerdoelen extends StatefulWidget {
 }
 
 class _Leerdoelen extends State<Leerdoelen> {
-//setState(() {leerdoelen = gottenLeerdoelen!;});
-  List<String> leerdoelen = [];
-  bool justOnce = false;
 
-  get onPressed => null;
-  void _updateLeerdoelen() async {
+  List leerdoelen = [];
+  List favorieten = [];
+  
+  bool justOnce = false;
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
+  // get onPressed => null;
+
+  Future<List<String>?> _getPreferences(String type) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String>? gottenLeerdoelen = prefs.getStringList('Leerdoelen');
-    print(gottenLeerdoelen);
-    gottenLeerdoelen ??= [
-      'Assertief Benaderen',
-      'Conflicthantering',
-      'vragen om hulp',
-      'interproffesionele communicatie',
-      'doen alsof je druk bezig bent',
-      'Opvuller1',
-      'Opvuller2',
-      'Opvuller3',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:'
-    ];
+    List<String>? list = prefs.getStringList(type);
+    if(type == 'Leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','vragen om hulp','interproffesionele communicatie','doen alsof je druk bezig bent',]; }
+    if(type == 'Favorieten'){list ??= [];}
+
+    return list;
+  }
+  Future<void> _setNewList(String type, List<String> list) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(type, list);
+    _updateLeerdoelen();
+    _updateFavorieten();
+  }
+
+  void _updateLeerdoelen() async {
+    List<String>? list = await _getPreferences('Leerdoelen');
     if (mounted) {
       setState(() {
-        leerdoelen = gottenLeerdoelen!;
+        leerdoelen = list as List;
       });
     }
   }
 
   Future<void> _addLeerdoel(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? gottenLeerdoelen = prefs.getStringList('Leerdoelen');
-    gottenLeerdoelen ??= [
-      'Assertief Benaderen',
-      'Conflicthantering',
-      'vragen om hulp',
-      'interproffesionele communicatie',
-      'doen alsof je druk bezig bent',
-      'Opvuller1',
-      'Opvuller2',
-      'Opvuller3',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:',
-      'Opvuller:'
-    ];
-    gottenLeerdoelen.add(value);
-    prefs.setStringList('Leerdoelen', gottenLeerdoelen);
-    _updateLeerdoelen();
-
+    List<String>? list = await _getPreferences('Leerdoelen');
+    list!.add(value);
+    _setNewList('Leerdoelen', list);
   }
 
-  final _biggerFont = const TextStyle(fontSize: 18.0);
+  Future<void> _removeLeerdoel(String value) async {
+    List<String>? list = await _getPreferences('Leerdoelen');
+    list!.remove(value);
+    _setNewList('Leerdoelen', list);
+  }
 
-  List<String> favorieten = [];
   void _updateFavorieten() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
-    if (favorieteLeerdoelen != null) {
+    List<String>? list = await _getPreferences('Favorieten');
       setState(() {
-        favorieten = favorieteLeerdoelen!;
+        favorieten = list as List;
       });
-    } else {
-      favorieteLeerdoelen = [''];
     }
+  
+  Future<void> _addFavorieteLeerdoel(String value) async {
+    List<String>? list = await _getPreferences('Favorieten');
+    list!.add(value);
+    _setNewList('Favorieten', list);
   }
 
   Future<void> _removeFavorieteLeerdoel(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
-    favorieteLeerdoelen?.remove(value);
-    prefs.setStringList('Favorieten', favorieteLeerdoelen!);
-    _updateFavorieten();
-
-  }
-
-  Future<void> _addFavorieteLeerdoel(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? favorieteLeerdoelen = prefs.getStringList('Favorieten');
-    favorieteLeerdoelen ??= [];
-    favorieteLeerdoelen.add(value);
-    prefs.setStringList('Favorieten', favorieteLeerdoelen);
-    _updateFavorieten();
+    List<String>? list = await _getPreferences('Favorieten');
+    list?.remove(value);
+    _setNewList('Favorieten', list!);
   }
 
   @override
@@ -132,7 +106,7 @@ class _Leerdoelen extends State<Leerdoelen> {
           physics: const ScrollPhysics(),
           child: Column(
             children: <Widget>[
-              Text('Hier is ruimte om iets aan te passen', style: _biggerFont),
+              // Text('Hier is ruimte om iets aan te passen', style: _biggerFont),
               ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -262,7 +236,8 @@ class _Leerdoelen extends State<Leerdoelen> {
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
-                              //Hier leerdoel verwijder _removeLeerdoel(str value);
+                              _removeLeerdoel(value);
+                              _removeFavorieteLeerdoel(value);
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
                                   ..showSnackBar(const SnackBar(
