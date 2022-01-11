@@ -24,12 +24,10 @@ class _Leerdoelen extends State<Leerdoelen> {
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  // get onPressed => null;
-
   Future<List<String>?> _getPreferences(String type) async {
     final prefs = await SharedPreferences.getInstance();
     List<String>? list = prefs.getStringList(type);
-    if(type == 'Leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','vragen om hulp','interproffesionele communicatie','doen alsof je druk bezig bent',]; }
+    if(type == 'Leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
     if(type == 'Favorieten'){list ??= [];}
 
     return list;
@@ -97,7 +95,7 @@ class _Leerdoelen extends State<Leerdoelen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.list),
-              onPressed: _pushSaved,
+              onPressed: _favorietenLijst,
               tooltip: 'Favoriete leerdoelen',
             )
           ],
@@ -106,7 +104,6 @@ class _Leerdoelen extends State<Leerdoelen> {
           physics: const ScrollPhysics(),
           child: Column(
             children: <Widget>[
-              // Text('Hier is ruimte om iets aan te passen', style: _biggerFont),
               ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -160,7 +157,8 @@ class _Leerdoelen extends State<Leerdoelen> {
         ));
   }
 
-  void _pushSaved() async {
+  void _favorietenLijst() async {
+    
     final result = await Navigator.of(context).push(
       MaterialPageRoute<String>(
         builder: (context) {
@@ -175,7 +173,27 @@ class _Leerdoelen extends State<Leerdoelen> {
                   title: Text(
                     leerdoel,
                     style: _biggerFont,
-                  ), onTap: () {
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                onPressed: () {
+                  setState(() {
+                    _removeFavorieteLeerdoel(leerdoel);
+                    Navigator.pop(context);  // pop current page
+                    ScaffoldMessenger.of(this.context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(SnackBar(
+                                      content: Text('$leerdoel uit favorieten gehaald')));
+                    
+                  });
+                },
+                icon: const Icon(
+                  Icons.favorite,
+                  color:  Colors.red,
+                )),
+                    ],), onTap: () {
           Navigator.pop(context, leerdoel);
           },
                 ),
