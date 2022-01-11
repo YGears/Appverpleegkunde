@@ -1,19 +1,18 @@
 import 'dart:async';
 import 'package:flutter/rendering.dart';
-import 'overview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'choose_learning_goal.dart';
-import 'package:http/http.dart' as http;
 
-class Leerdoel extends StatefulWidget {
+class learninggoalPage extends StatefulWidget {
   // Iets voor de routes maar wat?
-  const Leerdoel({Key? key}) : super(key: key);
+  const learninggoalPage({Key? key}) : super(key: key);
 
   @override
-  _LeerDoelState createState() => _LeerDoelState();
+  _learninggoalPageState createState() => _learninggoalPageState();
 }
 
-class _LeerDoelState extends State<Leerdoel> {
+class _learninggoalPageState extends State<learninggoalPage> {
   // startDate can't be null so will be current date
   DateTime startDate = DateTime.now();
   // endDate can't be null so will be one week later than startDate by default
@@ -91,49 +90,16 @@ class _LeerDoelState extends State<Leerdoel> {
               ));
     } else {
       String json =
-          "{beginDate: \"$beginDate\",endDate: \"$lastDate\",tag: \"$_geselecteerdLeerdoel\"}";
+          "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$_geselecteerdLeerdoel\"}";
       print(json);
-    }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Leerdoel"),
-        centerTitle: true,
-      ),
-      // Body of the application
-      body: Column(children: <Widget>[
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          Column(children: <Widget>[
-            const Text("Startdatum"),
-            ElevatedButton(
-                child: Text(dateFormating(startDate)),
-                onPressed: () async => selectStartDate(context, startDate))
-          ]),
-          Column(children: <Widget>[
-            const Text("Einddatum"),
-            ElevatedButton(
-                child: Text(dateFormating(endDate)),
-                onPressed: () async => selectEndDate(context))
-          ]),
-        ]),
-        ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
-        ElevatedButton(
-          child: const Text("selecteer leerdoel"),
-          onPressed: () => {_navigateAndDisplaySelection(context)},
-        ),
-        ElevatedButton(
-          child: const Text("Maak Leerdoel aan"),
-          onPressed: () => {createLearningGoal()},
-        ),
-        ElevatedButton(
-          child: const Text("Overzicht van leerdoelen"),
-          onPressed: () => {Navigator.of(context).push(MaterialPageRoute(builder: (context) => learninGoalOverview()))},
-        ),
-      ]),
-    );
+      final prefs = await SharedPreferences.getInstance();
+      List<String>? leerdoelen = prefs.getStringList('leerdoel');
+      leerdoelen ??= [];
+      leerdoelen.add(json);
+
+      prefs.setStringList('leerdoel', leerdoelen);
+    }
   }
 
   void _navigateAndDisplaySelection(BuildContext context) async {
@@ -147,9 +113,149 @@ class _LeerDoelState extends State<Leerdoel> {
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(
+              const SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+        _geselecteerdLeerdoel = ' $result';
+      }
+    });
+  }
+
+  //TEST
+  BoxDecoration borderStyling() {
+    return BoxDecoration(
+      color: Colors.orange[50],
+      border: Border.all(width: 3.0),
+      borderRadius: const BorderRadius.all(
+          Radius.circular(10.0) //                 <--- border radius here
+          ),
+    );
+  }
+
+  @override
+  // Widget that builds the scaffold that holds all the widgets that this screen consists off
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Het zetten van een leerdoel"),
+        backgroundColor: Colors.orange,
+        centerTitle: true,
+      ),
+      // Body of the application
+      body: contentWrapper(context),
+    );
+  }
+
+  // Wrapps all widgets in to one single widget
+  Widget contentWrapper(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Column(children: <Widget>[
+        const SizedBox(
+          height: 75,
+        ),
+        selectPeriod(context),
+        const SizedBox(
+          height: 30,
+        ),
+        chooseLearningGoal(context),
+        const SizedBox(
+          height: 40,
+        ),
+        createButton(context)
+      ]),
+    );
+  }
+
+  //Widget for selecting a period in which that learning goal will be set
+  Widget selectPeriod(BuildContext context) {
+    return Container(
+        margin: const EdgeInsets.only(left: 40.0, right: 40.0),
+        padding: const EdgeInsets.all(20.0),
+        decoration: borderStyling(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              "Periode van het leerdoel",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            // Creates spacing between items inside of the column
+            const SizedBox(
+              height: 8,
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Column(children: <Widget>[
+                const Text("Startdatum"),
+                ElevatedButton(
+                    child: Text(dateFormating(startDate)),
+                    onPressed: () async => selectStartDate(context, startDate))
+              ]),
+              const SizedBox(
+                width: 20,
+              ),
+              Column(children: <Widget>[
+                const Text("Einddatum"),
+                ElevatedButton(
+                    child: Text(dateFormating(endDate)),
+                    onPressed: () async => selectEndDate(context))
+              ]),
+            ]),
+          ],
+        ));
+  }
+
+  Widget chooseLearningGoal(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(left: 40.0, right: 40.0),
+      padding: const EdgeInsets.all(20.0),
+      decoration: borderStyling(),
+      child: Column(children: <Widget>[
+        const Text(
+          "Kies een leerdoel voor de periode",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
+        ElevatedButton(
+          child: const Text("Selecteer leerdoel"),
+          onPressed: () => {_navigateAndDisplaySelection(context)},
+        ),
+      ]),
+    );
+  }
+
+    setState(() {
+      if ('$result' != 'null') {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
               SnackBar(content: Text('Nieuw Leerdoel geselecteerd! - $result')));
         _geselecteerdLeerdoel = ' $result';
       }
     });
+
+  Widget createButton(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        child: const Text("Maak het leerdoel aan"),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.amber[700],
+          textStyle: const TextStyle(
+              color: Colors.black, fontSize: 24, fontStyle: FontStyle.italic),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+        ),
+        onPressed: () => {createLearningGoal()},
+      ),
+    );
+
   }
 }

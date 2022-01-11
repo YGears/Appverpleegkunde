@@ -26,6 +26,7 @@ class _Leerdoelen extends State<Leerdoelen> {
 
   Future<List<String>?> _getPreferences(String type) async {
     final prefs = await SharedPreferences.getInstance();
+
     List<String>? list = prefs.getStringList(type);
     if(type == 'Leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
     if(type == 'Favorieten'){list ??= [];}
@@ -41,6 +42,7 @@ class _Leerdoelen extends State<Leerdoelen> {
 
   void _updateLeerdoelen() async {
     List<String>? list = await _getPreferences('Leerdoelen');
+
     if (mounted) {
       setState(() {
         leerdoelen = list as List;

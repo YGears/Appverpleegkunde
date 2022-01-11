@@ -1,5 +1,5 @@
 name: flutter_application_1
-description: A new Flutter project.
+description: Mobile application in which nursing students of the Hanzehogeschool Groningen can reflect on their assertifness (part of phd research). "Development Phase"
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -67,7 +67,8 @@ flutter:
   #   - images/a_dot_ham.jpeg
   # kan ook de hele map zodat je niet elke img hoeft
   assets :
-    - img/front_page_img_holder.jpg
+    - assets/images/
+    - assets/images/front_page_img_holder.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
