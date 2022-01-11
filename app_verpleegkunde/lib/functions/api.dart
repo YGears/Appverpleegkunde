@@ -39,4 +39,18 @@ class Api {
     }
     return false;
   }
+
+  Future<bool> syncUp(user_name, password, reflectie_json, leerdoel_json, week_reflectie_json) async{
+    var testApi = "test";
+    var groupApi = "https://nurse-it.azurewebsites.net/api/test_login?name=$user_name&password=$password&reflectie=$reflectie_json&leerdoel=$leerdoel_json&week_reflectie=$week_reflectie_json";
+    final response = await http.post(
+      Uri.parse(testApi)
+    );
+    
+    if(response.statusCode == 200){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

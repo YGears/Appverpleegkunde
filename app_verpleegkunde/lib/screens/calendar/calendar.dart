@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../../functions/syncronisatie.dart';
 import 'package:intl/intl.dart';
 
 class calendarPage extends StatefulWidget {
@@ -33,6 +33,7 @@ class _calendarPageState extends State<calendarPage> {
 
   @override
   Widget build(BuildContext context) {
+  
     return Scaffold(
       //Topheader within the application
       appBar: AppBar(
@@ -62,6 +63,10 @@ class _calendarPageState extends State<calendarPage> {
     var generatedTableChildren = <TableRow>[];
     var monthName = months[selectedDate.month - 1];
 
+
+    syncWithDatabase() async{
+      await Syncronisation.syncUp();
+    }
     _week() async {
       setState(() {
         count = count + 1;
@@ -154,7 +159,7 @@ class _calendarPageState extends State<calendarPage> {
           columnWidths: const {0: FlexColumnWidth(2)},
           children: generatedTableChildren),
     ]));
-
+    syncWithDatabase();
     return container;
   }
 }
