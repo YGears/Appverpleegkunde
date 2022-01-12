@@ -25,11 +25,20 @@ class Response {
 class Api {
   Future<bool> login(id, password) async {
     var privateApi = "https://iabamun.nl/game/lab-andre/api/index.php/login";
-    var groupApi = "https://nurse-it.azurewebsites.net/api/test_login?name=$id&password=$password";
     final response = await http.post(
       Uri.parse(privateApi),
+      headers:{'Ocp-Apim-Subscription-Key': 'KEY' },
       body: jsonEncode(<String, String>{"name": id, "password": password, }),
     );
+    
+    //azure api
+    // var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/Login?=&name=$id&password=KoekjesZijnGemaaktVanDeeg";
+    // final response = await http.post(
+    //   Uri.parse(groupApi),
+    //   headers:{'Ocp-Apim-Subscription-Key': 'KEY' },
+    //   body: jsonEncode(<String, String>{"name": id, "password": password, }),
+    // );
+
     var data = jsonDecode(response.body);
 
     if (data['response'] != null) {
