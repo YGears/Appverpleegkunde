@@ -14,12 +14,16 @@ class Syncronisation {
 
     var name =  prefs.getString('user');
     var password = prefs.getString('password');
-    var reflectie_json = jsonEncode(prefs.getStringList('daily_reflection') ?? []);
-    var leerdoel_json = jsonEncode(prefs.getStringList('leerdoel') ?? []);
-    var week_reflectie_json = jsonEncode(prefs.getStringList('week_reflectie') ?? []);
+    var reflectie_json = prefs.getStringList('daily_reflection') ?? [];
+    var leerdoel_json = prefs.getStringList('leerdoel') ?? [];
+    var week_reflectie_json = prefs.getStringList('week_reflectie') ?? [];
 
+    print("JSON");
     print(name);
     print(password);
+    print(reflectie_json);
+    print(leerdoel_json); 
+    print(week_reflectie_json);
 
     if(await api.syncUp(name, password, reflectie_json, leerdoel_json, week_reflectie_json)){
       return true;
@@ -28,15 +32,15 @@ class Syncronisation {
   }
 
   static Future<bool> login(String user_name, String password) async{
-    final prefs = await SharedPreferences.getInstance();
-    String? user = prefs.getString('user');
-    if(user == null){
+    // final prefs = await SharedPreferences.getInstance();
+    // String? user = prefs.getString('user');
+    // if(user == null){
       
-      prefs.setString('user', user_name);
-      prefs.setString('password', password);
-      print("user $user_name logged in");
-      return true;
-    }
+    //   prefs.setString('user', user_name);
+    //   prefs.setString('password', password);
+    //   print("user $user_name logged in");
+    //   return true;
+    // }
     return false;
   }
 }
