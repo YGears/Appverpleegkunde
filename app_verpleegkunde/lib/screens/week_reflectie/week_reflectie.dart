@@ -64,11 +64,7 @@ class week_reflectie_State extends State<week_reflectie> {
 
   Future<List<String>> getTags() async{
     final prefs = await SharedPreferences.getInstance();
-    
-    List<String> premadeLeerdoelList = ["Leerdoel1", "stage", "tag1", "tag2", "leuk"];
-    prefs.setStringList("leerdoel", premadeLeerdoelList);
     var list = prefs.getStringList('leerdoel') ?? [];
-
     return list;
   }
 
