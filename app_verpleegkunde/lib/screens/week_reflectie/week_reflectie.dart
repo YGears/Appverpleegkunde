@@ -128,7 +128,7 @@ class week_reflectie_State extends State<week_reflectie> {
     }else{
       json += "\"rating\": 0,";
     }
-    json += "\"leeerdoel\": [\"$activatedMainTag\"],";
+    json += "\"leerdoel\": [\"$activatedMainTag\"],";
     json += "\"vooruitblik\": \"$freeWrite\",";
     json += "}";
     print(json);
