@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
 
 import 'dart:collection';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -118,10 +118,12 @@ class week_reflectie_State extends State<week_reflectie> {
     var rating = dagRatingController.value.text;
     var freeWrite = freeWriteController.value.text;
     bool tagged = false;
+    var datum_format = DateFormat('dd/MM/yyyy');
+    var datum = datum_format.format(selectedDate);
     var weekNR = 5;
     String json = "{";
 
-    json += "\"datum\": \"$selectedDate\",";
+    json += "\"datum\": \"$datum\",";
     json += "\"weeknummer\": $weekNR,";
     if(rating != ""){
       json += "\"rating\": $rating,";
