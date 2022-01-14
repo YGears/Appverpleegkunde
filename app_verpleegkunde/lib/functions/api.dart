@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class Response {
@@ -24,46 +25,40 @@ class Response {
 // comment out line 32
 class Api {
   Future<bool> login(id, password) async {
+    print("loggin in");
     // var privateApi = "https://iabamun.nl/game/lab-andre/api/index.php/login";
     // final response = await http.post(
     //   Uri.parse(privateApi),
+    //   headers:{'Ocp-Apim-Subscription-Key': 'KEY' },
     //   body: jsonEncode(<String, String>{"name": id, "password": password, }),
     // );
-    print("trying");
-    
-    var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/Login?name=user&password=KoekjesZijnGemaaktVanDeeg";
-    final response = await http.post(
-      Uri.parse(groupApi),
-    //   headers:{
-    //   "Host": "flutterVerpleegApp",
-    //   "Content-Length": "0",
-    //   "Ocp-Apim-Subscription-Key": "Ocp-Apim-Subscription-Key",
-    //   "Accept": "application/json",
-    //   "Access-Control-Allow-Origin": "*",
-    //  },
-      body:{}
+    // azure api
+    var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/Login?=&name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7";
+     
+    final response = await http.get(
+      Uri.parse(groupApi), 
+      headers: {
+      }
     );
-    print(response);
-    // var data = jsonDecode(response.body);
-    // print(data);
-    // if (data['response'] != null) {
-    //   if (data['response'] == "Logged in") {
-    //     return true;
-    //   }
-    // }
+
+    var data = jsonDecode(response.body); 
+    
+    if (data['response'] != null) {
+      if (data['response'] == "Logged in") {
+        return true;
+      }
+    }
     return false;
   }
-
   Future<bool> syncUp(user_name, password, reflectie_json, leerdoel_json, week_reflectie_json) async{
-    var testApi = "test";
-    var groupApi = "https://nurse-it.azurewebsites.net/api/test_login?name=$user_name&password=$password&reflectie=$reflectie_json&leerdoel=$leerdoel_json&week_reflectie=$week_reflectie_json";
+    var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/UpdateUser?name=$user_name&password=$password&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7&reflectie=$reflectie_json&leerdoel=$leerdoel_json&weekreflectie=$week_reflectie_json";
 
-    // final response = await http.post(
-    //   Uri.parse(testApi)
-    // );
+    final response = await http.post(
+      Uri.parse(groupApi)
+    );
     
     // if(response.statusCode == 200){
-    //   return true;
+    //   return true; 
     // }else{
     //   return false;
     // }

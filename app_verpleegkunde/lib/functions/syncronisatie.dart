@@ -32,12 +32,12 @@ class Syncronisation {
   }
 
   static Future<bool> login(String user_name, String password) async{
-    // final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     // String? user = prefs.getString('user');
     // if(user == null){
       
-    //   prefs.setString('user', user_name);
-    //   prefs.setString('password', password);
+      prefs.setString('user', user_name);
+      prefs.setString('password', password);
     //   print("user $user_name logged in");
     //   return true;
     // }
