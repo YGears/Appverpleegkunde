@@ -118,10 +118,11 @@ class week_reflectie_State extends State<week_reflectie> {
     var rating = dagRatingController.value.text;
     var freeWrite = freeWriteController.value.text;
     bool tagged = false;
+    var weekNR = 5;
     String json = "{";
 
     json += "\"datum\": \"$selectedDate\",";
-    json += "\"weeknummer\": \"$selectedDate\",";
+    json += "\"weeknummer\": $weekNR,";
     if(rating != ""){
       json += "\"rating\": $rating,";
     }else{
