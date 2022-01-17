@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types
 
 import 'dart:collection';
+import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,13 +97,14 @@ class week_reflectie_State extends State<week_reflectie> {
 
 
   generateTagBody() async{
-    List tags = await getTags();
-    tags.add("sdf");
+    List<String> tags = await getTags();
+    // var jtag = json.decode(tags[0])["onderwerp"];
+    // print(jtag);
     List<Row> tagBody = [];
     for (String tag in tags) {
       tagBody.add(Row(children: [
         TextButton(
-          child: Text(tag),
+          child: Text(json.decode(tag)["onderwerp"]),
           onPressed: () => {addMainTag(tag)},
         )
       ]));

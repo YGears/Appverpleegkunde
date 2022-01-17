@@ -158,6 +158,7 @@ class _calendarPageState extends State<calendarPage> {
     }
 
     createCalendar();
+    syncWithDatabase();
     return Column(children: [
       Row(children: <Widget>[
         const Spacer(flex: 2),
@@ -212,8 +213,6 @@ class _calendarPageState extends State<calendarPage> {
           defaultColumnWidth: const FlexColumnWidth(1),
           columnWidths: const {0: FlexColumnWidth(2)},
           children: calendarTable),
-    ]));
-    syncWithDatabase();
-    return container;
+    ]);
   }
 }
