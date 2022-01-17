@@ -25,9 +25,9 @@ class Syncronisation {
     print(leerdoel_json); 
     print(week_reflectie_json);
 
-    if(await api.syncUp(name, password, reflectie_json, leerdoel_json, week_reflectie_json)){
-      return true;
-    }
+    // if(await api.syncUp(name, password, reflectie_json, leerdoel_json, week_reflectie_json)){
+    //   return true;
+    // }
     return false;
   }
 
