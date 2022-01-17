@@ -2,6 +2,7 @@ import 'dart:async';
 import 'image_cover.dart';
 import '../content.dart';
 import '../../functions/Api.dart';
+import '../week_reflectie/week_reflectie.dart';
 import '../../functions/syncronisatie.dart';
 import 'package:flutter/material.dart';
 
@@ -86,7 +87,12 @@ class _loginScreenState extends State<loginScreen> {
                   border: InputBorder.none,
                 ),
                 controller: myController)),
-
+        ElevatedButton(
+        child: const Text("Login"),
+        onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => week_reflectie(selectedDate: DateTime.now())));
+                }),
         loginButton(context),
       ]),
     );
