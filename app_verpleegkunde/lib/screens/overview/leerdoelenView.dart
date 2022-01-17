@@ -118,11 +118,19 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             Column(
               children: <Widget>[
-                Text(startDate),
+                Text('$startDate - $endDate' ),
                 const SizedBox(
                   width: 20,
                 ),
-                Text(endDate),
+                 TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Annuleer',
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
               ],
             )
           ])
