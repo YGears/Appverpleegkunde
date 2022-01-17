@@ -31,6 +31,44 @@ class _calendarPageState extends State<calendarPage> {
     'December'
   ];
 
+  /// Calculates number of weeks for a given year as per https://en.wikipedia.org/wiki/ISO_week_date#Weeks_per_year
+  int numOfWeeks(int year) {
+    DateTime dec28 = DateTime(year, 12, 28);
+    int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
+    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
+  }
+
+  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
+  int weekNumber(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    int woy = ((dayOfYear - date.weekday + 10) / 7).floor();
+    if (woy < 1) {
+      woy = numOfWeeks(date.year - 1);
+    } else if (woy > numOfWeeks(date.year)) {
+      woy = 1;
+    }
+    return woy;
+  }
+
+  // Fill a list witch contains all weeksNumbers of a given month in a given year
+  List listOfWeeks(year, month) {
+    // Integer that holds the last day of given month in  a given year
+    int lastcurrentDayInMonth = DateTime(year, month + 1, 0).day;
+    // -1 is gap between days, -8 is gap(-8 start)*-1 get positive number
+    int mondayOffset = (DateTime(year, month, 1).weekday - 1 - 8) * -1;
+    var listOfWeekNumb = [];
+
+    // Add weeknumber of the first day of a given month in a given year
+    listOfWeekNumb.add(weekNumber(DateTime(year, month, 1)));
+    // Add weeknumber of the every monday of a given month in a given year, starting with the first monday
+    // Increase this by a week (7 days) until this number becomes higher that the lenght of the month, than stop
+    while (mondayOffset <= lastcurrentDayInMonth) {
+      listOfWeekNumb.add(weekNumber(DateTime(year, month, mondayOffset)));
+      mondayOffset += 7;
+    }
+    return listOfWeekNumb;
+  }
+
   @override
   Widget build(BuildContext context) {
   
@@ -42,27 +80,15 @@ class _calendarPageState extends State<calendarPage> {
         centerTitle: true,
       ),
       // Body of the application
-      body: content(context),
+      body: calendar(context),
     );
   }
 
-  Widget calendarHeader(BuildContext context) {
-    return Container();
-  }
-
   Widget calendar(BuildContext context) {
-    return Container();
-  }
-
-  Widget content(BuildContext context) {
     var year = selectedDate.year;
     var month = selectedDate.month;
-    var day = selectedDate.day;
-    var firstMonday = DateTime(year, month, 1);
-    var lastDay = 0;
-    var generatedTableChildren = <TableRow>[];
+    var calendarTable = <TableRow>[];
     var monthName = months[selectedDate.month - 1];
-
 
     syncWithDatabase() async{
       await Syncronisation.syncUp();
@@ -81,83 +107,111 @@ class _calendarPageState extends State<calendarPage> {
 
     nextMonth(increment) {
       setState(() {
-        var new_month = month + increment;
-        if (new_month < 10) {
-          selectedDate = DateTime.parse("$year-0$new_month-01 00:00:00");
+        var newMonth = month + increment;
+        if (newMonth < 10) {
+          selectedDate = DateTime.parse("$year-0$newMonth-01 00:00:00");
         } else {
-          selectedDate = DateTime.parse("$year-$new_month-01 00:00:00");
+          selectedDate = DateTime.parse("$year-$newMonth-01 00:00:00");
         }
       });
     }
 
-    for (int week = 1; week < 6; week++) {
-      var row = TableRow(children: [
-        ElevatedButton(
-          onPressed: () {
-            _week();
-          },
-          child: Text("Week$week"),
-        ),
-        const Text(
-          "",
-          style: TextStyle(color: Colors.black, fontSize: 9),
-        )
-      ]);
+    createCalendar() {
+      int currentDayInMonth = 0;
+      var weekNumsInMonth = listOfWeeks(year, month);
+      // Create x rows based on length of a given month in a given
+      // Than for every row, give a week children if day is in week
+      for (var week = 0; week < weekNumsInMonth.length; week++) {
+        var calendarRow = TableRow(children: [
+          Text(weekNumsInMonth[week].toString()),
+          const Text(
+            "",
+            style: TextStyle(color: Colors.black, fontSize: 9),
+          )
+        ]);
 
-      for (var i = 1; i < 8; i++) {
-        var check = DateTime(year, month + 1, 0).day;
-        if ((i >= firstMonday.weekday || week - 1 > 0) &&
-            DateTime(year, month + 1, 0).day >=
-                i + (week - 1) * 7 - firstMonday.weekday) {
-          row.children!.add(TextButton(
-              onPressed: () {
-                dag();
-              },
-              child: Text(daysInWeek[i - 1],
-                  style: const TextStyle(
-                      color: Colors.black,
-                      backgroundColor: Color(0xFFffdd00),
-                      fontSize: 7)),
-              style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(5),
-                  backgroundColor: const Color(0xFFffdd00))));
-        } else {
-          row.children!.add(const Text(""));
+        //DAG ITEMS IN DEZE WEEK
+        for (var day = 1; day < 8; day++) {
+          // COMPLEX IF STATEMENT EXPLAINATION
+          if ((week == 0 && day < DateTime(year, month, 1).weekday) ||
+              (week == (weekNumsInMonth.length - 1) &&
+                  currentDayInMonth >= DateTime(year, month + 1, 0).day)) {
+            calendarRow.children!.add(const Text(""));
+          } else {
+            currentDayInMonth++;
+            calendarRow.children!.add(TextButton(
+                onPressed: () {
+                  dag();
+                },
+                child: Text(currentDayInMonth.toString(),
+                    style: const TextStyle(
+                        color: Colors.black,
+                        backgroundColor: Color(0xFFffdd00),
+                        fontSize: 7)),
+                style: TextButton.styleFrom(
+                    padding: const EdgeInsets.all(5),
+                    backgroundColor: const Color(0xFFffdd00))));
+          }
         }
+        calendarTable.add(calendarRow);
       }
-      generatedTableChildren.add(row);
     }
 
-    var container = Container(
-        child: Column(children: [
-      Container(
-        child: Row(children: <Widget>[
-          const Spacer(flex: 2),
-          Expanded(
+    createCalendar();
+    return Column(children: [
+      Row(children: <Widget>[
+        const Spacer(flex: 2),
+        Expanded(
+          flex: 2, // 20%
+          child: TextButton(
+              onPressed: () => nextMonth(-1),
+              child: const Icon(Icons.navigate_before)),
+        ),
+        Expanded(
+          flex: 4, // 60%
+          child:
+              TextButton(onPressed: () => {}, child: Text("$monthName $year")),
+        ),
+        Expanded(
+          flex: 2, // 20%
+          child: TextButton(
+            onPressed: () => nextMonth(1),
+            child: const Icon(Icons.navigate_next),
+          ),
+        ),
+        const Spacer(flex: 2),
+      ]),
+      Row(children: const <Widget>[
+        Expanded(
             flex: 2, // 20%
-            child: TextButton(
-                onPressed: () => nextMonth(-1),
-                child: const Icon(Icons.navigate_before)),
-          ),
-          Expanded(
-            flex: 4, // 60%
-            child: TextButton(
-                onPressed: () => {}, child: Text("$monthName $year")),
-          ),
-          Expanded(
-            flex: 2, // 20%
-            child: TextButton(
-              onPressed: () => nextMonth(1),
-              child: const Icon(Icons.navigate_next),
-            ),
-          ),
-          const Spacer(flex: 2),
-        ]),
-      ),
+            child: Text("Week")),
+        Spacer(flex: 1),
+        Expanded(
+            flex: 1, // 20%
+            child: Text("Ma")),
+        Expanded(
+            flex: 1, // 20%
+            child: Text("Di")),
+        Expanded(
+            flex: 1, // 20%
+            child: Text("Wo")),
+        Expanded(
+            flex: 1, // 20%
+            child: Text("Do")),
+        Expanded(
+            flex: 1, // 20%
+            child: Text("Vr")),
+        Expanded(
+            flex: 1, // 20%
+            child: Text("Za")),
+        Expanded(
+            flex: 1, // 20%
+            child: Text("Zo")),
+      ]),
       Table(
           defaultColumnWidth: const FlexColumnWidth(1),
           columnWidths: const {0: FlexColumnWidth(2)},
-          children: generatedTableChildren),
+          children: calendarTable),
     ]));
     syncWithDatabase();
     return container;

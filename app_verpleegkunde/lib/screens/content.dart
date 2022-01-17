@@ -21,7 +21,7 @@ class _mainPageState extends State<mainPage> {
   int selectedIndex = 1;
   //List of all screens
   final List<Widget> screens = [
-    const Overview(),
+    const learningGoalOverview(),
     const calendarPage(),
     const learninggoalPage(),
     dailyReflectionPage(selectedDate: DateTime.now()),

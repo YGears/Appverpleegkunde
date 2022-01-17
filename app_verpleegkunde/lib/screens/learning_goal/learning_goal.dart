@@ -90,14 +90,12 @@ class _learninggoalPageState extends State<learninggoalPage> {
                 content: Text('Geen leerdoel geselecteerd'),
               ));
     } else {
-      String json =
-          "{begin_datum: \"$beginDate\",eind_datum: \"$lastDate\",onderwerp: \"$_geselecteerdLeerdoel\"}";
-      final prefs = await SharedPreferences.getInstance();
+      String json = "{begin_datum: \"$beginDate\",eind_datum: \"$lastDate\",onderwerp: \"$_geselecteerdLeerdoel\"}";
       
+      final prefs = await SharedPreferences.getInstance(); 
       List<String>? leerdoelen = prefs.getStringList('leerdoel')?? [];
       leerdoelen.add(json);
       prefs.setStringList('leerdoel', leerdoelen);
-      print(json);
     }
   }
 
@@ -111,8 +109,8 @@ class _learninggoalPageState extends State<learninggoalPage> {
       if ('$result' != 'null') {
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
-          ..showSnackBar(
-              const SnackBar(content: Text('Nieuw Leerdoel geselecteerd!')));
+          ..showSnackBar(SnackBar(
+              content: Text('Nieuw Leerdoel geselecteerd! - $result')));
         _geselecteerdLeerdoel = ' $result';
       }
     });
@@ -224,14 +222,6 @@ class _learninggoalPageState extends State<learninggoalPage> {
         ElevatedButton(
           child: const Text("Selecteer leerdoel"),
           onPressed: () => {_navigateAndDisplaySelection(context)},
-        ),
-        ElevatedButton(
-          child: const Text("Maak Leerdoel aan"),
-          onPressed: () => {createLearningGoal()},
-        ),
-        ElevatedButton(
-          child: const Text("Overzicht van leerdoelen"),
-          onPressed: () => {Navigator.of(context).push(MaterialPageRoute(builder: (context) => learninGoalOverview()))},
         ),
       ]),
     );
