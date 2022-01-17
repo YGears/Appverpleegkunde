@@ -3,6 +3,7 @@ import 'image_cover.dart';
 import '../content.dart';
 import '../../functions/Api.dart';
 import '../week_reflectie/week_reflectie.dart';
+import '../../functions/syncronisatie.dart';
 import 'package:flutter/material.dart';
 
 class Album {
@@ -123,6 +124,8 @@ class _loginScreenState extends State<loginScreen> {
           var loggedIn =
               await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
           if (loggedIn) {
+            await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+            print("you should be seeing something....");
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const mainPage()));
           } else {

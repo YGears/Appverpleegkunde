@@ -3,18 +3,28 @@
     "naam": "user",
     "reflectie": [
         {
-            "datum": "2022-01-03",
-            "rating": 3,
-            "opmerking": "TEST",
+            "datum": "08/12/2021",
+            "rating": 8,
+            "opmerking": "Test tekst for freewrite: Colllega's zijn okay!",
             "tag": [
-                "leuk"
+                "Communicatie met collega's"
             ],
-            "sub_tags": [
-	            ["tag1", "stage", "Leerdoel1"]
+            "all_sub_tags": [
+                {
+                    "sub_tags": [
+                        "goed",
+                        "kan beter"
+                    ]
+                },
+                {
+                    "sub_tags": [
+                        "goed",
+                        "kan beter"
+                    ]
+                }
             ]
         }
     ],
-
     "leerdoel":[
         {
             "begin_datum": "23-01-2021",
@@ -26,7 +36,7 @@
     "week_reflectie": [
         {
             "datum": "23-01-2021",
-            "weeknummer": "48",
+            "weeknummer": 48,
             "rating": 2,
             "leerdoel": "leuk",
             "vooruitblik": "TEST"
