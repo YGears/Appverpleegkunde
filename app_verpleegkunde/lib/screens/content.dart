@@ -4,6 +4,7 @@ import 'navbar.dart';
 //Import all screens
 import 'learning_goal/learning_goal.dart';
 import 'daily_reflection/daily_reflection.dart';
+import '../../functions/syncronisatie.dart';
 import 'calendar/calendar.dart';
 import 'overview/overview.dart';
 
@@ -28,11 +29,17 @@ class _mainPageState extends State<mainPage> {
 
   //Function to switch index if navbar is touched
   void onClicked(int index) {
+    syncWithDatabase();
     setState(() {
       selectedIndex = index;
     });
   }
 
+  syncWithDatabase() async{
+    await Syncronisation.syncUp();
+  }
+
+  
   // Build Pagecontent, display content by index
   @override
   Widget build(BuildContext context) {

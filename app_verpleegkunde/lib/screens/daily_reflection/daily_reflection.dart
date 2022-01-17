@@ -184,11 +184,11 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     }
     
     json += "],";
-    json += "\"sub_tags\": [";
+    json += "\"all_sub_tags\": [";
 
     for(String mainTag in selectedTags){
       tagged = false;
-      json += "[";
+      json += "{\"sub_tags\": [";
       for (String subTag in subtags[mainTag]) {
         if (subTag != "") {
           json += "\"$subTag\",";
@@ -198,7 +198,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       if(tagged){
         json = json.substring(0,json.length-1);
       }
-      json += "]";
+      json += "]},";
     }
     json += "]";
     json += "}";
