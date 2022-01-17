@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/overview/overviewPage.dart';
 import 'navbar.dart';
 
 //Import all screens
@@ -6,7 +7,7 @@ import 'learning_goal/learning_goal.dart';
 import 'daily_reflection/daily_reflection.dart';
 import '../../functions/syncronisatie.dart';
 import 'calendar/calendar.dart';
-import 'overview/overview.dart';
+import 'overview/leerdoelenView.dart';
 
 // ignore: camel_case_types
 class mainPage extends StatefulWidget {
@@ -21,7 +22,8 @@ class _mainPageState extends State<mainPage> {
   int selectedIndex = 1;
   //List of all screens
   final List<Widget> screens = [
-    const learningGoalOverview(),
+    // const learningGoalOverview(),
+    const OverviewPage(),
     const calendarPage(),
     const learninggoalPage(),
     dailyReflectionPage(selectedDate: DateTime.now()),
