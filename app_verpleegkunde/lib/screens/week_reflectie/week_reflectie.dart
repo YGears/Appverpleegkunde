@@ -105,7 +105,7 @@ class week_reflectie_State extends State<week_reflectie> {
       tagBody.add(Row(children: [
         TextButton(
           child: Text(json.decode(tag)["onderwerp"]),
-          onPressed: () => {addMainTag(tag)},
+          onPressed: () => {addMainTag(json.decode(tag)["onderwerp"])},
         )
       ]));
     }
