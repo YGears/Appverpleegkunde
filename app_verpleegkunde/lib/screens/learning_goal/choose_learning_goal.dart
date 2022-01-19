@@ -1,10 +1,7 @@
-// // ignore: avoid_web_libraries_in_flutter
-// import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/functions/list_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// Class to create the Leerdoelen view, making a list of all leerdoelen available.
 /// can favorite leerdoel and look at leerdoelen at a different navigation
@@ -32,6 +29,7 @@ class _Leerdoelen extends State<Leerdoelen> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Future<void> update() async{
+    print('Updated!');
     List savedLeerdoelen = await leerdoelenController.getList;
     List savedFavorieten = await favorietenController.getList;
 
@@ -159,6 +157,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                               if (myController.text.isNotEmpty) {
                                 leerdoelenController.add(myController.text);
                                 update();
+                                justOnce = false;
                               } else {
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -185,6 +184,7 @@ class _Leerdoelen extends State<Leerdoelen> {
           if(!justOnce){
             justOnce = true;
             update();
+            justOnce = false;
           }
           final tiles = favorieten.map(
             (leerdoel) {
@@ -202,6 +202,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                   setState(() {
                     favorietenController.remove(leerdoel);
                     update();
+                    justOnce = false;
                     Navigator.pop(context);  // pop current page
                     ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -247,6 +248,7 @@ class _Leerdoelen extends State<Leerdoelen> {
         if(!justOnce){
             justOnce = true;
             update();
+            justOnce = false;
           }
     final alreadySaved = favorieten.contains(value);
     bool isPressed = false;
@@ -283,7 +285,10 @@ class _Leerdoelen extends State<Leerdoelen> {
                               Navigator.of(context).pop();
                               leerdoelenController.remove(value);
                               favorietenController.remove(value);
+
+                              //update niet goed
                               update();
+                              justOnce = false;
                            
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -311,9 +316,11 @@ class _Leerdoelen extends State<Leerdoelen> {
                     if (alreadySaved) {
                       favorietenController.remove(value);
                       update();
+                      justOnce = false;
                     } else {
                       favorietenController.add(value);
                       update();
+                      justOnce = false;
                     }
                   });
                 },

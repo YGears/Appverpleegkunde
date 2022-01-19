@@ -4,7 +4,7 @@ import 'navbar.dart';
 
 //Import all screens
 import 'learning_goal/learning_goal.dart';
-import 'daily_reflection/daily_reflection.dart';
+import 'daily_reflection/daily_reflection_screen.dart';
 import '../../functions/syncronisatie.dart';
 import 'calendar/calendar.dart';
 import 'overview/leerdoelenView.dart';
@@ -23,7 +23,7 @@ class _mainPageState extends State<mainPage> {
   //List of all screens
   final List<Widget> screens = [
     // const learningGoalOverview(),
-    const OverviewPage(),
+    const learningGoalOverview(),
     const calendarPage(),
     const learninggoalPage(),
     dailyReflectionPage(selectedDate: DateTime.now()),
