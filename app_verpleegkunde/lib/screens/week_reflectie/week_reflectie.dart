@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../functions/log_controller.dart';
 
 class week_reflectie extends StatefulWidget {
   week_reflectie({Key? key, required this.selectedDate}) : super(key: key);
@@ -136,14 +137,13 @@ class week_reflectie_State extends State<week_reflectie> {
   }
 
   Future<void> saveDailyReflection() async {
-    print("printing.....");
+    log_controller().record("Weekreflectie opgeslagen.");
     final prefs = await SharedPreferences.getInstance();
     List<String>? daily_reflections = prefs.getStringList('week_reflectie');
     daily_reflections ??= [];
     daily_reflections.add(convertToJSON());
 
     prefs.setStringList('week_reflectie', daily_reflections);
-    print("Done");
   }
 
   addTags(){
@@ -161,6 +161,7 @@ class week_reflectie_State extends State<week_reflectie> {
   }
 
   generateBody(){
+    log_controller().record("Naar pagina weekreflectie maken gegaan.");
     List<Row> tempBody = [
       Row(children: [
           Text("Reflectie op week (Maandag - Zondag): "),

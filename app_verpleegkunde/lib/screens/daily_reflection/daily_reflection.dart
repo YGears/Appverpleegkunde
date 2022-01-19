@@ -4,6 +4,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../functions/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class dailyReflectionPage extends StatefulWidget {
@@ -17,6 +18,7 @@ class dailyReflectionPage extends StatefulWidget {
 class _dailyReflectionPageState extends State<dailyReflectionPage> {
   var selectedDate = DateTime.now();
   var selected_day = "";
+  var log = log_controller();
   String activatedMainTag = "";
   List selectedTags = [];
   List<Row> generatedBody = [];
@@ -148,6 +150,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   generateTagBody() {
+    log.record("Begon met het maken van een dagelijkse reflectie.");
     List tags = getTags();
     List<Row> tagBody = [];
     for (String tag in tags) {
@@ -207,14 +210,14 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   Future<void> saveDailyReflection() async {
-    print("printing.....");
+    log.record("Saved Daily reflection");
+
     final prefs = await SharedPreferences.getInstance();
     List<String>? daily_reflections = prefs.getStringList('daily_reflection');
     daily_reflections ??= [];
     daily_reflections.add(convertToJSON());
 
     prefs.setStringList('daily_reflection', daily_reflections);
-    print("Done");
   }
 
   addTags(){

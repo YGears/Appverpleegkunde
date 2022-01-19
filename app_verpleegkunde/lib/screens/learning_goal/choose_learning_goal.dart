@@ -2,6 +2,7 @@
 // import 'dart:js';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/functions/log_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +18,7 @@ class Leerdoelen extends StatefulWidget {
 }
 
 class _Leerdoelen extends State<Leerdoelen> {
+  log_controller log = log_controller();
 
   List leerdoelen = [];
   List favorieten = [];
@@ -53,6 +55,7 @@ class _Leerdoelen extends State<Leerdoelen> {
   Future<void> _addLeerdoel(String value) async {
     List<String>? list = await _getPreferences('Leerdoelen');
     list!.add(value);
+    log.record("Een nieuw leerdoel aangemaakt");
     _setNewList('Leerdoelen', list);
   }
 
@@ -71,6 +74,7 @@ class _Leerdoelen extends State<Leerdoelen> {
   
   Future<void> _addFavorieteLeerdoel(String value) async {
     List<String>? list = await _getPreferences('Favorieten');
+    log.record("Een nieuw favoriete leerdoel aangemaakt");
     list!.add(value);
     _setNewList('Favorieten', list);
   }
@@ -78,11 +82,13 @@ class _Leerdoelen extends State<Leerdoelen> {
   Future<void> _removeFavorieteLeerdoel(String value) async {
     List<String>? list = await _getPreferences('Favorieten');
     list?.remove(value);
+    log.record("Een favoriete leerdoel verwijderd");
     _setNewList('Favorieten', list!);
   }
 
   @override
   Widget build(BuildContext context) {
+    log.record("Is naar de kies leerdoel pagina gegaan.");
     final myController = TextEditingController();
 
     if(!justOnce){
@@ -219,7 +225,8 @@ class _Leerdoelen extends State<Leerdoelen> {
       ),
     );
     setState(() {
-      if ('$result' != 'null') { Navigator.pop(context, result); 
+      if ('$result' != 'null') {
+       Navigator.pop(context, result); 
       }
     });
   }

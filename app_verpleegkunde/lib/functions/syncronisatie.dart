@@ -3,14 +3,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_application_1/functions/api.dart';
+// import "list_controller.dart";
 
 
 // in order to use the group api, replace privateApi with groupApi on line 30, 
 // comment out line 32
 class Syncronisation {
   static Future<bool> syncUp() async{
+    // var log_save_controller = list_controller("syncronisation");
     final prefs = await SharedPreferences.getInstance();
     Api api = new Api();
+
+    
 
     var name =  prefs.getString('user');
     var password = prefs.getString('password');
