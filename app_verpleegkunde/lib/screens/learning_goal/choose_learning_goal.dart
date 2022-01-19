@@ -21,9 +21,6 @@ class _Leerdoelen extends State<Leerdoelen> {
   
   list_controller leerdoelenController = list_controller('leerdoelen');
   list_controller favorietenController = list_controller('favorieten');
-
-
-  //  Future<List<String>?> leerdoelen = leerdoelen.getList();
   
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -33,69 +30,13 @@ class _Leerdoelen extends State<Leerdoelen> {
     List savedLeerdoelen = await leerdoelenController.getList;
     List savedFavorieten = await favorietenController.getList;
 
-    setState(() {
+   setState(() {
       leerdoelen = savedLeerdoelen;
       favorieten = savedFavorieten;
+
     });
     
   }
-
-  // Future<List<String>?> _getPreferences(String type) async {
-  //   final prefs = await SharedPreferences.getInstance();
-
-  //   List<String>? list = prefs.getStringList(type);
-  //   if(type == 'Leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
-  //   if(type == 'Favorieten'){list ??= [];}
-
-  //   return list;
-  // }
-  // Future<void> _setNewList(String type, List<String> list) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.setStringList(type, list);
-  //   _updateLeerdoelen();
-  //   _updateFavorieten();
-  // }
-
-  // void _updateLeerdoelen() async {
-  //   List<String>? list = await _getPreferences('Leerdoelen');
-
-  //   if (mounted) {
-  //     setState(() {
-  //       leerdoelen = list as List;
-  //     });
-  //   }
-  // }
-
-  // Future<void> _addLeerdoel(String value) async {
-  //   List<String>? list = await _getPreferences('Leerdoelen');
-  //   list!.add(value);
-  //   _setNewList('Leerdoelen', list);
-  // }
-
-  // Future<void> _removeLeerdoel(String value) async {
-  //   List<String>? list = await _getPreferences('Leerdoelen');
-  //   list!.remove(value);
-  //   _setNewList('Leerdoelen', list);
-  // }
-
-  // void _updateFavorieten() async {
-  //   List<String>? list = await _getPreferences('Favorieten');
-  //     setState(() {
-  //       favorieten = list as List;
-  //     });
-  //   }
-  
-  // Future<void> _addFavorieteLeerdoel(String value) async {
-  //   List<String>? list = await _getPreferences('Favorieten');
-  //   list!.add(value);
-  //   _setNewList('Favorieten', list);
-  // }
-
-  // Future<void> _removeFavorieteLeerdoel(String value) async {
-  //   List<String>? list = await _getPreferences('Favorieten');
-  //   list?.remove(value);
-  //   _setNewList('Favorieten', list!);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +97,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                               Navigator.of(context).pop();
                               if (myController.text.isNotEmpty) {
                                 leerdoelenController.add(myController.text);
-                                update();
-                                justOnce = false;
+                                WidgetsBinding.instance!.addPostFrameCallback((_) => update());
                               } else {
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -184,7 +124,6 @@ class _Leerdoelen extends State<Leerdoelen> {
           if(!justOnce){
             justOnce = true;
             update();
-            justOnce = false;
           }
           final tiles = favorieten.map(
             (leerdoel) {
@@ -201,8 +140,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                 onPressed: () {
                   setState(() {
                     favorietenController.remove(leerdoel);
-                    update();
-                    justOnce = false;
+                    WidgetsBinding.instance!.addPostFrameCallback((_) => update());
                     Navigator.pop(context);  // pop current page
                     ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -248,7 +186,6 @@ class _Leerdoelen extends State<Leerdoelen> {
         if(!justOnce){
             justOnce = true;
             update();
-            justOnce = false;
           }
     final alreadySaved = favorieten.contains(value);
     bool isPressed = false;
@@ -285,11 +222,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                               Navigator.of(context).pop();
                               leerdoelenController.remove(value);
                               favorietenController.remove(value);
-
-                              //update niet goed
-                              update();
-                              justOnce = false;
-                           
+                              WidgetsBinding.instance!.addPostFrameCallback((_) => update());
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
                                   ..showSnackBar(const SnackBar(
@@ -315,14 +248,11 @@ class _Leerdoelen extends State<Leerdoelen> {
                   setState(() {
                     if (alreadySaved) {
                       favorietenController.remove(value);
-                      update();
-                      justOnce = false;
+                      WidgetsBinding.instance!.addPostFrameCallback((_) => update());
                     } else {
                       favorietenController.add(value);
-                      update();
-                      justOnce = false;
-                    }
-                  });
+                      WidgetsBinding.instance!.addPostFrameCallback((_) => update());
+                  }});
                 },
                 icon: Icon(
                   alreadySaved ? Icons.favorite : Icons.favorite_border,
