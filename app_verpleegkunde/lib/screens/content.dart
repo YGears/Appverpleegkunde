@@ -48,18 +48,24 @@ class _mainPageState extends State<mainPage> {
   syncWithDatabase() async{
     await Syncronisation.syncUp();
   }
-
+  Future<bool> _onBackPressed() async{
+    onClicked(1);
+    return false;
+  }
   
   // Build Pagecontent, display content by index
   @override
   Widget build(BuildContext context) {
     log.record("Is naar pagina " + screenNames[selectedIndex] + " gegaan.");
-    return Scaffold(
-      body: Center(child: screens[selectedIndex]),
-      bottomNavigationBar: BottomMenu(
-        selectedIndex: selectedIndex,
-        onClicked: onClicked,
-      ),
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: new Scaffold(
+        body: Center(child: screens[selectedIndex]),
+        bottomNavigationBar: BottomMenu(
+          selectedIndex: selectedIndex,
+          onClicked: onClicked,
+        ),
+      )
     );
   }
 }
