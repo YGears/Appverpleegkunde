@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/overview/overviewPage.dart';
+import 'package:app_verpleegkunde/screens/overview/overviewPage.dart';
 import 'navbar.dart';
 
 //Import all screens
@@ -45,9 +45,10 @@ class _mainPageState extends State<mainPage> {
     });
   }
 
-  syncWithDatabase() async{
+  syncWithDatabase() async {
     await Syncronisation.syncUp();
   }
+
   Future<bool> _onBackPressed() async{
     onClicked(1);
     return false;
