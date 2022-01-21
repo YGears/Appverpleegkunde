@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_application_1/functions/log_controller.dart';
+import '/functions/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'choose_learning_goal.dart';
@@ -91,10 +91,11 @@ class _learninggoalPageState extends State<learninggoalPage> {
                 content: Text('Geen leerdoel geselecteerd'),
               ));
     } else {
-      String json = "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$_geselecteerdLeerdoel\"}";
-      
-      final prefs = await SharedPreferences.getInstance(); 
-      List<String>? leerdoelen = prefs.getStringList('leerdoel')?? [];
+      String json =
+          "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$_geselecteerdLeerdoel\"}";
+
+      final prefs = await SharedPreferences.getInstance();
+      List<String>? leerdoelen = prefs.getStringList('leerdoel') ?? [];
       leerdoelen.add(json);
       prefs.setStringList('leerdoel', leerdoelen);
     }
