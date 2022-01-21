@@ -87,12 +87,6 @@ class _loginScreenState extends State<loginScreen> {
                   border: InputBorder.none,
                 ),
                 controller: myController)),
-        ElevatedButton(
-        child: const Text("Login"),
-        onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => week_reflectie(selectedDate: DateTime.now())));
-                }),
         loginButton(context),
       ]),
     );
@@ -124,7 +118,8 @@ class _loginScreenState extends State<loginScreen> {
           var loggedIn =
               await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
           if (loggedIn) {
-            await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+            await Syncronisation.login(
+                myController.text, "KoekjesZijnGemaaktVanDeeg");
             print("you should be seeing something....");
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const mainPage()));
