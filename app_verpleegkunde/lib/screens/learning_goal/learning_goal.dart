@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_application_1/functions/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'choose_learning_goal.dart';
@@ -76,6 +77,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
 
   //TODO CREATE FUNCTION TO SAVE LEARNING GOALS make validation check before posting
   Future<void> createLearningGoal() async {
+    log_controller().record("Een nieuw leerdoel aangemaakt.");
     //Set dateTimes to Database format using dateFormating
     String beginDate = dateFormating(startDate);
     String lastDate = dateFormating(endDate);
@@ -106,6 +108,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
 
     setState(() {
       if ('$result' != 'null') {
+        log_controller().record("Mogelijke leerdoel geselecteerd.");
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(SnackBar(

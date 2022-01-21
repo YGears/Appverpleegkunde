@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/functions/list_controller.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 
 /// Class to create the Leerdoelen view, making a list of all leerdoelen available.
@@ -15,6 +16,7 @@ class Leerdoelen extends StatefulWidget {
 }
 
 class _Leerdoelen extends State<Leerdoelen> {
+  log_controller log = log_controller();
 
   List leerdoelen = [];
   List favorieten = [];
@@ -40,6 +42,7 @@ class _Leerdoelen extends State<Leerdoelen> {
 
   @override
   Widget build(BuildContext context) {
+    log.record("Is naar de kies leerdoel pagina gegaan.");
     final myController = TextEditingController();
 
     if(!justOnce){
@@ -177,7 +180,8 @@ class _Leerdoelen extends State<Leerdoelen> {
       ),
     );
     setState(() {
-      if ('$result' != 'null') { Navigator.pop(context, result); 
+      if ('$result' != 'null') {
+       Navigator.pop(context, result); 
       }
     });
   }

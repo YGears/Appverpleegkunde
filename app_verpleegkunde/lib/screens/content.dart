@@ -4,8 +4,9 @@ import 'navbar.dart';
 
 //Import all screens
 import 'learning_goal/learning_goal.dart';
-import 'daily_reflection/daily_reflection_screen.dart';
-import '../../functions/syncronisatie.dart';
+import 'daily_reflection/daily_reflection.dart';
+import '../functions/log_controller.dart';
+import '../functions/syncronisatie.dart';
 import 'calendar/calendar.dart';
 import 'overview/leerdoelenView.dart';
 
@@ -18,6 +19,7 @@ class mainPage extends StatefulWidget {
 }
 
 class _mainPageState extends State<mainPage> {
+  log_controller log = log_controller();
   //Start index of screen list
   int selectedIndex = 1;
   //List of all screens
@@ -27,6 +29,12 @@ class _mainPageState extends State<mainPage> {
     const calendarPage(),
     const learninggoalPage(),
     dailyReflectionPage(selectedDate: DateTime.now()),
+  ];
+  final List<String> screenNames = [
+    "overview",
+    "kalender",
+    "leerdoel",
+    "dagelijkse reflectie"
   ];
 
   //Function to switch index if navbar is touched
@@ -40,17 +48,24 @@ class _mainPageState extends State<mainPage> {
   syncWithDatabase() async{
     await Syncronisation.syncUp();
   }
-
+  Future<bool> _onBackPressed() async{
+    onClicked(1);
+    return false;
+  }
   
   // Build Pagecontent, display content by index
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: screens[selectedIndex]),
-      bottomNavigationBar: BottomMenu(
-        selectedIndex: selectedIndex,
-        onClicked: onClicked,
-      ),
+    log.record("Is naar pagina " + screenNames[selectedIndex] + " gegaan.");
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: new Scaffold(
+        body: Center(child: screens[selectedIndex]),
+        bottomNavigationBar: BottomMenu(
+          selectedIndex: selectedIndex,
+          onClicked: onClicked,
+        ),
+      )
     );
   }
 }
