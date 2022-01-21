@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/functions/list_controller.dart';
+import 'package:flutter_application_1/functions/log_controller.dart';
 
 // ignore: import_of_legacy_library_into_null_safe
 

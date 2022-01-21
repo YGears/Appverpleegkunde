@@ -18,6 +18,7 @@ class list_controller{
     //If empty, fill per type
     if(type == 'leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
     if(type == 'favorieten'){list ??= [];}
+    if(type == 'tag'){list ??= [];}
     
 
     //return said list
