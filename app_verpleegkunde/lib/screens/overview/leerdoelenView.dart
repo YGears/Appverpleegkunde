@@ -72,7 +72,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
             ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 10.0),
+                // padding: const EdgeInsets.only(top: 10.0),
                 itemCount: generatedBody.length,
                 itemBuilder: (context, index) {
                   return generatedBody[index];
@@ -98,11 +98,13 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
   Widget itembox(
       BuildContext context, String startDate, String endDate, String testie) {
     return Container(
-        margin: const EdgeInsets.only(left: 40.0, right: 40.0),
+        // margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         width: 300,
-        padding: const EdgeInsets.all(10.0),
+        // padding: const EdgeInsets.all(10.0),
         decoration: borderStyling(),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        child:
+         Column(
+           children: [
           Text(
             testie,
             style: const TextStyle(
@@ -115,25 +117,44 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
           const SizedBox(
             height: 8,
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Column(
+          Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text('$startDate - $endDate' ),
                 const SizedBox(
                   width: 20,
                 ),
-                 TextButton(
+                 
+              ],
+            ),
+            Row( 
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+             TextButton(
+                   
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+      
+                            child: const Text(
+                              'Dagreflecties',
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
                             child: const Text(
-                              'Annuleer',
-                              textAlign: TextAlign.left,
+                              'Weekreflecties',
+                              textAlign: TextAlign.right,
                             ),
                           ),
-              ],
-            )
-          ])
+          ]
+          )
+          ]
+          )
         ]));
   }
 }
