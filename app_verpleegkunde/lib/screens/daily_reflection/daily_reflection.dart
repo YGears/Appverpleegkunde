@@ -3,7 +3,7 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../functions/log_controller.dart';
+import '../../logging/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class dailyReflectionPage extends StatefulWidget {

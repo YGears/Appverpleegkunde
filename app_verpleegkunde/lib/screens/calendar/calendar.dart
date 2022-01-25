@@ -1,7 +1,5 @@
-// ignore_for_file: camel_case_types
-
 import 'package:flutter/material.dart';
-import '../../functions/syncronisatie.dart';
+import '../../database_connection/syncronisatie.dart';
 import 'package:intl/intl.dart';
 
 class calendarPage extends StatefulWidget {
@@ -31,15 +29,15 @@ class _calendarPageState extends State<calendarPage> {
     'December'
   ];
 
-  /// Calculates number of weeks for a given year as per https://en.wikipedia.org/wiki/ISO_week_date#Weeks_per_year
   int numOfWeeks(int year) {
+    /// Calculates number of weeks for a given year as per https://en.wikipedia.org/wiki/ISO_week_date#Weeks_per_year
     DateTime dec28 = DateTime(year, 12, 28);
     int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
     return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
   }
 
-  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
   int weekNumber(DateTime date) {
+    /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
     int dayOfYear = int.parse(DateFormat("D").format(date));
     int woy = ((dayOfYear - date.weekday + 10) / 7).floor();
     if (woy < 1) {
@@ -71,7 +69,6 @@ class _calendarPageState extends State<calendarPage> {
 
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       //Topheader within the application
       appBar: AppBar(
@@ -90,13 +87,8 @@ class _calendarPageState extends State<calendarPage> {
     var calendarTable = <TableRow>[];
     var monthName = months[selectedDate.month - 1];
 
-    syncWithDatabase() async{
+    syncWithDatabase() async {
       await Syncronisation.syncUp();
-    }
-    _week() async {
-      setState(() {
-        count = count + 1;
-      });
     }
 
     dag() async {

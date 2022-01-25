@@ -2,7 +2,7 @@
 // import 'dart:js';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/functions/log_controller.dart';
+import '../../logging/log_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,7 +22,7 @@ class _Leerdoelen extends State<Leerdoelen> {
 
   List leerdoelen = [];
   List favorieten = [];
-  
+
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
@@ -30,11 +30,22 @@ class _Leerdoelen extends State<Leerdoelen> {
     final prefs = await SharedPreferences.getInstance();
 
     List<String>? list = prefs.getStringList(type);
-    if(type == 'Leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
-    if(type == 'Favorieten'){list ??= [];}
+    if (type == 'Leerdoelen') {
+      list ??= [
+        'Assertief Benaderen',
+        'Conflicthantering',
+        'Vragen om hulp',
+        'Interproffesionele communicatie',
+        'Doen alsof je druk bezig bent',
+      ];
+    }
+    if (type == 'Favorieten') {
+      list ??= [];
+    }
 
     return list;
   }
+
   Future<void> _setNewList(String type, List<String> list) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList(type, list);
@@ -67,11 +78,11 @@ class _Leerdoelen extends State<Leerdoelen> {
 
   void _updateFavorieten() async {
     List<String>? list = await _getPreferences('Favorieten');
-      setState(() {
-        favorieten = list as List;
-      });
-    }
-  
+    setState(() {
+      favorieten = list as List;
+    });
+  }
+
   Future<void> _addFavorieteLeerdoel(String value) async {
     List<String>? list = await _getPreferences('Favorieten');
     log.record("Een nieuw favoriete leerdoel aangemaakt");
@@ -91,12 +102,12 @@ class _Leerdoelen extends State<Leerdoelen> {
     log.record("Is naar de kies leerdoel pagina gegaan.");
     final myController = TextEditingController();
 
-    if(!justOnce){
+    if (!justOnce) {
       justOnce = true;
       _updateLeerdoelen();
       _updateFavorieten();
     }
-   
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Leerdoelen'),
@@ -166,11 +177,10 @@ class _Leerdoelen extends State<Leerdoelen> {
   }
 
   void _favorietenLijst() async {
-    
     final result = await Navigator.of(context).push(
       MaterialPageRoute<String>(
         builder: (context) {
-          if(!justOnce){
+          if (!justOnce) {
             justOnce = true;
             _updateFavorieten();
           }
@@ -186,24 +196,26 @@ class _Leerdoelen extends State<Leerdoelen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                onPressed: () {
-                  setState(() {
-                    _removeFavorieteLeerdoel(leerdoel);
-                    Navigator.pop(context);  // pop current page
-                    ScaffoldMessenger.of(this.context)
-                                  ..removeCurrentSnackBar()
-                                  ..showSnackBar(SnackBar(
-                                      content: Text('$leerdoel uit favorieten gehaald')));
-                    
-                  });
-                },
-                icon: const Icon(
-                  Icons.favorite,
-                  color:  Colors.red,
-                )),
-                    ],), onTap: () {
-          Navigator.pop(context, leerdoel);
-          },
+                          onPressed: () {
+                            setState(() {
+                              _removeFavorieteLeerdoel(leerdoel);
+                              Navigator.pop(context); // pop current page
+                              ScaffoldMessenger.of(this.context)
+                                ..removeCurrentSnackBar()
+                                ..showSnackBar(SnackBar(
+                                    content: Text(
+                                        '$leerdoel uit favorieten gehaald')));
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          )),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.pop(context, leerdoel);
+                  },
                 ),
               );
             },
@@ -226,16 +238,16 @@ class _Leerdoelen extends State<Leerdoelen> {
     );
     setState(() {
       if ('$result' != 'null') {
-       Navigator.pop(context, result); 
+        Navigator.pop(context, result);
       }
     });
   }
 
   Widget _buildRow(String value) {
-        if(!justOnce){
-            justOnce = true;
-            _updateFavorieten();
-          }
+    if (!justOnce) {
+      justOnce = true;
+      _updateFavorieten();
+    }
     final alreadySaved = favorieten.contains(value);
     bool isPressed = false;
     return Card(
@@ -249,49 +261,52 @@ class _Leerdoelen extends State<Leerdoelen> {
           children: [
             IconButton(
                 onPressed: () {
-                    setState(() {
+                  setState(
+                    () {
                       isPressed = true;
-                    showDialog(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Wil je dit leerdoel verwijderen?'),
-                        content: Text(value),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text(
-                              'Annuleer',
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              _removeLeerdoel(value);
-                              _removeFavorieteLeerdoel(value);
-                                ScaffoldMessenger.of(this.context)
-                                  ..removeCurrentSnackBar()
-                                  ..showSnackBar(const SnackBar(
-                                      content: Text('Leerdoel is verwijderd')));
-
-                            },
-                            child: const Text(
-                              'Verwijder leerdoel',
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-                        ]));
-                  },
-                  );},
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                                  title: const Text(
+                                      'Wil je dit leerdoel verwijderen?'),
+                                  content: Text(value),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        'Annuleer',
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        _removeLeerdoel(value);
+                                        _removeFavorieteLeerdoel(value);
+                                        ScaffoldMessenger.of(this.context)
+                                          ..removeCurrentSnackBar()
+                                          ..showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Leerdoel is verwijderd')));
+                                      },
+                                      child: const Text(
+                                        'Verwijder leerdoel',
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                  ]));
+                    },
+                  );
+                },
                 icon: Icon(
                   isPressed ? Icons.delete : Icons.delete_outline,
                   color: isPressed ? Colors.green : null,
                   semanticLabel: isPressed ? 'Remove' : 'Keep',
                 )),
-                //end of Delete
-                 IconButton(
+            //end of Delete
+            IconButton(
                 onPressed: () {
                   setState(() {
                     if (alreadySaved) {

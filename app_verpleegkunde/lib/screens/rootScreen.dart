@@ -5,8 +5,8 @@ import 'navbar.dart';
 //Import all screens
 import 'learning_goal/learning_goal.dart';
 import 'daily_reflection/daily_reflection.dart';
-import '../functions/log_controller.dart';
-import '../functions/syncronisatie.dart';
+import '../logging/log_controller.dart';
+import '../database_connection/syncronisatie.dart';
 import 'calendar/calendar.dart';
 import 'overview/learningGoalOverview.dart';
 import 'week_reflection/weekReflection.dart';
@@ -24,14 +24,13 @@ class _RootScreen extends State<RootScreen> {
   //Start index of screen list
   int selectedIndex = 2;
 
-  //List of all screens
   final List<Widget> screens = [
     // const learningGoalOverview(),
     const learningGoalOverview(),
     const learninggoalPage(),
     const calendarPage(),
-    dailyReflectionPage(selectedDate: DateTime.now()),
-    week_reflectie(selectedDate: DateTime.now())
+    dailyReflectionPage(selectedDate: DateTime.now()), //DUBBEL CHECK
+    week_reflectie(selectedDate: DateTime.now()) //DUBBEL CHECK
   ];
 
   final List<String> screenNames = [
@@ -51,6 +50,7 @@ class _RootScreen extends State<RootScreen> {
   }
 
   syncWithDatabase() async {
+    // Try to establisch a conaction to update user information
     await Syncronisation.syncUp();
   }
 

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'image_cover.dart';
-import '../content.dart';
+import '../rootScreen.dart';
 import '../../functions/Api.dart';
 import 'package:flutter/material.dart';
 

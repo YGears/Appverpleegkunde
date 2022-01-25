@@ -1,6 +1,6 @@
 import 'dart:async';
-import '../content.dart';
-import '/functions/log_controller.dart';
+import '../rootScreen.dart';
+import '/logging/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'choose_learning_goal.dart';

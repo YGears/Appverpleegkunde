@@ -6,14 +6,13 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../functions/log_controller.dart';
+import '../../logging/log_controller.dart';
 
 class week_reflectie extends StatefulWidget {
   week_reflectie({Key? key, required this.selectedDate}) : super(key: key);
   final DateTime selectedDate;
   @override
-  State<week_reflectie> createState() =>
-      week_reflectie_State(selectedDate);
+  State<week_reflectie> createState() => week_reflectie_State(selectedDate);
 }
 
 class week_reflectie_State extends State<week_reflectie> {
@@ -64,7 +63,7 @@ class week_reflectie_State extends State<week_reflectie> {
     }
   }
 
-  Future<List<String>> getTags() async{
+  Future<List<String>> getTags() async {
     final prefs = await SharedPreferences.getInstance();
     var list = prefs.getStringList('leerdoel') ?? [];
     return list;
@@ -96,8 +95,7 @@ class week_reflectie_State extends State<week_reflectie> {
     gotoDailyReflection();
   }
 
-
-  generateTagBody() async{
+  generateTagBody() async {
     List<String> tags = await getTags();
     // var jtag = json.decode(tags[0])["onderwerp"];
     // print(jtag);
@@ -124,9 +122,9 @@ class week_reflectie_State extends State<week_reflectie> {
 
     json += "\"datum\": \"$datum\",";
     json += "\"weeknummer\": $weekNR,";
-    if(rating != ""){
+    if (rating != "") {
       json += "\"rating\": $rating,";
-    }else{
+    } else {
       json += "\"rating\": 0,";
     }
     json += "\"leerdoel\": \"$activatedMainTag\",";
@@ -146,52 +144,66 @@ class week_reflectie_State extends State<week_reflectie> {
     prefs.setStringList('week_reflectie', daily_reflections);
   }
 
-  addTags(){
+  addTags() {
     List<Row> tags_to_return = [];
-    for (var item in selectedTags){
-      tags_to_return.add(
-        Row(
-          children:[
-            TextButton(child:Text(item),onPressed: ()=>{gotoSubTag(item)},)
-          ]
+    for (var item in selectedTags) {
+      tags_to_return.add(Row(children: [
+        TextButton(
+          child: Text(item),
+          onPressed: () => {gotoSubTag(item)},
         )
-      );
+      ]));
     }
     return tags_to_return;
   }
 
-  generateBody(){
+  generateBody() {
     log_controller().record("Naar pagina weekreflectie maken gegaan.");
     List<Row> tempBody = [
-      Row(children: [
-          Text("Reflectie op week (Maandag - Zondag): "),
-          ElevatedButton(child: Text(selected_day), onPressed: ()=> {_selectDate(context)} )
-        ],),
       Row(
-        children:  [
+        children: [
+          Text("Reflectie op week (Maandag - Zondag): "),
+          ElevatedButton(
+              child: Text(selected_day),
+              onPressed: () => {_selectDate(context)})
+        ],
+      ),
+      Row(
+        children: [
           Text("Rating van dag: "),
-          Flexible(child: 
-            TextField(
-              decoration: InputDecoration(labelText: ""), 
-              keyboardType: TextInputType.number, 
-              inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
-              controller: dagRatingController
-            ),
+          Flexible(
+            child: TextField(
+                decoration: InputDecoration(labelText: ""),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(1)
+                ],
+                controller: dagRatingController),
           ),
         ],
       ),
-      Row(children:[ Text("Vooruitblik:") ], ),
-      Row(children:[Flexible(child:
-        TextField(maxLines: 8, controller: freeWriteController ),
-      )],),
-      Row(children:[Text("Select tag"),
-        TextButton(
-          child: Text(activatedMainTag),
-          onPressed: ()=> {gotoTagBody()},
-        ),
-      ],),
+      Row(
+        children: [Text("Vooruitblik:")],
+      ),
+      Row(
+        children: [
+          Flexible(
+            child: TextField(maxLines: 8, controller: freeWriteController),
+          )
+        ],
+      ),
+      Row(
+        children: [
+          Text("Select tag"),
+          TextButton(
+            child: Text(activatedMainTag),
+            onPressed: () => {gotoTagBody()},
+          ),
+        ],
+      ),
     ];
-    
+
     tempBody.addAll(addTags());
 
     tempBody.add(
@@ -210,7 +222,7 @@ class week_reflectie_State extends State<week_reflectie> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     generateTagBody();
     generateBody();
     bodies.clear();
