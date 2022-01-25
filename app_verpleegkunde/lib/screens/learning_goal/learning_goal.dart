@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/rendering.dart';
+import '../content.dart';
 import '/functions/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +33,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
 
   String dateFormating(DateTime date) {
     // Function to change the formating of dates within the application
-    if (date == null) {
-      return "Error";
-    } else {
-      return "${date.day}/${date.month}/${date.year}";
-    }
+    return "${date.day}/${date.month}/${date.year}";
   }
 
   Future<void> selectStartDate(BuildContext context, DateTime date) async {
@@ -98,6 +94,11 @@ class _learninggoalPageState extends State<learninggoalPage> {
       List<String>? leerdoelen = prefs.getStringList('leerdoel') ?? [];
       leerdoelen.add(json);
       prefs.setStringList('leerdoel', leerdoelen);
+
+      final returnToMainpage = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RootScreen()),
+      );
     }
   }
 

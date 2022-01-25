@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/overview/overviewPage.dart';
-import 'package:flutter_application_1/screens/week_reflectie/week_reflectie.dart';
+import '../screens/week_reflection/weekReflection.dart';
 import 'navbar.dart';
 
 //Import all screens
@@ -10,17 +9,17 @@ import '../functions/log_controller.dart';
 import '../functions/syncronisatie.dart';
 import 'calendar/calendar.dart';
 import 'overview/learningGoalOverview.dart';
-import 'week_reflectie/week_reflectie.dart';
+import 'week_reflection/weekReflection.dart';
 
 // ignore: camel_case_types
-class mainPage extends StatefulWidget {
-  const mainPage({Key? key}) : super(key: key);
+class RootScreen extends StatefulWidget {
+  const RootScreen({Key? key}) : super(key: key);
 
   @override
-  State<mainPage> createState() => _mainPageState();
+  State<RootScreen> createState() => _RootScreen();
 }
 
-class _mainPageState extends State<mainPage> {
+class _RootScreen extends State<RootScreen> {
   log_controller log = log_controller();
   //Start index of screen list
   int selectedIndex = 2;
@@ -34,6 +33,7 @@ class _mainPageState extends State<mainPage> {
     dailyReflectionPage(selectedDate: DateTime.now()),
     week_reflectie(selectedDate: DateTime.now())
   ];
+
   final List<String> screenNames = [
     "Overzicht",
     "Leerdoel",
@@ -42,8 +42,8 @@ class _mainPageState extends State<mainPage> {
     "Week reflectie"
   ];
 
-  //Function to switch index if navbar is touched
   void onClicked(int index) {
+    //Function to switch index if navbar is touched
     syncWithDatabase();
     setState(() {
       selectedIndex = index;
@@ -59,9 +59,9 @@ class _mainPageState extends State<mainPage> {
     return false;
   }
 
-  // Build Pagecontent, display content by index
   @override
   Widget build(BuildContext context) {
+    // Build Pagecontent, display content by index
     log.record("Is naar pagina " + screenNames[selectedIndex] + " gegaan.");
     return WillPopScope(
         onWillPop: _onBackPressed,

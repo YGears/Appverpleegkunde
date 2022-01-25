@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types
 
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../functions/log_controller.dart';
@@ -171,25 +170,25 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     String json = "{";
 
     json += "\"datum\": \"$selectedDate\",";
-    if(rating != ""){
+    if (rating != "") {
       json += "\"rating\": $rating,";
-    }else{
+    } else {
       json += "\"rating\": 0,";
     }
     json += "\"opmerking\": \"$freeWrite\",";
     json += "\"tag\": [";
-    for(String tag in selectedTags){
+    for (String tag in selectedTags) {
       tagged = true;
       json += "\"$tag\",";
     }
-    if(tagged){
-      json = json.substring(0,json.length-1);
+    if (tagged) {
+      json = json.substring(0, json.length - 1);
     }
-    
+
     json += "],";
     json += "\"all_sub_tags\": [";
 
-    for(String mainTag in selectedTags){
+    for (String mainTag in selectedTags) {
       tagged = false;
       json += "{\"sub_tags\": [";
       for (String subTag in subtags[mainTag]) {
@@ -198,8 +197,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           tagged = true;
         }
       }
-      if(tagged){
-        json = json.substring(0,json.length-1);
+      if (tagged) {
+        json = json.substring(0, json.length - 1);
       }
       json += "]},";
     }
@@ -220,51 +219,64 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     prefs.setStringList('daily_reflection', daily_reflections);
   }
 
-  addTags(){
+  addTags() {
     List<Row> tags_to_return = [];
-    for (var item in selectedTags){
-      tags_to_return.add(
-        Row(
-          children:[
-            TextButton(child:Text(item),onPressed: ()=>{gotoSubTag(item)},)
-          ]
+    for (var item in selectedTags) {
+      tags_to_return.add(Row(children: [
+        TextButton(
+          child: Text(item),
+          onPressed: () => {gotoSubTag(item)},
         )
-      );
+      ]));
     }
     return tags_to_return;
   }
 
-  generateBody(){
+  generateBody() {
     List<Row> tempBody = [
-      Row(children: [
-          Text("Reflectie op dag: "),
-          ElevatedButton(child: Text(selected_day), onPressed: ()=> {_selectDate(context)} )
-        ],),
       Row(
-        children:  [
+        children: [
+          Text("Reflectie op dag: "),
+          ElevatedButton(
+              child: Text(selected_day),
+              onPressed: () => {_selectDate(context)})
+        ],
+      ),
+      Row(
+        children: [
           Text("Rating van dag: "),
-          Flexible(child: 
-            TextField(
-              decoration: InputDecoration(labelText: ""), 
-              keyboardType: TextInputType.number, 
-              inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
-              controller: dagRatingController
-            ),
+          Flexible(
+            child: TextField(
+                decoration: InputDecoration(labelText: ""),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(1)
+                ],
+                controller: dagRatingController),
           ),
         ],
       ),
-      Row(children:[ Text("Freewrite") ], ),
-      Row(children:[Flexible(child:
-        TextField(maxLines: 8, controller: freeWriteController ),
-      )],),
-      Row(children:[
-        TextButton(
-          child: Text("Select tag"),
-          onPressed: ()=> {gotoTagBody()},
-        ),
-      ],),
+      Row(
+        children: [Text("Freewrite")],
+      ),
+      Row(
+        children: [
+          Flexible(
+            child: TextField(maxLines: 8, controller: freeWriteController),
+          )
+        ],
+      ),
+      Row(
+        children: [
+          TextButton(
+            child: Text("Select tag"),
+            onPressed: () => {gotoTagBody()},
+          ),
+        ],
+      ),
     ];
-    
+
     tempBody.addAll(addTags());
 
     tempBody.add(

@@ -2,8 +2,6 @@ import 'dart:async';
 import 'image_cover.dart';
 import '../content.dart';
 import '../../functions/Api.dart';
-import '../week_reflectie/week_reflectie.dart';
-import '../../functions/syncronisatie.dart';
 import 'package:flutter/material.dart';
 
 class Album {
@@ -94,7 +92,7 @@ class _loginScreenState extends State<loginScreen> {
 
   login(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const mainPage()));
+        context, MaterialPageRoute(builder: (context) => const RootScreen()));
   }
 
   Widget loginButton(BuildContext context) {
@@ -114,20 +112,22 @@ class _loginScreenState extends State<loginScreen> {
           ),
         ),
         onPressed: () async {
-          Api api = Api();
-          var loggedIn =
-              await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-          if (loggedIn) {
-            await Syncronisation.login(
-                myController.text, "KoekjesZijnGemaaktVanDeeg");
-            print("you should be seeing something....");
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const mainPage()));
-          } else {
-            setState(() {
-              error = "Inloggen mislukt";
-            });
-          }
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const RootScreen()));
+          // Api api = Api();
+          // var loggedIn =
+          //     await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+          // if (loggedIn) {
+          //   await Syncronisation.login(
+          //       myController.text, "KoekjesZijnGemaaktVanDeeg");
+          //   print("you should be seeing something....");
+          //   Navigator.push(context,
+          //       MaterialPageRoute(builder: (context) => const mainPage()));
+          // } else {
+          //   setState(() {
+          //     error = "Inloggen mislukt";
+          //   });
+          // }
         },
       ),
     );
