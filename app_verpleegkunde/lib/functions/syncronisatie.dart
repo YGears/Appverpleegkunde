@@ -36,7 +36,6 @@ class Syncronisation {
     // var name =  prefs.getString('user');
     // var password = prefs.getString('password');
 
-    print(json_data);
     return true;
     // return api.logUp(name, password, json_data);
   }

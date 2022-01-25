@@ -70,8 +70,8 @@ class _mainPageState extends State<mainPage> {
           start.difference(DateTime.parse(decoded_entry["datum"])).inHours < 0 &&
           end.difference(DateTime.parse(decoded_entry["datum"])).inHours > 0 
         ){
-          // gem_cijfer += int.parse(decoded_entry["rating"]);     
-          gem_cijfer += 2; 
+          gem_cijfer += decoded_entry["rating"] as int;     
+          // gem_cijfer += 2; 
           amount_of_reflections += 1;             
         }
         // print(gem_cijfer);
@@ -79,7 +79,6 @@ class _mainPageState extends State<mainPage> {
     }
     print(amount_of_reflections);
     print(gem_cijfer / amount_of_reflections);
-    print("tho");
   }
   
   // Build Pagecontent, display content by index
