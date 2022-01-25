@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'log_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class Response {
@@ -34,23 +35,28 @@ class Api {
     //   body: jsonEncode(<String, String>{"name": id, "password": password, }),
     // );
     // azure api
-    var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/Login?=&name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7";
-     
-    final response = await http.get(
-      Uri.parse(groupApi), 
-      headers: {
-      }
-    );
+    final prefs = await SharedPreferences.getInstance();
+    String? user = prefs.getString('user');
+    if(user == null){
+      var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/Login?=&name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7";
+      
+      final response = await http.get(
+        Uri.parse(groupApi), 
+        headers: {
+        }
+      );
 
-    var data = jsonDecode(response.body); 
-    
-    if (data['response'] != null) {
-      if (data['response'] == "Logged in") {
-        log.record("Logged in");
-        return true;
+      var data = jsonDecode(response.body); 
+      
+      if (data['response'] != null) {
+        if (data['response'] == "Logged in") {
+          log.record("Logged in");
+          return true;
+        }
       }
+      return false;
     }
-    return false;
+    return true;
   }
 
   Future<bool> syncUp(user_name, password, reflectie_json, leerdoel_json, week_reflectie_json) async{
@@ -60,13 +66,24 @@ class Api {
       Uri.parse(groupApi)
     );
     
-    // if(response.statusCode == 200){
+    if(response.statusCode == 200){
+      return true; 
+    }else{
+      return false;
+    }
+  }
+
+  Future<bool> logUp(user_name, password, logs) async{
+    var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/UpdateUser?name=$user_name&password=$password&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7&logs=$logs";
+
+    final response = await http.post(
+      Uri.parse(groupApi)
+    );
     
-    //   return true; 
-    // }else{
-    //   return false;
-    // }
-    print(groupApi);
-    return true;
+    if(response.statusCode == 200){
+      return true; 
+    }else{
+      return false;
+    }
   }
 }

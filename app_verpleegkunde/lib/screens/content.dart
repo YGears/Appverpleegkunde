@@ -4,10 +4,12 @@ import 'navbar.dart';
 
 //Import all screens
 import 'learning_goal/learning_goal.dart';
-import 'daily_reflection/daily_reflection.dart';
+import 'daily_reflection/daily_reflection_screen.dart';
+import '../functions/list_controller.dart';
 import '../functions/log_controller.dart';
 import '../functions/syncronisatie.dart';
 import 'calendar/calendar.dart';
+import 'dart:convert';
 import 'overview/leerdoelenView.dart';
 
 // ignore: camel_case_types
@@ -53,9 +55,40 @@ class _mainPageState extends State<mainPage> {
     return false;
   }
   
+  void get_average_score(DateTime start, DateTime end)async{
+
+    var daily_reflection_controller = list_controller("daily_reflection");
+    List<dynamic> reflections = await daily_reflection_controller.getList;
+    var gem_cijfer = 0;
+    var amount_of_reflections = 0;
+
+    for(var entry in reflections){
+      if (entry != null){
+        print("lol");
+        var decoded_entry = json.decode(entry);
+        if (
+          start.difference(DateTime.parse(decoded_entry["datum"])).inHours < 0 &&
+          end.difference(DateTime.parse(decoded_entry["datum"])).inHours > 0 
+        ){
+          // gem_cijfer += int.parse(decoded_entry["rating"]);     
+          gem_cijfer += 2; 
+          amount_of_reflections += 1;             
+        }
+        // print(gem_cijfer);
+      }
+    }
+    print(amount_of_reflections);
+    print(gem_cijfer / amount_of_reflections);
+    print("tho");
+  }
+  
   // Build Pagecontent, display content by index
   @override
   Widget build(BuildContext context) {
+    
+    get_average_score(DateTime(2022, 1, 24), DateTime(2022,1,36));
+    // Syncronisation.send_log_data();
+
     log.record("Is naar pagina " + screenNames[selectedIndex] + " gegaan.");
     return WillPopScope(
       onWillPop: _onBackPressed,
