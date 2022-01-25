@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../app_colors.dart';
 
 class BottomMenu extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
@@ -15,34 +16,34 @@ class BottomMenu extends StatelessWidget {
         const BottomNavigationBarItem(
           icon: Icon(Icons.bar_chart),
           label: "Resultaten",
-          backgroundColor: Colors.black,
+          backgroundColor: navbarColor,
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.mode),
           label: "Zet doel",
-          backgroundColor: Colors.black,
+          backgroundColor: navbarColor,
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: "Home",
-          backgroundColor: Colors.black,
+          backgroundColor: navbarColor,
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.today),
           label: "Dagreflectie",
-          backgroundColor: Colors.black,
+          backgroundColor: navbarColor,
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
           label: "Weekreflectie",
-          backgroundColor: Colors.black,
+          backgroundColor: navbarColor,
         ),
       ],
       currentIndex: selectedIndex,
       onTap: onClicked,
-      selectedItemColor: Colors.orange[800],
-      backgroundColor: Colors.black,
-      unselectedItemColor: Colors.white,
+      selectedItemColor: selectedItemColor,
+      backgroundColor: navbarColor,
+      unselectedItemColor: unselectedItemColor,
     );
   }
 }

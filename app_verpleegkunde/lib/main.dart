@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './screens/login/login.dart';
+import 'app_colors.dart';
 
 void main() => runApp(HanzeVerpleegkundeApp());
 
@@ -10,9 +11,8 @@ class HanzeVerpleegkundeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Hanze Verpleegkunde',
       theme: ThemeData(
-        primaryColor: Colors.orange, //BRING TO COLORS FILE
-        scaffoldBackgroundColor: Colors.white, //BRING TO COLORS FILE
-      ),
+          primaryColor: themeColor, //BRING TO COLORS FILE
+          scaffoldBackgroundColor: backgroundColor),
       home: const loginScreen(),
     );
   }
