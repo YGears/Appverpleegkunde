@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'image_cover.dart';
 import '../content.dart';
 import '../../functions/Api.dart';
 import '../week_reflectie/week_reflectie.dart';
 import '../../functions/syncronisatie.dart';
+import '../../functions/list_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 class Album {
@@ -45,8 +48,22 @@ class _loginScreenState extends State<loginScreen> {
     super.dispose();
   }
 
+  void redirect_if_app_already_has_a_user() async{
+    final prefs = await SharedPreferences.getInstance();
+    String? user = prefs.getString('user');
+    if(user != null){
+      await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+      print("you should be seeing something....");
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const mainPage()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    redirect_if_app_already_has_a_user();
+
+
     return Scaffold(
       //Topheader within the application
       appBar: AppBar(
