@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/functions/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -233,6 +234,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
     );
   }
     Widget chooseTargetFigure(BuildContext context) {
+    final myController = TextEditingController();
     return Container(
       margin: const EdgeInsets.only(left: 40.0, right: 40.0),
       padding: const EdgeInsets.all(20.0),
@@ -254,33 +256,48 @@ class _learninggoalPageState extends State<learninggoalPage> {
             showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Streefcijfer voor het leerdoel'),
-                        content:
-                        Center( child:
-                          Container( 
-                            child:
-                            ButtonTheme(
-                              alignedDropdown: true,
-                              child:
-                         DropdownButton<String>(
-                           isExpanded: true,
-                          alignment: Alignment.center,
-                          value: streefCijfer,  
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          items: <String>['0','1','2','3','4','5','6','7','8','9','10']
-                            .map<DropdownMenuItem<String>>((String value){
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                            }).toList(),                       
-                          onChanged: (String? value) {setState(() {
-                            streefCijfer = value!;
-                            Navigator.of(context).pop();
-                          });  },
-                        )),
-                        )
-                        )))},
+                        title: const Text('Selecteer streefcijfer:'),
+                                  actions: <Widget>[
+                                    TextField( 
+                          keyboardType: TextInputType.number, 
+                          inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
+                          controller: myController
+            ),
+            Row(children: [ 
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Annuleer',
+                  textAlign: TextAlign.left,
+                ),  
+              ),
+              TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              if (myController.text.isNotEmpty) {
+                                setState(() {
+                                  streefCijfer = myController.text;
+                                });
+                                
+                              } else {
+                                ScaffoldMessenger.of(this.context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(const SnackBar(
+                                      content: Text('Veld is leeg')));
+                              }
+                            },
+                            child: const Text(
+                              'Voeg toe',
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+            ],
+          ),                                
+        ]
+      ))
+    },
         ),
       ]),
     );

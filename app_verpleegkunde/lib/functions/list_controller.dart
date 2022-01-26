@@ -20,6 +20,8 @@ class list_controller{
     if(type == 'leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
     if(type == 'favorieten'){list ??= [];}
     if(type == 'tag'){list ??= [];}
+    //voor overige
+    else{list ??= [];}
     
 
     //return said list
