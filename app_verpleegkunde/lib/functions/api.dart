@@ -30,7 +30,7 @@ class Api {
   var url = "https://nurseitapi.azure-api.net/";
 
   Future<bool> login(id, password) async {
-    return true;
+    // return true;
     print("loggin in");
     // var privateApi = "https://iabamun.nl/game/lab-andre/api/index.php/login";
     // final response = await http.post(
