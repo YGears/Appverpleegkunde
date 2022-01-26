@@ -1,4 +1,4 @@
-import "list_controller.dart";
+import "../database_connection/list_controller.dart";
 class log_controller{
   var log_save_controller = list_controller("log");
 
