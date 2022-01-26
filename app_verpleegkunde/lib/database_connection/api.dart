@@ -50,7 +50,7 @@ class Api {
       }
       return false;
     }
-    return true;
+    return false;
   }
 
   Future<bool> syncUp(user_name, password, reflectie_json, leerdoel_json, week_reflectie_json) async{
