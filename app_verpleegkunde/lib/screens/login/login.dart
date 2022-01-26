@@ -48,12 +48,10 @@ class _loginScreenState extends State<loginScreen> {
     super.dispose();
   }
 
-
   void redirect_if_app_already_has_a_user() async{
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
     if(user != null){
-    // if(true){
       await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
       print("you should be seeing something....");
       Navigator.push(context,
