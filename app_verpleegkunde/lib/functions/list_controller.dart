@@ -22,11 +22,9 @@ class list_controller{
     if(type == 'tag'){list ??= [];}
     //voor overige
     else{list ??= [];}
-    
-
+  
     //return said list
-
-  return list as List;
+    return list;
   }
 
   Future<void> setList(List newList) async{
