@@ -75,7 +75,8 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
         centerTitle: true,
       ),
       //body: Column(children: generatedBody));
-      body: SingleChildScrollView(
+      body: 
+      SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(
           children: <Widget>[
