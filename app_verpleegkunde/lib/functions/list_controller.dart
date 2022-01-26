@@ -4,9 +4,10 @@ class list_controller{
 
 
   String type;
-
+  
   //Constructor
   list_controller(this.type);
+
 
   Future<List> get getList async {
     //Get the shared preferences

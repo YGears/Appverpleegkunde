@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/overview/overviewPage.dart';
+import 'daily_reflection/daily_reflection_screen.dart';
 import 'navbar.dart';
 
 //Import all screens

@@ -43,7 +43,8 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
                 context,
                 decodedLearningGoals["begin_datum"],
                 decodedLearningGoals["eind_datum"],
-                decodedLearningGoals["onderwerp"])
+                decodedLearningGoals["onderwerp"],
+                decodedLearningGoals["streefcijfer"],)
           ],
         ));
       }
@@ -96,7 +97,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
 
   //Widget for selecting a period in which that learning goal will be set
   Widget itembox(
-      BuildContext context, String startDate, String endDate, String testie) {
+      BuildContext context, String startDate, String endDate, String onderwerp, String streefcijfer) {
     return Container(
         // margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         width: 300,
@@ -106,7 +107,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
          Column(
            children: [
           Text(
-            testie,
+            onderwerp,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -122,9 +123,15 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text('$startDate - $endDate' ),
-                const SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Streefcijfer: $streefcijfer /10"),
+                  const SizedBox(width: 20),
+
+                ],
+              )
                  
               ],
             ),
