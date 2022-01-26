@@ -55,37 +55,11 @@ class _mainPageState extends State<mainPage> {
     return false;
   }
   
-  void get_average_score(DateTime start, DateTime end)async{
-
-    var daily_reflection_controller = list_controller("daily_reflection");
-    List<dynamic> reflections = await daily_reflection_controller.getList;
-    var gem_cijfer = 0;
-    var amount_of_reflections = 0;
-
-    for(var entry in reflections){
-      if (entry != null){
-        print("lol");
-        var decoded_entry = json.decode(entry);
-        if (
-          start.difference(DateTime.parse(decoded_entry["datum"])).inHours < 0 &&
-          end.difference(DateTime.parse(decoded_entry["datum"])).inHours > 0 
-        ){
-          gem_cijfer += decoded_entry["rating"] as int;     
-          // gem_cijfer += 2; 
-          amount_of_reflections += 1;             
-        }
-        // print(gem_cijfer);
-      }
-    }
-    print(amount_of_reflections);
-    print(gem_cijfer / amount_of_reflections);
-  }
   
   // Build Pagecontent, display content by index
   @override
   Widget build(BuildContext context) {
     
-    get_average_score(DateTime(2022, 1, 24), DateTime(2022,1,36));
     // Syncronisation.send_log_data();
 
     log.record("Is naar pagina " + screenNames[selectedIndex] + " gegaan.");
