@@ -24,7 +24,7 @@ class _mainPageState extends State<mainPage> {
   log_controller log = log_controller();
   //Start index of screen list
   int selectedIndex = 1;
-  var selectedScreenIndex = 0;
+  var selectedScreenIndex = 1;
   //List of all screens
   List<Widget> screens = [
     // const learningGoalOverview(),
@@ -46,7 +46,7 @@ class _mainPageState extends State<mainPage> {
     syncWithDatabase();
     setState(() {
       selectedIndex = index;
-      selectedIndex = index;
+      selectedScreenIndex = index;
     });
   }
 
@@ -89,7 +89,7 @@ class _mainPageState extends State<mainPage> {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: new Scaffold(
-        body: Center(child: screens[selectedIndex]),
+        body: Center(child: screens[selectedScreenIndex]),
         bottomNavigationBar: BottomMenu(
           selectedIndex: selectedIndex,
           onClicked: onClicked,
