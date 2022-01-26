@@ -9,9 +9,7 @@ import '../logging/log_controller.dart';
 import '../database_connection/syncronisatie.dart';
 import 'calendar/calendar_screen.dart';
 import 'overview/learningGoalOverview.dart';
-import 'week_reflection/week_reflection_screen.dart';
 
-// ignore: camel_case_types
 class RootScreen extends StatefulWidget {
   const RootScreen({Key? key}) : super(key: key);
 
@@ -27,7 +25,7 @@ class _RootScreen extends State<RootScreen> {
   final List<Widget> screens = [
     // const learningGoalOverview(),
     const learningGoalOverview(),
-    LearningGoalScreen(),
+    const LearningGoalScreen(),
     const CalendarScreen(),
     dailyReflectionPage(selectedDate: DateTime.now()), //DUBBEL CHECK
     WeekReflectionScreen(selectedDate: DateTime.now()) //DUBBEL CHECK

@@ -20,7 +20,7 @@ class WeekReflectionScreen extends StatefulWidget {
 class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   var selectedDate = DateTime.now();
   var selectedDay = "";
-  String activatedMainTag = "Click Here";
+  String activatedMainTag = "Klik Hier";
   List selectedTags = [];
   List<Row> generatedBody = [];
   List<Row> generatedTagBody = [];
@@ -209,7 +209,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
       Row(
         children: [
           ElevatedButton(
-              child: const Text("Save Reflection"),
+              child: const Text("Reflectie Opslaan"),
               onPressed: () => {saveDailyReflection()})
         ],
       ),

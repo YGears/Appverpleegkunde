@@ -159,6 +159,10 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
               Column(children: <Widget>[
                 const Text("Startdatum"),
                 ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      onPrimary: Colors.yellow,
+                      primary: Colors.red,
+                    ),
                     child: Text(dateFormating(startDate)),
                     onPressed: () async => selectStartDate(context, startDate))
               ]),

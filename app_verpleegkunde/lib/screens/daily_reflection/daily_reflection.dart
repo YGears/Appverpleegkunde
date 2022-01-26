@@ -3,6 +3,7 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/app_colors.dart';
 import '../../logging/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -244,7 +245,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       ),
       Row(
         children: [
-          Text("Rating van dag: "),
+          Text("dag rating: "),
           Flexible(
             child: TextField(
                 decoration: InputDecoration(labelText: ""),
@@ -258,7 +259,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         ],
       ),
       Row(
-        children: [Text("Freewrite")],
+        children: [Text("Vrij Schrijven")],
       ),
       Row(
         children: [
@@ -270,7 +271,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       Row(
         children: [
           TextButton(
-            child: Text("Select tag"),
+            child: Text("Selecteer een tag"),
             onPressed: () => {gotoTagBody()},
           ),
         ],
@@ -307,10 +308,9 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       //Topheader within the application
       appBar: AppBar(
         title: const Text('Hanze Verpleegkunde'),
-        backgroundColor: Colors.orange,
+        backgroundColor: themeColor,
         centerTitle: true,
       ),
-      // Body of the application
       body: Column(children: bodies[activatedPage]),
     );
   }
