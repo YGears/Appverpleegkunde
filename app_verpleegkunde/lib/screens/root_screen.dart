@@ -4,7 +4,7 @@ import 'learning_goal/learning_goal_screen.dart';
 import 'navbar.dart';
 
 //Import all screens
-import 'daily_reflection/daily_reflection.dart';
+import 'daily_reflection/daily_reflection_screen.dart';
 import '../logging/log_controller.dart';
 import '../database_connection/syncronisatie.dart';
 import 'calendar/calendar_screen.dart';
@@ -21,15 +21,10 @@ class _RootScreen extends State<RootScreen> {
   log_controller log = log_controller();
   //Start index of screen list
   int selectedIndex = 2;
+  var selectedScreenIndex = 2;
+  var customDate = DateTime.now();
 
-  final List<Widget> screens = [
-    // const learningGoalOverview(),
-    const learningGoalOverview(),
-    const LearningGoalScreen(),
-    const CalendarScreen(),
-    dailyReflectionPage(selectedDate: DateTime.now()), //DUBBEL CHECK
-    WeekReflectionScreen(selectedDate: DateTime.now()) //DUBBEL CHECK
-  ];
+  List<Widget> screens = [];
 
   final List<String> screenNames = [
     "Overzicht",
@@ -39,11 +34,21 @@ class _RootScreen extends State<RootScreen> {
     "Week reflectie"
   ];
 
+  void builtScreens(){
+    screens = [];
+    screens.add(learningGoalOverview());
+    screens.add(LearningGoalScreen());
+    screens.add(CalendarScreen(parent:this));
+    screens.add(dailyReflectionPage(selectedDate: DateTime.now()));
+    WeekReflectionScreen(selectedDate: DateTime.now()); //DUBBEL CHECK
+    screens.add(dailyReflectionPage(selectedDate: customDate));
+  }
   void onClicked(int index) {
     //Function to switch index if navbar is touched
     syncWithDatabase();
     setState(() {
       selectedIndex = index;
+      selectedScreenIndex = index;
     });
   }
 
@@ -56,9 +61,20 @@ class _RootScreen extends State<RootScreen> {
     onClicked(2);
     return false;
   }
+  
+  void gotoDailyReflection(DateTime date) {
+    setState(() {
+      screens.remove(dailyReflectionPage(selectedDate: customDate));
+      customDate = date;
+      selectedIndex = 3;
+      selectedScreenIndex = 5;//index of the dailyreflection with custom date
+      builtScreens();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    builtScreens();
     // Build Pagecontent, display content by index
     log.record("Is naar pagina " + screenNames[selectedIndex] + " gegaan.");
     return WillPopScope(
