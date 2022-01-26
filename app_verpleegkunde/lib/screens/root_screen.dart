@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../screens/week_reflection/weekReflection.dart';
+import 'week_reflection/week_reflection_screen.dart';
+import 'learning_goal/learning_goal_screen.dart';
 import 'navbar.dart';
 
 //Import all screens
-import 'learning_goal/learning_goal.dart';
 import 'daily_reflection/daily_reflection.dart';
 import '../logging/log_controller.dart';
 import '../database_connection/syncronisatie.dart';
-import 'calendar/calendar.dart';
+import 'calendar/calendar_screen.dart';
 import 'overview/learningGoalOverview.dart';
-import 'week_reflection/weekReflection.dart';
+import 'week_reflection/week_reflection_screen.dart';
 
 // ignore: camel_case_types
 class RootScreen extends StatefulWidget {
@@ -27,10 +27,10 @@ class _RootScreen extends State<RootScreen> {
   final List<Widget> screens = [
     // const learningGoalOverview(),
     const learningGoalOverview(),
-    const learninggoalPage(),
-    const calendarPage(),
+    LearningGoalScreen(),
+    const CalendarScreen(),
     dailyReflectionPage(selectedDate: DateTime.now()), //DUBBEL CHECK
-    week_reflectie(selectedDate: DateTime.now()) //DUBBEL CHECK
+    WeekReflectionScreen(selectedDate: DateTime.now()) //DUBBEL CHECK
   ];
 
   final List<String> screenNames = [

@@ -8,16 +8,18 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../logging/log_controller.dart';
 
-class week_reflectie extends StatefulWidget {
-  week_reflectie({Key? key, required this.selectedDate}) : super(key: key);
+class WeekReflectionScreen extends StatefulWidget {
+  const WeekReflectionScreen({Key? key, required this.selectedDate})
+      : super(key: key);
   final DateTime selectedDate;
   @override
-  State<week_reflectie> createState() => week_reflectie_State(selectedDate);
+  State<WeekReflectionScreen> createState() =>
+      WeekReflectionScreen_State(selectedDate);
 }
 
-class week_reflectie_State extends State<week_reflectie> {
+class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   var selectedDate = DateTime.now();
-  var selected_day = "";
+  var selectedDay = "";
   String activatedMainTag = "Click Here";
   List selectedTags = [];
   List<Row> generatedBody = [];
@@ -29,8 +31,8 @@ class week_reflectie_State extends State<week_reflectie> {
   final dagRatingController = TextEditingController();
   TextEditingController freeWriteController = TextEditingController();
 
-  week_reflectie_State(this.selectedDate) {
-    selected_day = selectedDate.year.toString() +
+  WeekReflectionScreen_State(this.selectedDate) {
+    selectedDay = selectedDate.year.toString() +
         "/" +
         selectedDate.month.toString() +
         "/" +
@@ -54,7 +56,7 @@ class week_reflectie_State extends State<week_reflectie> {
     if (selected != null && selected != selectedDate) {
       setState(() {
         selectedDate = selected;
-        selected_day = selectedDate.year.toString() +
+        selectedDay = selectedDate.year.toString() +
             "/" +
             selectedDate.month.toString() +
             "/" +
@@ -114,22 +116,19 @@ class week_reflectie_State extends State<week_reflectie> {
   String convertToJSON() {
     var rating = dagRatingController.value.text;
     var freeWrite = freeWriteController.value.text;
-    bool tagged = false;
-    var datum_format = DateFormat('dd/MM/yyyy');
-    var datum = datum_format.format(selectedDate);
-    var weekNR = 5;
+    var dateFormat = DateFormat('dd/MM/yyyy');
+    var date = dateFormat.format(selectedDate);
+    var weekNumber = 5;
     String json = "{";
 
-    json += "\"datum\": \"$datum\",";
-    json += "\"weeknummer\": $weekNR,";
+    json += "\"date\": \"$date\", \"weeknummer\": $weekNumber,";
     if (rating != "") {
-      json += "\"rating\": $rating,";
+      json += " \"rating\": $rating,";
     } else {
-      json += "\"rating\": 0,";
+      json += " \"rating\": 0,";
     }
-    json += "\"leerdoel\": \"$activatedMainTag\",";
-    json += "\"vooruitblik\": \"$freeWrite\",";
-    json += "}";
+    json +=
+        " \"leerdoel\": \"$activatedMainTag\", \"vooruitblik\": \"$freeWrite\"}";
     print(json);
     return json;
   }
@@ -137,11 +136,12 @@ class week_reflectie_State extends State<week_reflectie> {
   Future<void> saveDailyReflection() async {
     log_controller().record("Weekreflectie opgeslagen.");
     final prefs = await SharedPreferences.getInstance();
-    List<String>? daily_reflections = prefs.getStringList('week_reflectie');
-    daily_reflections ??= [];
-    daily_reflections.add(convertToJSON());
+    List<String>? dailyReflections =
+        prefs.getStringList('WeekReflectionScreen');
+    dailyReflections ??= [];
+    dailyReflections.add(convertToJSON());
 
-    prefs.setStringList('week_reflectie', daily_reflections);
+    prefs.setStringList('WeekReflectionScreen', dailyReflections);
   }
 
   addTags() {
@@ -162,18 +162,17 @@ class week_reflectie_State extends State<week_reflectie> {
     List<Row> tempBody = [
       Row(
         children: [
-          Text("Reflectie op week (Maandag - Zondag): "),
+          const Text("Reflectie op week (Maandag - Zondag): "),
           ElevatedButton(
-              child: Text(selected_day),
-              onPressed: () => {_selectDate(context)})
+              child: Text(selectedDay), onPressed: () => {_selectDate(context)})
         ],
       ),
       Row(
         children: [
-          Text("Rating van dag: "),
+          const Text("Rating van dag: "),
           Flexible(
             child: TextField(
-                decoration: InputDecoration(labelText: ""),
+                decoration: const InputDecoration(labelText: ""),
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly,
@@ -184,7 +183,7 @@ class week_reflectie_State extends State<week_reflectie> {
         ],
       ),
       Row(
-        children: [Text("Vooruitblik:")],
+        children: const [Text("Vooruitblik:")],
       ),
       Row(
         children: [
@@ -195,7 +194,7 @@ class week_reflectie_State extends State<week_reflectie> {
       ),
       Row(
         children: [
-          Text("Select tag"),
+          const Text("Select tag"),
           TextButton(
             child: Text(activatedMainTag),
             onPressed: () => {gotoTagBody()},
@@ -210,7 +209,7 @@ class week_reflectie_State extends State<week_reflectie> {
       Row(
         children: [
           ElevatedButton(
-              child: Text("Save Reflection"),
+              child: const Text("Save Reflection"),
               onPressed: () => {saveDailyReflection()})
         ],
       ),

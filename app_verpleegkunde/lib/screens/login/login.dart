@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'image_cover.dart';
-import '../rootScreen.dart';
-import '../../functions/Api.dart';
+import '../root_screen.dart';
+import '../../database_connection/api.dart';
 import 'package:flutter/material.dart';
 
 class Album {

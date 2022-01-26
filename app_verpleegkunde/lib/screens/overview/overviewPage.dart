@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './learningGoalOverview.dart';
+import '../../style.dart';
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({Key? key}) : super(key: key);
@@ -53,17 +54,6 @@ void _navigateAndDisplaySelection(BuildContext context, int index) async {
   );
 }
 
-//TEST
-BoxDecoration borderStyling() {
-  return BoxDecoration(
-    color: Colors.orange[50],
-    border: Border.all(width: 3.0),
-    borderRadius: const BorderRadius.all(
-        Radius.circular(10.0) //                 <--- border radius here
-        ),
-  );
-}
-
 //Widget for selecting a period in which that learning goal will be set
 Widget itembox(BuildContext context, String type, int index) {
   return GestureDetector(
@@ -75,7 +65,7 @@ Widget itembox(BuildContext context, String type, int index) {
         width: 300,
         height: 90,
         padding: const EdgeInsets.only(top: 28),
-        decoration: borderStyling(),
+        decoration: Style().borderStyling(),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
             type,
