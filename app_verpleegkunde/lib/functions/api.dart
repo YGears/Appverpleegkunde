@@ -25,7 +25,10 @@ class Response {
 // in order to use the group api, replace privateApi with groupApi on line 30, 
 // comment out line 32
 class Api {
+  var key = "77375a9effb64452bf5d2952cf76ee80";
   var log = log_controller();
+  var url = "https://nurseitapi.azure-api.net/";
+
   Future<bool> login(id, password) async {
     print("loggin in");
     // var privateApi = "https://iabamun.nl/game/lab-andre/api/index.php/login";
@@ -38,12 +41,10 @@ class Api {
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
     if(user == null){
-      var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/Login?=&name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7";
+      var groupApi = url + "Login?=&name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key";
       
       final response = await http.get(
-        Uri.parse(groupApi), 
-        headers: {
-        }
+        Uri.parse(groupApi),
       );
 
       var data = jsonDecode(response.body); 
@@ -60,7 +61,7 @@ class Api {
   }
 
   Future<bool> syncUp(user_name, password, reflectie_json, leerdoel_json, week_reflectie_json) async{
-    var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/UpdateUser?name=$user_name&password=$password&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7&reflectie=$reflectie_json&leerdoel=$leerdoel_json&weekreflectie=$week_reflectie_json";
+    var groupApi = url + "UpdateUser?name=$user_name&password=$password&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7&reflectie=$reflectie_json&leerdoel=$leerdoel_json&weekreflectie=$week_reflectie_json";
 
     final response = await http.post(
       Uri.parse(groupApi)
@@ -74,7 +75,7 @@ class Api {
   }
 
   Future<bool> logUp(user_name, password, logs) async{
-    var groupApi = "https://nurse-it-api.azure-api.net/Nurse-IT/UpdateUser?name=$user_name&password=$password&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7&logs=$logs";
+    var groupApi = url + "UpdateLogs?name=$user_name&password=$password&subscription-key=$key&logs=$logs";
 
     final response = await http.post(
       Uri.parse(groupApi)

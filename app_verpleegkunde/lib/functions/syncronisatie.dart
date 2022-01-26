@@ -33,10 +33,10 @@ class Syncronisation {
     json_data += "]";
     
 
-    // var name =  prefs.getString('user');
-    // var password = prefs.getString('password');
 
     return true;
+    // var name =  prefs.getString('user');
+    // var password = prefs.getString('password');
     // return api.logUp(name, password, json_data);
   }
   
