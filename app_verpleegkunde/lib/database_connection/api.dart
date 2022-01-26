@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Logging/log_controller.dart';
 import 'package:http/http.dart' as http;
 
 class Response {
@@ -22,7 +22,7 @@ class Response {
   }
 }
 
-// in order to use the group api, replace privateApi with groupApi on line 30, 
+// in order to use the group api, replace privateApi with groupApi on line 30,
 // comment out line 32
 class Api {
   var key = "77375a9effb64452bf5d2952cf76ee80";
@@ -31,14 +31,6 @@ class Api {
 
   Future<bool> login(id, password) async {
     // return true;
-    print("loggin in");
-    // var privateApi = "https://iabamun.nl/game/lab-andre/api/index.php/login";
-    // final response = await http.post(
-    //   Uri.parse(privateApi),
-    //   headers:{'Ocp-Apim-Subscription-Key': 'KEY' },
-    //   body: jsonEncode(<String, String>{"name": id, "password": password, }),
-    // );
-    // azure api
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
     if(user == null){

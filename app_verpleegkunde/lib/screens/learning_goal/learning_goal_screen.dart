@@ -1,59 +1,48 @@
 import 'dart:async';
+import '../../logging/log_controller.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/functions/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'choose_learning_goal.dart';
+import '../../style.dart';
 
-class learninggoalPage extends StatefulWidget {
+class LearningGoalScreen extends StatefulWidget {
   // Iets voor de routes maar wat?
-  const learninggoalPage({Key? key}) : super(key: key);
+  const LearningGoalScreen({Key? key}) : super(key: key);
 
   @override
-  _learninggoalPageState createState() => _learninggoalPageState();
+  _LearningGoalScreenState createState() => _LearningGoalScreenState();
 }
 
-class _learninggoalPageState extends State<learninggoalPage> {
-  // startDate can't be null so will be current date
-  DateTime startDate = DateTime.now();
-  // endDate can't be null so will be one week later than startDate by default
-  DateTime endDate = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day + 7);
-  // Record of current Time that can't be changed
-  static DateTime now = DateTime.now();
+class _LearningGoalScreenState extends State<LearningGoalScreen> {
+  static DateTime currentTime = DateTime.now();
+  DateTime startDate = currentTime;
+  DateTime endDate =
+      DateTime(currentTime.year, currentTime.month, DateTime.now().day + 7);
 
   String error = "";
-  String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
+  String selectedLearningGoal = 'Nog geen leerdoel geselecteerd';
 
   String streefCijfer = '0';
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
     super.dispose();
   }
 
   String dateFormating(DateTime date) {
-    // Function to change the formating of dates within the application
-    if (date == null) {
-      return "Error";
-    } else {
-      return "${date.day}/${date.month}/${date.year}";
-    }
+    return "${date.day}/${date.month}/${date.year}";
   }
 
   Future<void> selectStartDate(BuildContext context, DateTime date) async {
-    // Function to select a date
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: date,
-        firstDate: DateTime(now.year, now.month - 3),
-        lastDate: DateTime(now.year, now.month + 3));
+        firstDate: DateTime(currentTime.year, currentTime.month - 3),
+        lastDate: DateTime(currentTime.year, currentTime.month + 3));
 
     if (picked != null && picked != date) {
-      // If date picked and date isn't the date picked than
-      // startDate becomes the selected date
       setState(() {
         startDate = picked;
         endDate = DateTime(picked.year, picked.month, picked.day + 7);
@@ -62,7 +51,6 @@ class _learninggoalPageState extends State<learninggoalPage> {
   }
 
   Future<void> selectEndDate(BuildContext context) async {
-    // Function to select a date
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: startDate,
@@ -70,23 +58,19 @@ class _learninggoalPageState extends State<learninggoalPage> {
         lastDate: DateTime(startDate.year, startDate.month + 3));
 
     if (picked != null && picked != startDate) {
-      // If date picked and date isn't the date picked than
-      // startDate becomes the selected date
       setState(() {
         endDate = picked;
       });
     }
   }
 
-  //TODO CREATE FUNCTION TO SAVE LEARNING GOALS make validation check before posting
   Future<void> createLearningGoal() async {
     log_controller().record("Een nieuw leerdoel aangemaakt.");
-    //Set dateTimes to Database format using dateFormating
+
     String beginDate = dateFormating(startDate);
     String lastDate = dateFormating(endDate);
-    //if selected learning goal - default value
-    if (_geselecteerdLeerdoel == 'Nog geen leerdoel geselecteerd') {
-      //POP UP THAT NO LEARNING GOAL HAS BEEN SELECETED
+
+    if (selectedLearningGoal == 'Nog geen leerdoel geselecteerd') {
       showDialog(
           context: context,
           builder: (_) => const AlertDialog(
@@ -94,7 +78,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
                 content: Text('Geen leerdoel geselecteerd'),
               ));
     } else {
-      String json = "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$_geselecteerdLeerdoel\",\"streefcijfer\":\"$streefCijfer\"}";
+      String json = "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$selectedLearningGoal\",\"streefcijfer\":\"$streefCijfer\"}";
       
       final prefs = await SharedPreferences.getInstance(); 
       List<String>? leerdoelen = prefs.getStringList('leerdoel')?? [];
@@ -116,24 +100,12 @@ class _learninggoalPageState extends State<learninggoalPage> {
           ..removeCurrentSnackBar()
           ..showSnackBar(SnackBar(
               content: Text('Nieuw Leerdoel geselecteerd! - $result')));
-        _geselecteerdLeerdoel = ' $result';
+        selectedLearningGoal = ' $result';
       }
     });
   }
 
-  //TEST
-  BoxDecoration borderStyling() {
-    return BoxDecoration(
-      color: Colors.orange[50],
-      border: Border.all(width: 3.0),
-      borderRadius: const BorderRadius.all(
-          Radius.circular(10.0) //                 <--- border radius here
-          ),
-    );
-  }
-
   @override
-  // Widget that builds the scaffold that holds all the widgets that this screen consists off
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -141,12 +113,10 @@ class _learninggoalPageState extends State<learninggoalPage> {
         backgroundColor: Colors.orange,
         centerTitle: true,
       ),
-      // Body of the application
       body: contentWrapper(context),
     );
   }
 
-  // Wrapps all widgets in to one single widget
   Widget contentWrapper(BuildContext context) {
 
 
@@ -174,7 +144,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
     return Container(
         margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         padding: const EdgeInsets.all(20.0),
-        decoration: borderStyling(),
+        decoration: Style().borderStyling(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -194,6 +164,10 @@ class _learninggoalPageState extends State<learninggoalPage> {
               Column(children: <Widget>[
                 const Text("Startdatum"),
                 ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      onPrimary: Colors.yellow,
+                      primary: Colors.red,
+                    ),
                     child: Text(dateFormating(startDate)),
                     onPressed: () async => selectStartDate(context, startDate))
               ]),
@@ -215,7 +189,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
     return Container(
       margin: const EdgeInsets.only(left: 40.0, right: 40.0),
       padding: const EdgeInsets.all(20.0),
-      decoration: borderStyling(),
+      decoration: Style().borderStyling(),
       child: Column(children: <Widget>[
         const Text(
           "Kies een leerdoel voor de periode",
@@ -225,7 +199,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
             color: Colors.black,
           ),
         ),
-        ListTile(title: Center(child: Text(_geselecteerdLeerdoel))),
+        ListTile(title: Center(child: Text(selectedLearningGoal))),
         ElevatedButton(
           child: const Text("Selecteer leerdoel"),
           onPressed: () => {_navigateAndDisplaySelection(context)},
@@ -238,7 +212,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
     return Container(
       margin: const EdgeInsets.only(left: 40.0, right: 40.0),
       padding: const EdgeInsets.all(20.0),
-      decoration: borderStyling(),
+      decoration: Style().borderStyling(),
       child: Column(children: <Widget>[
         const Text(
           "Kies een streefcijfer voor het leerdoel",

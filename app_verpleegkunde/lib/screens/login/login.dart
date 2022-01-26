@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'image_cover.dart';
-import '../content.dart';
-import '../../functions/Api.dart';
-import '../week_reflectie/week_reflectie.dart';
-import '../../functions/syncronisatie.dart';
-import '../../functions/list_controller.dart';
+import '../root_screen.dart';
+import '../../database_connection/api.dart';
+import '../../database_connection/list_controller.dart';
+import '../../database_connection/syncronisatie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +54,7 @@ class _loginScreenState extends State<loginScreen> {
       await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
       print("you should be seeing something....");
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const mainPage()));
+          MaterialPageRoute(builder: (context) => const RootScreen()));
     }
   }
 
@@ -104,12 +103,6 @@ class _loginScreenState extends State<loginScreen> {
                   border: InputBorder.none,
                 ),
                 controller: myController)),
-        ElevatedButton(
-        child: const Text("Login"),
-        onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => week_reflectie(selectedDate: DateTime.now())));
-                }),
         loginButton(context),
       ]),
     );
@@ -117,7 +110,7 @@ class _loginScreenState extends State<loginScreen> {
 
   login(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const mainPage()));
+        context, MaterialPageRoute(builder: (context) => const RootScreen()));
   }
 
   Widget loginButton(BuildContext context) {
@@ -138,7 +131,7 @@ class _loginScreenState extends State<loginScreen> {
         ),
                onPressed: () async {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const mainPage()));
+              MaterialPageRoute(builder: (context) => const RootScreen()));
           Api api = Api();
           var loggedIn =
               await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
@@ -147,7 +140,7 @@ class _loginScreenState extends State<loginScreen> {
                 myController.text, "KoekjesZijnGemaaktVanDeeg");
             print("you should be seeing something....");
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const mainPage()));
+                MaterialPageRoute(builder: (context) => const RootScreen()));
           } else {
             setState(() {
               error = "Inloggen mislukt";

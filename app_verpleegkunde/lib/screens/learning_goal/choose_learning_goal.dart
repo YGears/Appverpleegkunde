@@ -1,8 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/functions/list_controller.dart';
-import 'package:flutter_application_1/functions/log_controller.dart';
-
+import '../../logging/log_controller.dart';
+import '../../database_connection/list_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
 /// Class to create the Leerdoelen view, making a list of all leerdoelen available.
@@ -46,11 +45,11 @@ class _Leerdoelen extends State<Leerdoelen> {
     log.record("Is naar de kies leerdoel pagina gegaan.");
     final myController = TextEditingController();
 
-    if(!justOnce){
+    if (!justOnce) {
       justOnce = true;
       update();
     }
-   
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Leerdoelen'),
@@ -123,7 +122,7 @@ class _Leerdoelen extends State<Leerdoelen> {
     final result = await Navigator.of(context).push(
       MaterialPageRoute<String>(
         builder: (context) {
-          if(!justOnce){
+          if (!justOnce) {
             justOnce = true;
             update();
           }
@@ -180,7 +179,7 @@ class _Leerdoelen extends State<Leerdoelen> {
     );
     setState(() {
       if ('$result' != 'null') {
-       Navigator.pop(context, result); 
+        Navigator.pop(context, result);
       }
     });
   }
@@ -203,7 +202,8 @@ class _Leerdoelen extends State<Leerdoelen> {
           children: [
             IconButton(
                 onPressed: () {
-                    setState(() {
+                  setState(
+                    () {
                       isPressed = true;
                     showDialog(
                 context: context,
@@ -245,8 +245,8 @@ class _Leerdoelen extends State<Leerdoelen> {
                   color: isPressed ? Colors.green : null,
                   semanticLabel: isPressed ? 'Remove' : 'Keep',
                 )),
-                //end of Delete
-                 IconButton(
+            //end of Delete
+            IconButton(
                 onPressed: () {
                   setState(() {
                     if (alreadySaved) {
