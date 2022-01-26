@@ -136,20 +136,23 @@ class _loginScreenState extends State<loginScreen> {
             borderRadius: BorderRadius.circular(20.0),
           ),
         ),
-        onPressed: () async {
-          Api api = Api();
-          var loggedIn =
-              await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-          if (loggedIn) {
-            await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-            print("you should be seeing something....");
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const mainPage()));
-          } else {
-            setState(() {
-              error = "Inloggen mislukt";
-            });
-          }
+               onPressed: () async {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const mainPage()));
+          // Api api = Api();
+          // var loggedIn =
+          //     await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+          // if (loggedIn) {
+          //   await Syncronisation.login(
+          //       myController.text, "KoekjesZijnGemaaktVanDeeg");
+          //   print("you should be seeing something....");
+          //   Navigator.push(context,
+          //       MaterialPageRoute(builder: (context) => const mainPage()));
+          // } else {
+          //   setState(() {
+          //     error = "Inloggen mislukt";
+          //   });
+          // }
         },
       ),
     );

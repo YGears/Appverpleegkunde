@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/functions/log_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,8 @@ class _learninggoalPageState extends State<learninggoalPage> {
 
   String error = "";
   String _geselecteerdLeerdoel = 'Nog geen leerdoel geselecteerd';
+
+  String streefCijfer = '0';
 
   @override
   void dispose() {
@@ -91,7 +94,7 @@ class _learninggoalPageState extends State<learninggoalPage> {
                 content: Text('Geen leerdoel geselecteerd'),
               ));
     } else {
-      String json = "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$_geselecteerdLeerdoel\"}";
+      String json = "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$_geselecteerdLeerdoel\",\"streefcijfer\":\"$streefCijfer\"}";
       
       final prefs = await SharedPreferences.getInstance(); 
       List<String>? leerdoelen = prefs.getStringList('leerdoel')?? [];
@@ -145,23 +148,25 @@ class _learninggoalPageState extends State<learninggoalPage> {
 
   // Wrapps all widgets in to one single widget
   Widget contentWrapper(BuildContext context) {
-    return Container(
+
+
+ return ListView(
+  padding: const EdgeInsets.all(8),
+  children: <Widget>[
+     Container(
       color: Colors.white,
       child: Column(children: <Widget>[
-        const SizedBox(
-          height: 75,
-        ),
-        selectPeriod(context),
-        const SizedBox(
-          height: 30,
-        ),
+        
+        const SizedBox(height: 30),
         chooseLearningGoal(context),
-        const SizedBox(
-          height: 40,
-        ),
+        const SizedBox(height: 30),
+        chooseTargetFigure(context),
+        const SizedBox(height: 30),
+        selectPeriod(context),
+        const SizedBox(height: 30),
         createButton(context)
       ]),
-    );
+    )]);
   }
 
   //Widget for selecting a period in which that learning goal will be set
@@ -224,6 +229,75 @@ class _learninggoalPageState extends State<learninggoalPage> {
         ElevatedButton(
           child: const Text("Selecteer leerdoel"),
           onPressed: () => {_navigateAndDisplaySelection(context)},
+        ),
+      ]),
+    );
+  }
+    Widget chooseTargetFigure(BuildContext context) {
+    final myController = TextEditingController();
+    return Container(
+      margin: const EdgeInsets.only(left: 40.0, right: 40.0),
+      padding: const EdgeInsets.all(20.0),
+      decoration: borderStyling(),
+      child: Column(children: <Widget>[
+        const Text(
+          "Kies een streefcijfer voor het leerdoel",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        ListTile(title: Center(child: Text('$streefCijfer / 10' ))),
+        ElevatedButton(
+          child: const Text("Selecteer streefcijfer"),
+        
+          onPressed: () => {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Selecteer streefcijfer:'),
+                                  actions: <Widget>[
+                                    TextField( 
+                          keyboardType: TextInputType.number, 
+                          inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
+                          controller: myController
+            ),
+            Row(children: [ 
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Annuleer',
+                  textAlign: TextAlign.left,
+                ),  
+              ),
+              TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              if (myController.text.isNotEmpty) {
+                                setState(() {
+                                  streefCijfer = myController.text;
+                                });
+                                
+                              } else {
+                                ScaffoldMessenger.of(this.context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(const SnackBar(
+                                      content: Text('Veld is leeg')));
+                              }
+                            },
+                            child: const Text(
+                              'Voeg toe',
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+            ],
+          ),                                
+        ]
+      ))
+    },
         ),
       ]),
     );
