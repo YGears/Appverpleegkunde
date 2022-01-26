@@ -5,16 +5,22 @@ import '../../functions/syncronisatie.dart';
 import 'package:intl/intl.dart';
 
 class calendarPage extends StatefulWidget {
-  const calendarPage({Key? key}) : super(key: key);
+  const calendarPage({Key? key, required this.parent}) : super(key: key);
+  final parent;
   @override
-  State<calendarPage> createState() => _calendarPageState();
+  State<calendarPage> createState() => _calendarPageState(parent);
 }
 
 class _calendarPageState extends State<calendarPage> {
   int tableWidth = 10;
   int count = 0;
+  var parent;
   var daysInWeek = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
   DateTime selectedDate = DateTime.now();
+
+  _calendarPageState(var newParent){
+    this.parent = newParent;
+  }
 
   List<String> months = [
     'Januari',
@@ -104,6 +110,11 @@ class _calendarPageState extends State<calendarPage> {
         count = count + 1;
       });
     }
+    
+    specifiekeDagReflectie(var dag) async {
+      // print(dadayteS);
+      parent.gotoDailyReflection(dag);
+    }
 
     nextMonth(increment) {
       setState(() {
@@ -139,10 +150,9 @@ class _calendarPageState extends State<calendarPage> {
             calendarRow.children!.add(const Text(""));
           } else {
             currentDayInMonth++;
+            var dag = DateTime(year,month,currentDayInMonth);
             calendarRow.children!.add(TextButton(
-                onPressed: () {
-                  dag();
-                },
+                onPressed: ()=>specifiekeDagReflectie(dag),
                 child: Text(currentDayInMonth.toString(),
                     style: const TextStyle(
                         color: Colors.black,

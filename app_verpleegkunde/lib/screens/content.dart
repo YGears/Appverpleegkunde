@@ -26,13 +26,7 @@ class _mainPageState extends State<mainPage> {
   int selectedIndex = 1;
   var selectedScreenIndex = 1;
   //List of all screens
-  List<Widget> screens = [
-    // const learningGoalOverview(),
-    const learningGoalOverview(),
-    const calendarPage(),
-    const learninggoalPage(),
-    dailyReflectionPage(selectedDate: DateTime.now()),
-  ];
+  List<Widget> screens = [];
   var customDate = DateTime.now();
   final List<String> screenNames = [
     "overview",
@@ -61,7 +55,7 @@ class _mainPageState extends State<mainPage> {
   void builtScreens(){
     screens = [];
     screens.add(OverviewPage());
-    screens.add(calendarPage());
+    screens.add(calendarPage(parent:this));
     screens.add(learninggoalPage());
     screens.add(dailyReflectionPage(selectedDate: DateTime.now()));
     screens.add(dailyReflectionPage(selectedDate: customDate));
