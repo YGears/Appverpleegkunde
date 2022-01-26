@@ -4,9 +4,10 @@ class list_controller{
 
 
   String type;
-
+  
   //Constructor
   list_controller(this.type);
+
 
   Future<List> get getList async {
     //Get the shared preferences
@@ -19,6 +20,8 @@ class list_controller{
     if(type == 'leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
     if(type == 'favorieten'){list ??= [];}
     if(type == 'tag'){list ??= [];}
+    //voor overige
+    else{list ??= [];}
     
 
     //return said list

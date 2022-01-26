@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './screens/login/login.dart';
 
+
 void main() => runApp(HanzeVerpleegkundeApp());
 
 class HanzeVerpleegkundeApp extends StatelessWidget {
@@ -14,6 +15,7 @@ class HanzeVerpleegkundeApp extends StatelessWidget {
         primaryColor: Colors.orange,
         scaffoldBackgroundColor: Colors.white,
       ),
+      // home: const loginScreen(),
       home: const loginScreen(),
     );
   }

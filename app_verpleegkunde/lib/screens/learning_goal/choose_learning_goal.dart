@@ -119,9 +119,7 @@ class _Leerdoelen extends State<Leerdoelen> {
           child: const Icon(Icons.add),
         ));
   }
-
   void _favorietenLijst() async {
-    
     final result = await Navigator.of(context).push(
       MaterialPageRoute<String>(
         builder: (context) {
