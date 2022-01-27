@@ -49,10 +49,8 @@ class _loginScreenState extends State<loginScreen> {
 
   void redirect_if_app_already_has_a_user() async{
     final prefs = await SharedPreferences.getInstance();
-    String? user = prefs.getString('user');
-    if(user != null){
-      await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-      print("you should be seeing something....");
+    String? user = await prefs.getString('user');
+    if(user != null && user != ""){
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const RootScreen()));
     }
@@ -129,22 +127,20 @@ class _loginScreenState extends State<loginScreen> {
             borderRadius: BorderRadius.circular(20.0),
           ),
         ),
-          onPressed: () async {
+        onPressed: () async {
+          Api api = Api();
+          var loggedIn = false;
+          loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+          if (loggedIn) {
+            await Syncronisation.login(
+                myController.text, "KoekjesZijnGemaaktVanDeeg");
+            print("you should be seeing something....");
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const RootScreen()));
-              Api api = Api();
-              var loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-              if (loggedIn) {
-                await Syncronisation.login(
-                    myController.text, "KoekjesZijnGemaaktVanDeeg");
-                print("you should be seeing something....");
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const RootScreen()));
-              } else {
-              setState(() {
-                error = "Inloggen mislukt";
-              }
-            ); 
+                MaterialPageRoute(builder: (context) => const RootScreen()));
+          } else {
+            setState(() {
+              error = "Inloggen mislukt";
+            }); 
           }
         },
       ),

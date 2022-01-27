@@ -31,7 +31,8 @@ class _RootScreen extends State<RootScreen> {
     "Leerdoel",
     "Kalender",
     "Dagelijkse reflectie",
-    "Week reflectie"
+    "Week reflectie",
+    "Specifieke Dagelijkse reflectie",
   ];
 
   void builtScreens(){
@@ -40,7 +41,7 @@ class _RootScreen extends State<RootScreen> {
     screens.add(LearningGoalScreen());
     screens.add(CalendarScreen(parent:this));
     screens.add(dailyReflectionPage(selectedDate: DateTime.now()));
-    WeekReflectionScreen(selectedDate: DateTime.now()); //DUBBEL CHECK
+    screens.add(WeekReflectionScreen(selectedDate: DateTime.now())); //DUBBEL CHECK
     screens.add(dailyReflectionPage(selectedDate: customDate));
   }
   void onClicked(int index) {
@@ -76,11 +77,11 @@ class _RootScreen extends State<RootScreen> {
   Widget build(BuildContext context) {
     builtScreens();
     // Build Pagecontent, display content by index
-    log.record("Is naar pagina " + screenNames[selectedIndex] + " gegaan.");
+    log.record("Is naar pagina " + screenNames[selectedScreenIndex] + " gegaan.");
     return WillPopScope(
         onWillPop: _onBackPressed,
         child: Scaffold(
-          body: Center(child: screens[selectedIndex]),
+          body: Center(child: screens[selectedScreenIndex]),
           bottomNavigationBar: BottomMenu(
             selectedIndex: selectedIndex,
             onClicked: onClicked,
