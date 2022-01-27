@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import '../Logging/log_controller.dart';
+import 'list_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
@@ -24,36 +26,52 @@ class Syncronisation {
     log_controller log_control = log_controller();
 
     var data = await log_control.get();
+    // print(data);
+    // var json_data = "[";
+    // for(var log in data){
+    //   json_data += log + ",";
+    // }
+    // json_data += "]";
+    // print("0");
+    // print(json_data);
 
-    var json_data = "[";
-    for(var log in data){
-      json_data += log + ",";
-    }
-    json_data += "]";
-    
-
-
-    return true;
-    // var name =  prefs.getString('user');
-    // var password = prefs.getString('password');
-    // return api.logUp(name, password, json_data);
+    // return true;
+    var name =  prefs.getString('user');
+    var password = prefs.getString('password');
+    return api.logUp(name, password, data.toString());
   }
   
   static Future<bool> syncUp() async{
-    // var log_save_controller = list_controller("syncronisation");
     final prefs = await SharedPreferences.getInstance();
+    var syncCheck = prefs.getString("syncCheck") ;
+    print("time: ");
+    // print(syncCheck.toString());
+    // print(DateTime.parse(syncCheck.toString()));
+    
+    Api api = new Api();
+    var time = DateTime.now();
+    var today = DateFormat('yyyy-MM-dd kk:mm:ss').format(time).toString();
 
     var name = prefs.getString('user');
     var password = prefs.getString('password');
-    var reflectie_json = prefs.getStringList('daily_reflection') ?? [];
-    var leerdoel_json = prefs.getStringList('leerdoel') ?? [];
-    var week_reflectie_json = prefs.getStringList('week_reflectie') ?? [];
+    var reflectie_json = await list_controller("daily_reflection").getList;
+    var leerdoel_json = await list_controller("leerdoel").getList;
+    var week_reflectie_json = await list_controller("week_reflectie").getList;
     
-    // if(await api.syncUp(name, password, reflectie_json, leerdoel_json, week_reflectie_json)){
+    var data = "{";
+    data += "\"reflectie\":" + reflectie_json.toString() + ",";
+    data += "\"leerdoel\":" + leerdoel_json.toString() + ",";
+    data += "\"weekreflectie\":" + week_reflectie_json.toString() + ",";
+    data += "}";
+    
+    if(await api.syncUp(name, password, data)){
       if(await send_log_data()){
+          prefs.setString("syncCheck", "{\"timestamp\":\"$today\"}");
+          prefs.setStringList("log",  ["{\"timestamp\": \"" + time.year.toString() + "-" +  time.month.toString() + "-" +  time.day.toString() + "T" +  time.hour.toString() + ":" +  time.minute.toString() + ":" +  time.second.toString() + "\", \"action\": \"syncronised with DB\"}"]);
+          print(list_controller("log").getList);
           return true;
         }
-      // }
+      }
     return false;
   }
 }

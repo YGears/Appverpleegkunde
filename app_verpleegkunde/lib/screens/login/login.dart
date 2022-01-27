@@ -49,10 +49,8 @@ class _loginScreenState extends State<loginScreen> {
 
   void redirect_if_app_already_has_a_user() async{
     final prefs = await SharedPreferences.getInstance();
-    String? user = prefs.getString('user');
-    if(user != null){
-      await Syncronisation.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-      print("you should be seeing something....");
+    String? user = await prefs.getString('user');
+    if(user != null && user != ""){
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const RootScreen()));
     }
@@ -131,9 +129,8 @@ class _loginScreenState extends State<loginScreen> {
         ),
         onPressed: () async {
           Api api = Api();
-          var loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
-          // var loggedIn = false;
-          print(loggedIn);
+          var loggedIn = false;
+          loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
           if (loggedIn) {
             await Syncronisation.login(
                 myController.text, "KoekjesZijnGemaaktVanDeeg");

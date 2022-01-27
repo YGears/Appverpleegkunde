@@ -12,4 +12,5 @@ class log_controller{
   get(){
     return log_save_controller.getList;
   }
+  
 }

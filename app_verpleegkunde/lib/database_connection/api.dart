@@ -33,8 +33,8 @@ class Api {
     // return true;
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
-    if(user == null){
-      var groupApi = url + "Login?=&name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key";
+    if((user == null || user == "" ) && id != ""){
+      var groupApi = url + "Login?name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key";
       
       final response = await http.get(
         Uri.parse(groupApi),
@@ -53,14 +53,17 @@ class Api {
     return false;
   }
 
-  Future<bool> syncUp(user_name, password, reflectie_json, leerdoel_json, week_reflectie_json) async{
-    var groupApi = url + "UpdateUser?name=$user_name&password=$password&subscription-key=c09877a3381f444d9cc9c3e6f2de29f7&reflectie=$reflectie_json&leerdoel=$leerdoel_json&weekreflectie=$week_reflectie_json";
+  Future<bool> syncUp(user_name, password, data) async{
+    var groupApi = url + "UpdateUser?name=$user_name&password=$password&subscription-key=$key";
 
     final response = await http.post(
-      Uri.parse(groupApi)
+      Uri.parse(groupApi),
+      body:data
     );
     
-    if(response.statusCode == 200){
+    var responseText = jsonDecode(response.body); 
+    
+    if(responseText["response"] == "Log updated"){
       return true; 
     }else{
       return false;
@@ -68,16 +71,20 @@ class Api {
   }
 
   Future<bool> logUp(user_name, password, logs) async{
-    var groupApi = url + "UpdateLogs?name=$user_name&password=$password&subscription-key=$key&logs=$logs";
+    var groupApi = url + "UpdateLogs?name=$user_name&password=$password&subscription-key=$key";
 
     final response = await http.post(
-      Uri.parse(groupApi)
+      Uri.parse(groupApi),
+      body: logs
     );
+    var data = jsonDecode(response.body); 
     
-    if(response.statusCode == 200){
-      return true; 
-    }else{
-      return false;
+    if (data['response'] != null) {
+      if (data['response'] == "Log updated") {
+        log.record("Updated log");
+        return true;
+      }
     }
+    return false;
   }
 }

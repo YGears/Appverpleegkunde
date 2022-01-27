@@ -141,7 +141,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     dailyReflections ??= [];
     dailyReflections.add(convertToJSON());
 
-    prefs.setStringList('WeekReflectionScreen', dailyReflections);
+    prefs.setStringList('week_reflectie', dailyReflections);
   }
 
   addTags() {
