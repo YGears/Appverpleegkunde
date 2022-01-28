@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:flutter_application_1/app_colors.dart';
+import 'package:flutter_application_1/screens/root_screen.dart';
+
 import '../../logging/log_controller.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -78,12 +81,18 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
                 content: Text('Geen leerdoel geselecteerd'),
               ));
     } else {
-      String json = "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$selectedLearningGoal\",\"streefcijfer\":\"$streefCijfer\"}";
-      
-      final prefs = await SharedPreferences.getInstance(); 
-      List<String>? leerdoelen = prefs.getStringList('leerdoel')?? [];
+      String json =
+          "{\"begin_datum\": \"$beginDate\",\"eind_datum\": \"$lastDate\",\"onderwerp\": \"$selectedLearningGoal\",\"streefcijfer\":\"$streefCijfer\"}";
+
+      final prefs = await SharedPreferences.getInstance();
+      List<String>? leerdoelen = prefs.getStringList('leerdoel') ?? [];
       leerdoelen.add(json);
       prefs.setStringList('leerdoel', leerdoelen);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RootScreen()),
+      );
     }
   }
 
@@ -110,7 +119,7 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Het zetten van een leerdoel"),
-        backgroundColor: Colors.orange,
+        backgroundColor: backgroundColor,
         centerTitle: true,
       ),
       body: contentWrapper(context),
@@ -118,25 +127,21 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
   }
 
   Widget contentWrapper(BuildContext context) {
-
-
- return ListView(
-  padding: const EdgeInsets.all(8),
-  children: <Widget>[
-     Container(
-      color: Colors.white,
-      child: Column(children: <Widget>[
-        
-        const SizedBox(height: 30),
-        chooseLearningGoal(context),
-        const SizedBox(height: 30),
-        chooseTargetFigure(context),
-        const SizedBox(height: 30),
-        selectPeriod(context),
-        const SizedBox(height: 30),
-        createButton(context)
-      ]),
-    )]);
+    return ListView(padding: const EdgeInsets.all(8), children: <Widget>[
+      Container(
+        color: Colors.white,
+        child: Column(children: <Widget>[
+          const SizedBox(height: 30),
+          chooseLearningGoal(context),
+          const SizedBox(height: 30),
+          chooseTargetFigure(context),
+          const SizedBox(height: 30),
+          selectPeriod(context),
+          const SizedBox(height: 30),
+          createButton(context)
+        ]),
+      )
+    ]);
   }
 
   //Widget for selecting a period in which that learning goal will be set
@@ -207,7 +212,8 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
       ]),
     );
   }
-    Widget chooseTargetFigure(BuildContext context) {
+
+  Widget chooseTargetFigure(BuildContext context) {
     final myController = TextEditingController();
     return Container(
       margin: const EdgeInsets.only(left: 40.0, right: 40.0),
@@ -222,56 +228,56 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
             color: Colors.black,
           ),
         ),
-        ListTile(title: Center(child: Text('$streefCijfer / 10' ))),
+        ListTile(title: Center(child: Text('$streefCijfer / 10'))),
         ElevatedButton(
           child: const Text("Selecteer streefcijfer"),
-        
           onPressed: () => {
             showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
                         title: const Text('Selecteer streefcijfer:'),
-                                  actions: <Widget>[
-                                    TextField( 
-                          keyboardType: TextInputType.number, 
-                          inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
-                          controller: myController
-            ),
-            Row(children: [ 
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  'Annuleer',
-                  textAlign: TextAlign.left,
-                ),  
-              ),
-              TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              if (myController.text.isNotEmpty) {
-                                setState(() {
-                                  streefCijfer = myController.text;
-                                });
-                                
-                              } else {
-                                ScaffoldMessenger.of(this.context)
-                                  ..removeCurrentSnackBar()
-                                  ..showSnackBar(const SnackBar(
-                                      content: Text('Veld is leeg')));
-                              }
-                            },
-                            child: const Text(
-                              'Voeg toe',
-                              textAlign: TextAlign.right,
-                            ),
+                        actions: <Widget>[
+                          TextField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(1)
+                              ],
+                              controller: myController),
+                          Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  'Annuleer',
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  if (myController.text.isNotEmpty) {
+                                    setState(() {
+                                      streefCijfer = myController.text;
+                                    });
+                                  } else {
+                                    ScaffoldMessenger.of(this.context)
+                                      ..removeCurrentSnackBar()
+                                      ..showSnackBar(const SnackBar(
+                                          content: Text('Veld is leeg')));
+                                  }
+                                },
+                                child: const Text(
+                                  'Voeg toe',
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                            ],
                           ),
-            ],
-          ),                                
-        ]
-      ))
-    },
+                        ]))
+          },
         ),
       ]),
     );

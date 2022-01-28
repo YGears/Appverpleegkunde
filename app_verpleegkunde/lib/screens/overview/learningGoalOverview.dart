@@ -3,10 +3,10 @@ import 'dart:convert';
 import '../../database_connection/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import '../../style.dart';
 
 // ignore: camel_case_types
 class learningGoalOverview extends StatefulWidget {
-  // Iets voor de routes maar wat?
   const learningGoalOverview({Key? key}) : super(key: key);
 
   @override
@@ -31,8 +31,6 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     fillBody() async {
       List<String>? leerdoelen = await getTags();
       List<Widget> listToReturn = [];
-     
-      
 
       if (leerdoelen == null) {
         return;
@@ -41,8 +39,10 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       for (String vari in leerdoelen) {
         Map<String, dynamic> decodedLearningGoals = jsonDecode(vari);
         String temp = decodedLearningGoals["eind_datum"];
-         double gemiddelde = await get_average_score(formatDateTimes(decodedLearningGoals["begin_datum"]), formatDateTimes(decodedLearningGoals["eind_datum"]));
-        
+        double gemiddelde = await get_average_score(
+            formatDateTimes(decodedLearningGoals["begin_datum"]),
+            formatDateTimes(decodedLearningGoals["eind_datum"]));
+
         print(decodedLearningGoals);
         listToReturn.add(Row(
           children: [
@@ -55,7 +55,10 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
                 gemiddelde),
           ],
         ));
-        listToReturn.add(const SizedBox(height: 10, width: 10,));
+        listToReturn.add(const SizedBox(
+          height: 10,
+          width: 10,
+        ));
       }
       setState(() {
         generatedBody = listToReturn;
@@ -75,8 +78,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
         centerTitle: true,
       ),
       //body: Column(children: generatedBody));
-      body: 
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(
           children: <Widget>[
@@ -94,29 +96,15 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     );
   }
 
-  //TEST
-  BoxDecoration borderStyling() {
-    return BoxDecoration(
-      color: Colors.orange[50],
-      border: Border.all(width: 3.0),
-      borderRadius: const BorderRadius.all(
-          Radius.circular(10.0) //                 <--- border radius here
-          ),
-    );
-  }
-
   //Widget for selecting a period in which that learning goal will be set
-  Widget itembox(
-      BuildContext context, String startDate, String endDate, String onderwerp, String streefcijfer, double gemiddelde) {
-    return 
-    Container(
+  Widget itembox(BuildContext context, String startDate, String endDate,
+      String onderwerp, String streefcijfer, double gemiddelde) {
+    return Container(
         // margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         width: 300,
         // padding: const EdgeInsets.all(10.0),
-        decoration: borderStyling(),
-        child:
-         Column(
-           children: [
+        decoration: Style().borderStyling(),
+        child: Column(children: [
           Text(
             onderwerp,
             style: const TextStyle(
@@ -129,84 +117,84 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
           const SizedBox(
             height: 8,
           ),
-          Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Row(
+          Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('$startDate - $endDate' ),
-                const SizedBox(width: 20, height: 10,),
-              
-                 
-              ],
-            ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Streefcijfer: $streefcijfer/10"),
-                  const SizedBox(width: 20),
-                  Text("Gemiddelde: " + gemiddelde.toStringAsFixed(2) + "/10")
-
-                ],
-              ),
-            Row( 
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-             TextButton(
-                   
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-      
-                            child: const Text(
-                              'Dagreflecties',
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text(
-                              'Weekreflecties',
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-          ]
-          )
-          ]
-          )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text('$startDate - $endDate'),
+                    const SizedBox(
+                      width: 20,
+                      height: 10,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Streefcijfer: $streefcijfer/10"),
+                    const SizedBox(width: 20),
+                    Text("Gemiddelde: " + gemiddelde.toStringAsFixed(2) + "/10")
+                  ],
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'Dagreflecties',
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'Weekreflecties',
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ])
+              ])
         ]));
   }
-  Future<double> get_average_score(DateTime start, DateTime end)async{
 
+  Future<double> get_average_score(DateTime start, DateTime end) async {
     List<dynamic> reflections = await reflectionController.getList;
     var gem_cijfer = 0;
     var amount_of_reflections = 0;
 
-    for(var entry in reflections){
-      if (entry != null){
+    for (var entry in reflections) {
+      if (entry != null) {
         var decoded_entry = json.decode(entry);
-        if (
-          start.difference(DateTime.parse(decoded_entry["datum"])).inHours < 0 &&
-          end.difference(DateTime.parse(decoded_entry["datum"])).inHours > 0 
-        ){
-          gem_cijfer += decoded_entry["rating"] as int;   
-          amount_of_reflections += 1;             
+        if (start.difference(DateTime.parse(decoded_entry["datum"])).inHours <
+                0 &&
+            end.difference(DateTime.parse(decoded_entry["datum"])).inHours >
+                0) {
+          gem_cijfer += decoded_entry["rating"] as int;
+          amount_of_reflections += 1;
         }
       }
     }
-    return gem_cijfer/amount_of_reflections;
+    return gem_cijfer / amount_of_reflections;
   }
 
-  DateTime formatDateTimes(String datum){
-
+  DateTime formatDateTimes(String datum) {
     List<String> gesplitst = datum.split('/');
-    if(gesplitst[1].length <2){gesplitst[1] = '0' + gesplitst[1];}
-    if(gesplitst[0].length <2){gesplitst[0] = '0' + gesplitst[0];}
-   
+    if (gesplitst[1].length < 2) {
+      gesplitst[1] = '0' + gesplitst[1];
+    }
+    if (gesplitst[0].length < 2) {
+      gesplitst[0] = '0' + gesplitst[0];
+    }
+
     String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
     DateTime result = DateTime.parse(reassemble);
     return result;
-
   }
 }

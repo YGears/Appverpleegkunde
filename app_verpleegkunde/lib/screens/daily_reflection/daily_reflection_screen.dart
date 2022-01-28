@@ -4,6 +4,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class dailyReflectionPage extends StatefulWidget {
@@ -11,12 +12,13 @@ class dailyReflectionPage extends StatefulWidget {
   final DateTime selectedDate;
   @override
   State<dailyReflectionPage> createState() =>
+      // ignore: no_logic_in_create_state
       _dailyReflectionPageState(selectedDate);
 }
 
 class _dailyReflectionPageState extends State<dailyReflectionPage> {
   var selectedDate = DateTime.now();
-  var selected_day = "";
+  var selectedDay = "";
   String activatedMainTag = "";
   List selectedTags = [];
   List<Row> generatedBody = [];
@@ -29,7 +31,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   TextEditingController freeWriteController = TextEditingController();
 
   _dailyReflectionPageState(this.selectedDate) {
-    selected_day = selectedDate.year.toString() +
+    selectedDay = selectedDate.year.toString() +
         "/" +
         selectedDate.month.toString() +
         "/" +
@@ -53,7 +55,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     if (selected != null && selected != selectedDate) {
       setState(() {
         selectedDate = selected;
-        selected_day = selectedDate.year.toString() +
+        selectedDay = selectedDate.year.toString() +
             "/" +
             selectedDate.month.toString() +
             "/" +
@@ -124,7 +126,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     List<Row> subTagBody = [
       Row(children: [
         TextButton(
-            onPressed: () => {gotoDailyReflection()}, child: Text("Go Back"))
+            onPressed: () => {gotoDailyReflection()},
+            child: const Text("Ga Terug"))
       ])
     ];
     for (String tag in tags) {
@@ -168,25 +171,25 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     String json = "{";
 
     json += "\"datum\": \"$selectedDate\",";
-    if(rating != ""){
+    if (rating != "") {
       json += "\"rating\": $rating,";
-    }else{
+    } else {
       json += "\"rating\": 0,";
     }
     json += "\"opmerking\": \"$freeWrite\",";
     json += "\"tag\": [";
-    for(String tag in selectedTags){
+    for (String tag in selectedTags) {
       tagged = true;
       json += "\"$tag\",";
     }
-    if(tagged){
-      json = json.substring(0,json.length-1);
+    if (tagged) {
+      json = json.substring(0, json.length - 1);
     }
-    
+
     json += "],";
     json += "\"all_sub_tags\": [";
 
-    for(String mainTag in selectedTags){
+    for (String mainTag in selectedTags) {
       tagged = false;
       json += "{\"sub_tags\": [";
       for (String subTag in subtags[mainTag]) {
@@ -195,8 +198,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           tagged = true;
         }
       }
-      if(tagged){
-        json = json.substring(0,json.length-1);
+      if (tagged) {
+        json = json.substring(0, json.length - 1);
       }
       json += "]},";
     }
@@ -209,66 +212,78 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   Future<void> saveDailyReflection() async {
     print("printing.....");
     final prefs = await SharedPreferences.getInstance();
-    List<String>? daily_reflections = prefs.getStringList('daily_reflection');
-    daily_reflections ??= [];
-    daily_reflections.add(convertToJSON());
+    List<String>? dailyReflections = prefs.getStringList('daily_reflection');
+    dailyReflections ??= [];
+    dailyReflections.add(convertToJSON());
 
-    prefs.setStringList('daily_reflection', daily_reflections);
+    prefs.setStringList('daily_reflection', dailyReflections);
     print("Done");
   }
 
-  addTags(){
+  addTags() {
     List<Row> tags_to_return = [];
-    for (var item in selectedTags){
-      tags_to_return.add(
-        Row(
-          children:[
-            TextButton(child:Text(item),onPressed: ()=>{gotoSubTag(item)},)
-          ]
+    for (var item in selectedTags) {
+      tags_to_return.add(Row(children: [
+        TextButton(
+          child: Text(item),
+          onPressed: () => {gotoSubTag(item)},
         )
-      );
+      ]));
     }
     return tags_to_return;
   }
 
-  generateBody(){
+  generateBody() {
     List<Row> tempBody = [
-      Row(children: [
-          Text("Reflectie op dag: "),
-          ElevatedButton(child: Text(selected_day), onPressed: ()=> {_selectDate(context)} )
-        ],),
       Row(
-        children:  [
-          Text("Rating van dag: "),
-          Flexible(child: 
-            TextField(
-              decoration: InputDecoration(labelText: ""), 
-              keyboardType: TextInputType.number, 
-              inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(1) ], 
-              controller: dagRatingController
-            ),
+        children: [
+          const Text("Reflectie op dag: "),
+          ElevatedButton(
+              child: Text(selectedDay), onPressed: () => {_selectDate(context)})
+        ],
+      ),
+      Row(
+        children: [
+          const Text("Rating van dag: "),
+          Flexible(
+            child: TextField(
+                decoration: const InputDecoration(labelText: ""),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(1)
+                ],
+                controller: dagRatingController),
           ),
         ],
       ),
-      Row(children:[ Text("Freewrite") ], ),
-      Row(children:[Flexible(child:
-        TextField(maxLines: 8, controller: freeWriteController ),
-      )],),
-      Row(children:[
-        TextButton(
-          child: Text("Select tag"),
-          onPressed: ()=> {gotoTagBody()},
-        ),
-      ],),
+      Row(
+        children: const [Text("Vrij Schrijven")],
+      ),
+      Row(
+        children: [
+          Flexible(
+            child: TextField(maxLines: 8, controller: freeWriteController),
+          )
+        ],
+      ),
+      Row(
+        children: [
+          TextButton(
+            child: const Text("Selecteer een tag"),
+            onPressed: () => {gotoTagBody()},
+          ),
+        ],
+      ),
     ];
-    
+
     tempBody.addAll(addTags());
 
     tempBody.add(
       Row(
         children: [
           ElevatedButton(
-              child: Text("Save Reflection"),
+              child: const Text("Sla reflectie op"),
               onPressed: () => {saveDailyReflection()})
         ],
       ),
@@ -292,7 +307,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       //Topheader within the application
       appBar: AppBar(
         title: const Text('Hanze Verpleegkunde'),
-        backgroundColor: Colors.orange,
+        backgroundColor: backgroundColor,
         centerTitle: true,
       ),
       // Body of the application
