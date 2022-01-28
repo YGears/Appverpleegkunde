@@ -221,16 +221,16 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   addTags() {
-    List<Row> tags_to_return = [];
+    List<Row> tagsToReturn = [];
     for (var item in selectedTags) {
-      tags_to_return.add(Row(children: [
+      tagsToReturn.add(Row(children: [
         TextButton(
           child: Text(item),
           onPressed: () => {gotoSubTag(item)},
         )
       ]));
     }
-    return tags_to_return;
+    return tagsToReturn;
   }
 
   generateBody() {
@@ -307,7 +307,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       //Topheader within the application
       appBar: AppBar(
         title: const Text('Hanze Verpleegkunde'),
-        backgroundColor: backgroundColor,
+        backgroundColor: themeColor,
         centerTitle: true,
       ),
       // Body of the application

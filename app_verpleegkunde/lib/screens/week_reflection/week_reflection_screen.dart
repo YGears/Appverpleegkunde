@@ -121,7 +121,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     var weekNumber = 5;
     String json = "{";
 
-    json += "\"date\": \"$date\", \"weeknummer\": $weekNumber,";
+    json += "\"datum\": \"$date\", \"weeknummer\": $weekNumber,";
     if (rating != "") {
       json += " \"rating\": $rating,";
     } else {
