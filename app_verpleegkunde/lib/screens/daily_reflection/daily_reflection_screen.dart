@@ -225,7 +225,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     for (var item in selectedTags) {
       tags_to_return.add(Row(children: [
         TextButton(
-          child: Text(item),
+          child: Text(item,
+          textAlign: TextAlign.left,),
           onPressed: () => {gotoSubTag(item)},
         )
       ]));
@@ -311,7 +312,9 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         centerTitle: true,
       ),
       // Body of the application
-      body: Column(children: bodies[activatedPage]),
+      body: ListView(
+        
+        children: [Column(children: bodies[activatedPage])]),
     );
   }
 }

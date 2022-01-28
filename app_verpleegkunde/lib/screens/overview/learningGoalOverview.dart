@@ -4,6 +4,8 @@ import '../../database_connection/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../style.dart';
+import 'dailyReflectionOverview.dart';
+import 'weeklyReflectionOverview.dart';
 
 // ignore: camel_case_types
 class learningGoalOverview extends StatefulWidget {
@@ -42,6 +44,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
         double gemiddelde = await get_average_score(
             formatDateTimes(decodedLearningGoals["begin_datum"]),
             formatDateTimes(decodedLearningGoals["eind_datum"]));
+        
 
         print(decodedLearningGoals);
         listToReturn.add(Row(
@@ -99,6 +102,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
   //Widget for selecting a period in which that learning goal will be set
   Widget itembox(BuildContext context, String startDate, String endDate,
       String onderwerp, String streefcijfer, double gemiddelde) {
+        if(gemiddelde.isNaN){gemiddelde = 0;}
     return Container(
         // margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         width: 300,
@@ -143,7 +147,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
                     children: <Widget>[
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          _navigateAndDisplaySelection(context, 0, onderwerp, startDate, endDate);
                         },
                         child: const Text(
                           'Dagreflecties',
@@ -152,7 +156,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          _navigateAndDisplaySelection(context, 1, onderwerp, startDate, endDate);
                         },
                         child: const Text(
                           'Weekreflecties',
@@ -166,22 +170,22 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
 
   Future<double> get_average_score(DateTime start, DateTime end) async {
     List<dynamic> reflections = await reflectionController.getList;
-    var gem_cijfer = 0;
-    var amount_of_reflections = 0;
+    double gemCijfer = 0;
+    double amountOfReflections = 0;
 
     for (var entry in reflections) {
       if (entry != null) {
-        var decoded_entry = json.decode(entry);
-        if (start.difference(DateTime.parse(decoded_entry["datum"])).inHours <
+        var decodedEntry = json.decode(entry);
+        if (start.difference(DateTime.parse(decodedEntry["datum"])).inHours <
                 0 &&
-            end.difference(DateTime.parse(decoded_entry["datum"])).inHours >
+            end.difference(DateTime.parse(decodedEntry["datum"])).inHours >
                 0) {
-          gem_cijfer += decoded_entry["rating"] as int;
-          amount_of_reflections += 1;
+          gemCijfer += decodedEntry["rating"] as double;
+          amountOfReflections += 1;
         }
       }
     }
-    return gem_cijfer / amount_of_reflections;
+    return gemCijfer/amountOfReflections;
   }
 
   DateTime formatDateTimes(String datum) {
@@ -197,4 +201,17 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     DateTime result = DateTime.parse(reassemble);
     return result;
   }
+  void _navigateAndDisplaySelection(BuildContext context, int index, String onderwerp, String startdate, String enddate) async {
+  //List of all screens
+  List<String> learninggoal = [onderwerp, startdate, enddate];
+  final List<Widget> pages = [
+    dailyReflectionOverview(learninggoal),
+    weeklyReflectionOverview(learninggoal),
+  ];
+
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => pages[index]),
+  );
+}
 }

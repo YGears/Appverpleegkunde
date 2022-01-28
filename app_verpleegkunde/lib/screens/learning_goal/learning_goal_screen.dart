@@ -119,7 +119,7 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Het zetten van een leerdoel"),
-        backgroundColor: backgroundColor,
+        backgroundColor: themeColor,
         centerTitle: true,
       ),
       body: contentWrapper(context),
