@@ -22,13 +22,52 @@ class list_controller {
         'Lastige situatie',
         'Vooruitgang',
         'Bespreken met mentor',
-        'Bespreken op Hanzedag'
+        'Bespreken op Hanzedag',
+        'Eigen grenzen inzien',
+        'Eigen grenzen aangeven',
+        'Nee zeggen',
+        'Collega aanspreken op gedrag',
+        'Cliënt aanspreken op gedrag',
+        'Om hulp vragen',
+        'Gevoelens delen',
+        'Mening delen',
+        'Initiatief nemen',
+        'Bang voor consequenties',
+        'Extra dienst / Invallen',
+        'Conflinctvermijding',
+        'Gebrek aan veiligheid',
       ];
     }
     if (type == 'favorieten') {
       list ??= [];
     }
     if (type == 'tag') {
+      list ??= [
+        'Cliënt',
+        'Familie van de Cliënt',
+        'Collega-verpleegkundige',
+        'Verzorgkundige',
+        'Regieverpleegkundige',
+        'Arts',
+        'Werkplekbegeleider',
+        'Overdracht',
+        'Pauze',
+        'Roddelende collega\'s',
+        'Taakverdeling',
+        'Dienstbespreking',
+        'Cliëntbespreking',
+        'Gesprek werkplekbegeleider',
+        'Ander werkoverleg',
+        'Medicijnen afmeten',
+        'Medicijnen toedienen',
+        'Catether plaatsen/verwijderen',
+        'Bloeddruk meten',
+        'Wondverzorging',
+        'Andere verpleegkundige handeling',
+      ];
+    }
+
+    if (type == 'subtag') {
       list ??= [
         //Negative Emotions
         'Boos',
@@ -39,9 +78,7 @@ class list_controller {
         'Eenzaam',
         'Onbekwaam',
         'Gefrustreerd',
-        'Verlegen',
-        // Positive Emotions
-        'Blij',
+        'Verlegen', 'Blij',
         'Opgelucht',
         'Enthousiast',
         'Gemotiveerd',
@@ -51,6 +88,19 @@ class list_controller {
         'Moedig',
         'Nieuwsgierig',
         'Tevreden',
+        'Niet gehoord worden',
+        'Niet serieus genomen worden',
+        'Hiërarchie',
+        'Buitengesloten worden',
+        'Minderwaardig voelen',
+        'Geïntimideerd',
+        'Oneerlijk',
+        'Gehoord worden',
+        'Serieus genomen worden',
+        'Teamgevoel',
+        'Steun vinden',
+        'Gelijke status',
+        'Werkvloernormen',
       ];
     }
 

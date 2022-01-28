@@ -32,11 +32,15 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   //MARK
   list_controller tagController = list_controller('tag');
   List listOfTags = [];
+  list_controller subtagController = list_controller('subtag');
+  List listOfSubtags = [];
 
   Future<void> update() async {
     List savedTags = await tagController.getList;
+    List savedSubtags = await subtagController.getList;
     setState(() {
       listOfTags = savedTags;
+      listOfSubtags = savedSubtags;
     });
   }
 
@@ -135,7 +139,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
             child: const Text("Ga Terug"))
       ])
     ];
-    for (String tag in listOfTags) {
+    for (String tag in listOfSubtags) {
+      //HIER FF TESTEN
       subTagBody.add(Row(children: [
         TextButton(
           child: Text(tag),
