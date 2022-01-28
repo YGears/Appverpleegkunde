@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import '../../logging/log_controller.dart';
-import '../../database_connection/list_controller.dart';
+import '../../controllers/list_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
 /// Class to create the Leerdoelen view, making a list of all leerdoelen available.
@@ -20,24 +19,22 @@ class _Leerdoelen extends State<Leerdoelen> {
 
   List leerdoelen = [];
   List favorieten = [];
-  
+
   list_controller leerdoelenController = list_controller('leerdoelen');
   list_controller favorietenController = list_controller('favorieten');
-  
+
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  Future<void> update() async{
+  Future<void> update() async {
     print('Updated!');
     List savedLeerdoelen = await leerdoelenController.getList;
     List savedFavorieten = await favorietenController.getList;
 
-   setState(() {
+    setState(() {
       leerdoelen = savedLeerdoelen;
       favorieten = savedFavorieten;
-
     });
-    
   }
 
   @override
@@ -100,7 +97,8 @@ class _Leerdoelen extends State<Leerdoelen> {
                               Navigator.of(context).pop();
                               if (myController.text.isNotEmpty) {
                                 leerdoelenController.add(myController.text);
-                                WidgetsBinding.instance!.addPostFrameCallback((_) => update());
+                                WidgetsBinding.instance!
+                                    .addPostFrameCallback((_) => update());
                               } else {
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -118,6 +116,7 @@ class _Leerdoelen extends State<Leerdoelen> {
           child: const Icon(Icons.add),
         ));
   }
+
   void _favorietenLijst() async {
     final result = await Navigator.of(context).push(
       MaterialPageRoute<String>(
@@ -138,25 +137,28 @@ class _Leerdoelen extends State<Leerdoelen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                onPressed: () {
-                  setState(() {
-                    favorietenController.remove(leerdoel);
-                    WidgetsBinding.instance!.addPostFrameCallback((_) => update());
-                    Navigator.pop(context);  // pop current page
-                    ScaffoldMessenger.of(this.context)
-                                  ..removeCurrentSnackBar()
-                                  ..showSnackBar(SnackBar(
-                                      content: Text('$leerdoel uit favorieten gehaald')));
-                    
-                  });
-                },
-                icon: const Icon(
-                  Icons.favorite,
-                  color:  Colors.red,
-                )),
-                    ],), onTap: () {
-          Navigator.pop(context, leerdoel);
-          },
+                          onPressed: () {
+                            setState(() {
+                              favorietenController.remove(leerdoel);
+                              WidgetsBinding.instance!
+                                  .addPostFrameCallback((_) => update());
+                              Navigator.pop(context); // pop current page
+                              ScaffoldMessenger.of(this.context)
+                                ..removeCurrentSnackBar()
+                                ..showSnackBar(SnackBar(
+                                    content: Text(
+                                        '$leerdoel uit favorieten gehaald')));
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          )),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.pop(context, leerdoel);
+                  },
                 ),
               );
             },
@@ -185,10 +187,10 @@ class _Leerdoelen extends State<Leerdoelen> {
   }
 
   Widget _buildRow(String value) {
-        if(!justOnce){
-            justOnce = true;
-            update();
-          }
+    if (!justOnce) {
+      justOnce = true;
+      update();
+    }
     final alreadySaved = favorieten.contains(value);
     bool isPressed = false;
     return Card(
@@ -205,41 +207,45 @@ class _Leerdoelen extends State<Leerdoelen> {
                   setState(
                     () {
                       isPressed = true;
-                    showDialog(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Wil je dit leerdoel verwijderen?'),
-                        content: Text(value),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text(
-                              'Annuleer',
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              leerdoelenController.remove(value);
-                              favorietenController.remove(value);
-                              WidgetsBinding.instance!.addPostFrameCallback((_) => update());
-                                ScaffoldMessenger.of(this.context)
-                                  ..removeCurrentSnackBar()
-                                  ..showSnackBar(const SnackBar(
-                                      content: Text('Leerdoel is verwijderd')));
-
-                            },
-                            child: const Text(
-                              'Verwijder leerdoel',
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-                        ]));
-                  },
-                  );},
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                                  title: const Text(
+                                      'Wil je dit leerdoel verwijderen?'),
+                                  content: Text(value),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        'Annuleer',
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        leerdoelenController.remove(value);
+                                        favorietenController.remove(value);
+                                        WidgetsBinding.instance!
+                                            .addPostFrameCallback(
+                                                (_) => update());
+                                        ScaffoldMessenger.of(this.context)
+                                          ..removeCurrentSnackBar()
+                                          ..showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Leerdoel is verwijderd')));
+                                      },
+                                      child: const Text(
+                                        'Verwijder leerdoel',
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                  ]));
+                    },
+                  );
+                },
                 icon: Icon(
                   isPressed ? Icons.delete : Icons.delete_outline,
                   color: isPressed ? Colors.green : null,
@@ -251,11 +257,14 @@ class _Leerdoelen extends State<Leerdoelen> {
                   setState(() {
                     if (alreadySaved) {
                       favorietenController.remove(value);
-                      WidgetsBinding.instance!.addPostFrameCallback((_) => update());
+                      WidgetsBinding.instance!
+                          .addPostFrameCallback((_) => update());
                     } else {
                       favorietenController.add(value);
-                      WidgetsBinding.instance!.addPostFrameCallback((_) => update());
-                  }});
+                      WidgetsBinding.instance!
+                          .addPostFrameCallback((_) => update());
+                    }
+                  });
                 },
                 icon: Icon(
                   alreadySaved ? Icons.favorite : Icons.favorite_border,

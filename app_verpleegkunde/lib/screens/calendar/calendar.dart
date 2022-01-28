@@ -70,7 +70,7 @@ class _CalendarState extends State<Calendar> {
 
     createCalendar() {
       int currentDayInMonth = 0;
-      var weekNumsInMonth = Date().listOfWeeks(year, month);
+      var weekNumsInMonth = const Date().listOfWeeks(year, month);
       // Create x rows based on length of a given month in a given
       // Than for every row, give a week children if day is in week
       for (var week = 0; week < weekNumsInMonth.length; week++) {

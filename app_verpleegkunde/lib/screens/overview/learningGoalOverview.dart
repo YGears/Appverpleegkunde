@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import '../../database_connection/list_controller.dart';
+import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../style.dart';
