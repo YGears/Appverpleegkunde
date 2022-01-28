@@ -1,5 +1,3 @@
-import 'dart:html';
-
 class daily_reflection{
 
 String date;

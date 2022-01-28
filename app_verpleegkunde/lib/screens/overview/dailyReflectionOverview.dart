@@ -6,6 +6,8 @@ import 'package:flutter_application_1/database_connection/list_controller.dart';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../style.dart';
+
 class dailyReflectionOverview extends StatefulWidget {
 
   List<String> learningGoal = [];
@@ -14,14 +16,8 @@ class dailyReflectionOverview extends StatefulWidget {
     learningGoal = learninggoal;
   }
 
-  // List<Widget> getLearninggoal(){
-  //   return learningGoal;
-  // }
-
   @override
   dailyReflectionOverviewState createState() => dailyReflectionOverviewState(learningGoal);
-
-
 }
 
 
@@ -45,11 +41,9 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
   @override
   Widget build(BuildContext context) {
     log.record("Is naar de kies leerdoel pagina gegaan.");
-    final myController = TextEditingController();
 
     fillBody() async{
       List<dynamic> dailyReflections = await getDailyReflections(formatDateTimes(learninggoalStartDate), formatDateTimes(learninggoalEndDate));
-      List<dynamic> listToReturn = [];
 
       setState(() {
         generatedBody = dailyReflections;
@@ -82,14 +76,57 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
         ),
         );
   }
-  Widget _buildRow(String value) {
+  Widget _buildRow(daily_reflection reflection) {
 
-      return Text(value);
+    //cleanup reflection values
+    if(reflection.comment == ""){
+      reflection.comment = "geen opmerking geplaats";
+    }
+    if(reflection.tag.isEmpty){
+      reflection.tag = ["geen tag gekozen"];
+    }
+     if(reflection.subtag.isEmpty){
+      reflection.subtag = ["geen subtags gekozen"];
+    }
+
+
+    return Row(children: [
+      Container(
+        alignment: Alignment.center,
+        width: 300,
+        decoration: Style().borderStyling(),
+        child: Column(children: [
+          Text(
+            reflection.date.substring(0, 16),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+            ),
+            const SizedBox(
+            height: 8,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('Rating: ${reflection.rating}', textAlign: TextAlign.left),
+              Text('Tag: ${reflection.tag}', textAlign: TextAlign.right,),
+              Text('Subtag: ${reflection.subtag}'),
+              Text('Opmerking: ${reflection.comment}')
+
+            ],
+          )
+          
+        ])
+      )
+
+    ],);
   }
 
   Future<List<dynamic>> getDailyReflections(DateTime start, DateTime end) async {
   List<dynamic> reflections = await reflectionController.getList;
-  List<String> result = [];
+  List<daily_reflection> result = [];
 
   for (var entry in reflections) {
     if (entry != null) {
@@ -98,19 +135,13 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
                0 &&
           end.difference(DateTime.parse(decodedEntry["datum"])).inHours >
               0) {
-        result.add(entry);
-
-        //TESTING
-        daily_reflection dailyReflection = daily_reflection.fromJson(jsonDecode(entry));
-
-        print(dailyReflection);
-        print(dailyReflection.rating);
-
-        
+      
+        daily_reflection dailyReflection = daily_reflection.fromJson(jsonDecode(entry));        
+        result.add(dailyReflection);
       }
     }
   }
-  print(result.runtimeType);
+
   return result;
 }
   DateTime formatDateTimes(String datum) {

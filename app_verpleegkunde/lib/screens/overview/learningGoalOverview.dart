@@ -104,9 +104,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       String onderwerp, String streefcijfer, double gemiddelde) {
         if(gemiddelde.isNaN){gemiddelde = 0;}
     return Container(
-        // margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         width: 300,
-        // padding: const EdgeInsets.all(10.0),
         decoration: Style().borderStyling(),
         child: Column(children: [
           Text(
@@ -175,6 +173,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
 
     for (var entry in reflections) {
       if (entry != null) {
+        print(entry);
         var decodedEntry = json.decode(entry);
         if (start.difference(DateTime.parse(decodedEntry["datum"])).inHours <
                 0 &&
