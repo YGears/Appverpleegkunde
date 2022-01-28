@@ -47,19 +47,18 @@ class _loginScreenState extends State<loginScreen> {
     super.dispose();
   }
 
-  void redirect_if_app_already_has_a_user() async{
+  void redirect_if_app_already_has_a_user() async {
     final prefs = await SharedPreferences.getInstance();
     String? user = await prefs.getString('user');
-    if(user != null && user != ""){
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const RootScreen()));
+    if (user != null && user != "") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const RootScreen()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     redirect_if_app_already_has_a_user();
-
 
     return Scaffold(
       //Topheader within the application
@@ -130,17 +129,24 @@ class _loginScreenState extends State<loginScreen> {
         onPressed: () async {
           Api api = Api();
           var loggedIn = false;
-          loggedIn = await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
+          loggedIn =
+              await api.login(myController.text, "KoekjesZijnGemaaktVanDeeg");
           if (loggedIn) {
             await Syncronisation.login(
                 myController.text, "KoekjesZijnGemaaktVanDeeg");
             print("you should be seeing something....");
+            var updated = await api.getOldInfo();
+            if (updated) {
+              print("prefs updated");
+            } else {
+              print("didn't work");
+            }
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const RootScreen()));
           } else {
             setState(() {
               error = "Inloggen mislukt";
-            }); 
+            });
           }
         },
       ),
