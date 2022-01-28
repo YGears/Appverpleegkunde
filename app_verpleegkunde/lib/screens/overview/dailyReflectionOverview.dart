@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Logging/log_controller.dart';
 import 'package:flutter_application_1/database_connection/list_controller.dart';
+import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class dailyReflectionOverview extends StatefulWidget {
@@ -88,7 +89,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
 
   Future<List<dynamic>> getDailyReflections(DateTime start, DateTime end) async {
   List<dynamic> reflections = await reflectionController.getList;
-  List<dynamic> result = [];
+  List<String> result = [];
 
   for (var entry in reflections) {
     if (entry != null) {
@@ -98,6 +99,14 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
           end.difference(DateTime.parse(decodedEntry["datum"])).inHours >
               0) {
         result.add(entry);
+
+        //TESTING
+        daily_reflection dailyReflection = daily_reflection.fromJson(jsonDecode(entry));
+
+        print(dailyReflection);
+        print(dailyReflection.rating);
+
+        
       }
     }
   }
