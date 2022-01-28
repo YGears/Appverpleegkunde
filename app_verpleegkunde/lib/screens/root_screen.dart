@@ -5,7 +5,7 @@ import 'navbar.dart';
 
 //Import all screens
 import 'daily_reflection/daily_reflection_screen.dart';
-import '../logging/log_controller.dart';
+import '../controllers/log_controller.dart';
 import '../database_connection/syncronisatie.dart';
 import 'calendar/calendar_screen.dart';
 import 'overview/learningGoalOverview.dart';
@@ -35,15 +35,17 @@ class _RootScreen extends State<RootScreen> {
     "Specifieke Dagelijkse reflectie",
   ];
 
-  void builtScreens(){
+  void builtScreens() {
     screens = [];
     screens.add(learningGoalOverview());
     screens.add(LearningGoalScreen());
-    screens.add(CalendarScreen(parent:this));
+    screens.add(CalendarScreen(parent: this));
     screens.add(dailyReflectionPage(selectedDate: DateTime.now()));
-    screens.add(WeekReflectionScreen(selectedDate: DateTime.now())); //DUBBEL CHECK
+    screens
+        .add(WeekReflectionScreen(selectedDate: DateTime.now())); //DUBBEL CHECK
     screens.add(dailyReflectionPage(selectedDate: customDate));
   }
+
   void onClicked(int index) {
     //Function to switch index if navbar is touched
     syncWithDatabase();
@@ -62,13 +64,13 @@ class _RootScreen extends State<RootScreen> {
     onClicked(2);
     return false;
   }
-  
+
   void gotoDailyReflection(DateTime date) {
     setState(() {
       screens.remove(dailyReflectionPage(selectedDate: customDate));
       customDate = date;
       selectedIndex = 3;
-      selectedScreenIndex = 5;//index of the dailyreflection with custom date
+      selectedScreenIndex = 5; //index of the dailyreflection with custom date
       builtScreens();
     });
   }
@@ -77,7 +79,8 @@ class _RootScreen extends State<RootScreen> {
   Widget build(BuildContext context) {
     builtScreens();
     // Build Pagecontent, display content by index
-    log.record("Is naar pagina " + screenNames[selectedScreenIndex] + " gegaan.");
+    log.record(
+        "Is naar pagina " + screenNames[selectedScreenIndex] + " gegaan.");
     return WillPopScope(
         onWillPop: _onBackPressed,
         child: Scaffold(

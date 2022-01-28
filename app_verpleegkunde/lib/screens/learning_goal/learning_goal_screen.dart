@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_application_1/app_colors.dart';
 import 'package:flutter_application_1/screens/root_screen.dart';
 
-import '../../logging/log_controller.dart';
+import '../../controllers/log_controller.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,14 +1,13 @@
-// ignore_for_file: camel_case_types
-
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/app_colors.dart';
+import '../../app_colors.dart';
+import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class dailyReflectionPage extends StatefulWidget {
-  dailyReflectionPage({Key? key, required this.selectedDate}) : super(key: key);
+  const dailyReflectionPage({Key? key, required this.selectedDate})
+      : super(key: key);
   final DateTime selectedDate;
   @override
   State<dailyReflectionPage> createState() =>
@@ -29,6 +28,17 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   int activatedPage = 1;
   final dagRatingController = TextEditingController();
   TextEditingController freeWriteController = TextEditingController();
+
+  //MARK
+  list_controller tagController = list_controller('tag');
+  List listOfTags = [];
+
+  Future<void> update() async {
+    List savedTags = await tagController.getList;
+    setState(() {
+      listOfTags = savedTags;
+    });
+  }
 
   _dailyReflectionPageState(this.selectedDate) {
     selectedDay = selectedDate.year.toString() +
@@ -62,11 +72,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
             selectedDate.day.toString();
       });
     }
-  }
-
-  List getTags() {
-    List list = ["Leerdoel1", "stage", "tag1", "tag2", "leuk"];
-    return list;
   }
 
   gotoTagBody() {
@@ -122,7 +127,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   generateSubTagBody() {
-    List tags = getTags();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => update());
     List<Row> subTagBody = [
       Row(children: [
         TextButton(
@@ -130,7 +135,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
             child: const Text("Ga Terug"))
       ])
     ];
-    for (String tag in tags) {
+    for (String tag in listOfTags) {
       subTagBody.add(Row(children: [
         TextButton(
           child: Text(tag),
@@ -151,9 +156,9 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   generateTagBody() {
-    List tags = getTags();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => update());
     List<Row> tagBody = [];
-    for (String tag in tags) {
+    for (String tag in listOfTags) {
       tagBody.add(Row(children: [
         TextButton(
           child: Text(tag),
@@ -176,8 +181,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     } else {
       json += "\"rating\": 0,";
     }
-    json += "\"opmerking\": \"$freeWrite\",";
-    json += "\"tag\": [";
+    json += "\"opmerking\": \"$freeWrite\",\"tag\": [";
     for (String tag in selectedTags) {
       tagged = true;
       json += "\"$tag\",";
@@ -186,8 +190,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       json = json.substring(0, json.length - 1);
     }
 
-    json += "],";
-    json += "\"all_sub_tags\": [";
+    json += "],\"all_sub_tags\": [";
 
     for (String mainTag in selectedTags) {
       tagged = false;
@@ -201,10 +204,9 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       if (tagged) {
         json = json.substring(0, json.length - 1);
       }
-      json += "]},";
+      json += "]}";
     }
-    json += "]";
-    json += "}";
+    json += "]}";
     print(json);
     return json;
   }
@@ -215,7 +217,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     List<String>? dailyReflections = prefs.getStringList('daily_reflection');
     dailyReflections ??= [];
     dailyReflections.add(convertToJSON());
-
     prefs.setStringList('daily_reflection', dailyReflections);
     print("Done");
   }
@@ -270,7 +271,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       Row(
         children: [
           TextButton(
-            child: const Text("Selecteer een tag"),
+            child: const Text("Selecteer een Tag"),
             onPressed: () => {gotoTagBody()},
           ),
         ],

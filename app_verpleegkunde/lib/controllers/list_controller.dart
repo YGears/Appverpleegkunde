@@ -1,13 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class list_controller{
-
-
+class list_controller {
   String type;
-  
+
   //Constructor
   list_controller(this.type);
-
 
   Future<List> get getList async {
     //Get the shared preferences
@@ -17,18 +14,56 @@ class list_controller{
     List<String>? list = prefs.getStringList(type);
 
     //If empty, fill per type
-    if(type == 'leerdoelen'){list ??= ['Assertief Benaderen','Conflicthantering','Vragen om hulp','Interproffesionele communicatie','Doen alsof je druk bezig bent',]; }
-    if(type == 'favorieten'){list ??= [];}
-    if(type == 'tag'){list ??= [];}
+    if (type == 'leerdoelen') {
+      list ??= [
+        'Actieplan',
+        'Voorbeeld',
+        'Moeizaam',
+        'Lastige situatie',
+        'Vooruitgang',
+        'Bespreken met mentor',
+        'Bespreken op Hanzedag'
+      ];
+    }
+    if (type == 'favorieten') {
+      list ??= [];
+    }
+    if (type == 'tag') {
+      list ??= [
+        //Negative Emotions
+        'Boos',
+        'Bang',
+        'Onzeker',
+        'Moe',
+        'Verdrietig',
+        'Eenzaam',
+        'Onbekwaam',
+        'Gefrustreerd',
+        'Verlegen',
+        // Positive Emotions
+        'Blij',
+        'Opgelucht',
+        'Enthousiast',
+        'Gemotiveerd',
+        'Gesteund',
+        'Energiek',
+        'Bekwaam',
+        'Moedig',
+        'Nieuwsgierig',
+        'Tevreden',
+      ];
+    }
 
     //voor overige
-    else{list ??= [];}
-  
+    else {
+      list ??= [];
+    }
+
     //return said list
     return list;
   }
 
-  Future<void> setList(List newList) async{
+  Future<void> setList(List newList) async {
     //Get the shared preferences
     final prefs = await SharedPreferences.getInstance();
 
@@ -36,16 +71,15 @@ class list_controller{
     prefs.setStringList(type, newList as List<String>);
   }
 
-    Future<void> add(String value) async {
-      List list = await getList;
-      list.add(value);
-      setList(list);
+  Future<void> add(String value) async {
+    List list = await getList;
+    list.add(value);
+    setList(list);
   }
 
-    Future<void> remove(String value) async {
-      List list = await getList;
-      list.remove(value);
-      setList(list);
+  Future<void> remove(String value) async {
+    List list = await getList;
+    list.remove(value);
+    setList(list);
   }
-
 }

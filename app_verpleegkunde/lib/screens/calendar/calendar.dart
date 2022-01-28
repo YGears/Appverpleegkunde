@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/database_connection/syncronisatie.dart';
-import 'date.dart';
+import 'year..dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key, required this.parent}) : super(key: key);
   final parent;
   @override
+  // ignore: no_logic_in_create_state
   State<Calendar> createState() => _CalendarState(parent);
 }
 
@@ -17,43 +18,21 @@ class _CalendarState extends State<Calendar> {
   DateTime selectedDate = DateTime.now();
 
   _CalendarState(var newParent) {
-    this.parent = newParent;
+    parent = newParent;
   }
-
-  List<String> months = [
-    'Januari',
-    'Februari',
-    'Maart',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Augustus',
-    'September',
-    'Oktober',
-    'November',
-    'December'
-  ];
 
   @override
   Widget build(BuildContext context) {
     var year = selectedDate.year;
     var month = selectedDate.month;
     var calendarTable = <TableRow>[];
-    var monthName = months[selectedDate.month - 1];
+    var monthName = Year().months[selectedDate.month - 1];
 
     syncWithDatabase() async {
       await Syncronisation.syncUp();
     }
 
-    dag() async {
-      setState(() {
-        count = count + 1;
-      });
-    }
-
-    specifiekeDagReflectie(var dag) async {
-      // print(dadayteS);
+    selectSpecificDayToDoDailyReflection(var dag) async {
       parent.gotoDailyReflection(dag);
     }
 
@@ -70,7 +49,7 @@ class _CalendarState extends State<Calendar> {
 
     createCalendar() {
       int currentDayInMonth = 0;
-      var weekNumsInMonth = const Date().listOfWeeks(year, month);
+      var weekNumsInMonth = Year().listOfWeeks(year, month);
       // Create x rows based on length of a given month in a given
       // Than for every row, give a week children if day is in week
       for (var week = 0; week < weekNumsInMonth.length; week++) {
@@ -81,7 +60,6 @@ class _CalendarState extends State<Calendar> {
             style: TextStyle(color: Colors.black, fontSize: 9),
           )
         ]);
-
         //DAG ITEMS IN DEZE WEEK
         for (var day = 1; day < 8; day++) {
           // COMPLEX IF STATEMENT EXPLAINATION
@@ -93,7 +71,7 @@ class _CalendarState extends State<Calendar> {
             currentDayInMonth++;
             var dag = DateTime(year, month, currentDayInMonth);
             calendarRow.children!.add(TextButton(
-                onPressed: () => specifiekeDagReflectie(dag),
+                onPressed: () => selectSpecificDayToDoDailyReflection(dag),
                 child: Text(currentDayInMonth.toString(),
                     style: const TextStyle(
                         color: Colors.black,

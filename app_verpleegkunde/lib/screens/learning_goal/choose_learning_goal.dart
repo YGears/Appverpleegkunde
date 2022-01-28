@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../logging/log_controller.dart';
+import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
