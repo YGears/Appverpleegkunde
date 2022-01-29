@@ -28,7 +28,6 @@ class _Leerdoelen extends State<Leerdoelen> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Future<void> update() async{
-    print('Updated!');
     List savedLeerdoelen = await leerdoelenController.getList;
     List savedFavorieten = await favorietenController.getList;
 
