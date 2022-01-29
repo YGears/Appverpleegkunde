@@ -90,12 +90,13 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     }
 
 
-    return Row(children: [
+    return Row(children: [ 
       Container(
-        alignment: Alignment.center,
         width: 300,
         decoration: Style().borderStyling(),
-        child: Column(children: [
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
           Text(
             reflection.date.substring(0, 16),
             style: const TextStyle(
@@ -119,9 +120,8 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
           )
           
         ])
-      )
 
-    ],);
+    )],);
   }
 
   Future<List<dynamic>> getDailyReflections(DateTime start, DateTime end) async {

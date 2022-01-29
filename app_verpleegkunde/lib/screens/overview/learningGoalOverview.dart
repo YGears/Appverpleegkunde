@@ -40,14 +40,13 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
 
       for (String vari in leerdoelen) {
         Map<String, dynamic> decodedLearningGoals = jsonDecode(vari);
-        String temp = decodedLearningGoals["eind_datum"];
         double gemiddelde = await get_average_score(
             formatDateTimes(decodedLearningGoals["begin_datum"]),
             formatDateTimes(decodedLearningGoals["eind_datum"]));
         
 
-        print(decodedLearningGoals);
-        listToReturn.add(Row(
+        listToReturn.add(
+          Row(
           children: [
             itembox(
                 context,
@@ -106,7 +105,9 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     return Container(
         width: 300,
         decoration: Style().borderStyling(),
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
           Text(
             onderwerp,
             style: const TextStyle(
