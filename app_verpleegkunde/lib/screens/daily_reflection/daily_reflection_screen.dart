@@ -276,11 +276,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           TextButton(
             child: const Text("Selecteer een Tag"),
             onPressed: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const DailyReflections()),
-              )
+              
+              _navigateAndDisplaySelection(context),
             },
           ),
         ],
@@ -304,7 +301,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     });
   }
 
-  @override
   void _navigateAndDisplaySelection(BuildContext context) async {
     final result = await Navigator.push(
       context,
@@ -312,7 +308,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     );
 
     setState(() {
-      if ('$result' != 'null') {
+      print(result);
+      if (result != null) {
         log_controller().record("Mogelijke Tag geselecteerd.");
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
