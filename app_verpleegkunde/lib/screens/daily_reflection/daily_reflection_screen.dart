@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/controllers/log_controller.dart';
+import 'package:flutter_application_1/screens/daily_reflection/dailyreflect.dart';
 import '../../app_colors.dart';
 import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,12 +80,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     }
   }
 
-  gotoTagBody() {
-    setState(() {
-      activatedPage = 0;
-    });
-  }
-
   gotoSubTag(tag) {
     setState(() {
       activatedMainTag = tag;
@@ -140,7 +136,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       ])
     ];
     for (String tag in listOfSubtags) {
-      //HIER FF TESTEN
       subTagBody.add(Row(children: [
         TextButton(
           child: Text(tag),
@@ -209,7 +204,10 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       if (tagged) {
         json = json.substring(0, json.length - 1);
       }
-      json += "]}";
+      json += "]},";
+    }
+    if (tagged) {
+      json = json.substring(0, json.length - 1);
     }
     json += "]}";
     print(json);
@@ -217,13 +215,13 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   Future<void> saveDailyReflection() async {
-    print("printing.....");
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? dailyReflections = prefs.getStringList('daily_reflection');
-    dailyReflections ??= [];
-    dailyReflections.add(convertToJSON());
-    prefs.setStringList('daily_reflection', dailyReflections);
-    print("Done");
+    // print("printing.....");
+    // final prefs = await SharedPreferences.getInstance();
+    // List<String>? dailyReflections = prefs.getStringList('tag');
+    // dailyReflections ??= [];
+    // dailyReflections.add(convertToJSON());
+    // prefs.setStringList('tag', dailyReflections);
+    // print("Done");
   }
 
   addTags() {
@@ -240,7 +238,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   generateBody() {
-    List<Row> tempBody = [
+    List<Row> screenForm = [
       Row(
         children: [
           const Text("Reflectie op dag: "),
@@ -277,15 +275,21 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         children: [
           TextButton(
             child: const Text("Selecteer een Tag"),
-            onPressed: () => {gotoTagBody()},
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const DailyReflections()),
+              )
+            },
           ),
         ],
       ),
     ];
+    //MARK hier kijken
+    screenForm.addAll(addTags());
 
-    tempBody.addAll(addTags());
-
-    tempBody.add(
+    screenForm.add(
       Row(
         children: [
           ElevatedButton(
@@ -296,7 +300,27 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     );
 
     setState(() {
-      generatedBody = tempBody;
+      generatedBody = screenForm;
+    });
+  }
+
+  @override
+  void _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const DailyReflections()),
+    );
+
+    setState(() {
+      if ('$result' != 'null') {
+        log_controller().record("Mogelijke Tag geselecteerd.");
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+              SnackBar(content: Text('Tag geselecteerd! - $result')));
+        selectedTags.add('$result');
+        print(selectedTags);
+      }
     });
   }
 
@@ -317,7 +341,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         centerTitle: true,
       ),
       // Body of the application
-      body: Column(children: bodies[activatedPage]),
+      body: ListView(children: [Column(children: bodies[activatedPage])]),
     );
   }
 }

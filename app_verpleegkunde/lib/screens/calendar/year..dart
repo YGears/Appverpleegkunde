@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class Year extends StatelessWidget {
-  Year({Key? key}) : super(key: key);
-
+class Year {
   List<String> months = [
     'Januari',
     'Februari',
@@ -53,10 +51,5 @@ class Year extends StatelessWidget {
       mondayOffset += 7;
     }
     return listOfWeekNumb;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox.shrink();
   }
 }

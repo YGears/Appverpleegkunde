@@ -2,18 +2,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class list_controller {
   String type;
-
-  //Constructor
   list_controller(this.type);
 
   Future<List> get getList async {
     //Get the shared preferences
     final prefs = await SharedPreferences.getInstance();
-
     //Get the requested list
     List<String>? list = prefs.getStringList(type);
 
-    //If empty, fill per type
     if (type == 'leerdoelen') {
       list ??= [
         'Actieplan',
@@ -38,9 +34,11 @@ class list_controller {
         'Gebrek aan veiligheid',
       ];
     }
+
     if (type == 'favorieten') {
       list ??= [];
     }
+
     if (type == 'tag') {
       list ??= [
         'Cliënt',
@@ -78,7 +76,8 @@ class list_controller {
         'Eenzaam',
         'Onbekwaam',
         'Gefrustreerd',
-        'Verlegen', 'Blij',
+        'Verlegen',
+        'Blij',
         'Opgelucht',
         'Enthousiast',
         'Gemotiveerd',
@@ -103,12 +102,10 @@ class list_controller {
         'Werkvloernormen',
       ];
     }
-
     //voor overige
     else {
       list ??= [];
     }
-
     //return said list
     return list;
   }
