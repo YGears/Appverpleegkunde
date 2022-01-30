@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/controllers/log_controller.dart';
 import 'package:flutter_application_1/screens/daily_reflection/dailyreflect.dart';
+import 'package:flutter_application_1/screens/daily_reflection/sub_tags_screen.dart';
 import '../../app_colors.dart';
 import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +27,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   List<Row> generatedTagBody = [];
   List<Row> generatedSubTagBody = [];
   Map subtags = HashMap<String, List<String>>();
+
   List<List<Row>> bodies = [];
   int activatedPage = 1;
   final dagRatingController = TextEditingController();
@@ -78,13 +80,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
             selectedDate.day.toString();
       });
     }
-  }
-
-  gotoSubTag(tag) {
-    setState(() {
-      activatedMainTag = tag;
-      activatedPage = 2;
-    });
   }
 
   gotoDailyReflection() {
@@ -215,13 +210,19 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   Future<void> saveDailyReflection() async {
-    // print("printing.....");
-    // final prefs = await SharedPreferences.getInstance();
-    // List<String>? dailyReflections = prefs.getStringList('tag');
-    // dailyReflections ??= [];
-    // dailyReflections.add(convertToJSON());
-    // prefs.setStringList('tag', dailyReflections);
-    // print("Done");
+    log_controller().record("Dagreflectie opgeslagen.");
+    print("A");
+    final prefs = await SharedPreferences.getInstance();
+    print("B, Wat moet deze lijst ophalen?");
+    List<String>? dailyReflections = prefs.getStringList('daily_reflection');
+    print("C, Als ie er niet is dan leeg inizailzeren");
+    dailyReflections ??= [];
+    //print("D, Voeg format toe aan deze kuhst");
+    print(convertToJSON());
+    //dailyReflections.add(convertToJSON());
+    //print("E, geen idee");
+    //prefs.setStringList('dag_reflectie', dailyReflections);
+    print("Done");
   }
 
   addTags() {
@@ -230,7 +231,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       tagsToReturn.add(Row(children: [
         TextButton(
           child: Text(item),
-          onPressed: () => {gotoSubTag(item)},
+          onPressed: () => {directToSubTags(context)},
         )
       ]));
     }
@@ -276,7 +277,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           TextButton(
             child: const Text("Selecteer een Tag"),
             onPressed: () => {
-              
               _navigateAndDisplaySelection(context),
             },
           ),
@@ -321,6 +321,22 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     });
   }
 
+  void directToSubTags(BuildContext context) async {
+    final subTag = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SubTagsScreen()),
+    );
+
+    setState(() {
+      if (subTag != null) {
+        log_controller().record("Mogelijke subtag geselecteerd.");
+        //hoe voeg ik het toe aan de hasmap
+        //https://stackoverflow.com/questions/53908405/how-to-add-a-new-pair-to-map-in-dart
+        print(selectedTags);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     generateTagBody();
@@ -331,7 +347,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     bodies.add(generatedBody);
     bodies.add(generatedSubTagBody);
     return Scaffold(
-      //Topheader within the application
       appBar: AppBar(
         title: const Text('Hanze Verpleegkunde'),
         backgroundColor: themeColor,
