@@ -41,7 +41,7 @@ class Tag {
 
 class Reflecties {
   String datum;
-  int rating;
+  double rating;
   String opmerking;
   List<dynamic> tag;
   List<Tag> all_sub_tags_raw = [];
@@ -57,7 +57,7 @@ class Reflecties {
       ref = parsedJson['all_sub_tags_raw'];
     }
     print(parsedJson);
-    return Reflecties(parsedJson['datum'], parsedJson['rating'],
+    return Reflecties(parsedJson['datum'], parsedJson['rating'].toDouble(),
         parsedJson['opmerking'], parsedJson['tag'], ref);
   }
   @override
@@ -68,7 +68,7 @@ class Reflecties {
     for (dynamic h in tag) {
       tags.add("\"$h\"");
     }
-    return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": $tag, "all_sub_tags": $all_sub_tags}';
+    return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": $tags, "all_sub_tags": $all_sub_tags}';
   }
 }
 
@@ -76,12 +76,12 @@ class Leerdoel {
   String begin_datum;
   String eind_datum;
   String onderwerp;
-  int streefcijfer;
+  double streefcijfer;
   Leerdoel(
       this.begin_datum, this.eind_datum, this.onderwerp, this.streefcijfer);
   factory Leerdoel.fromJson(Map<String, dynamic> parsedJson) {
     return Leerdoel(parsedJson['begin_datum'], parsedJson['eind_datum'],
-        parsedJson['onderwerp'], parsedJson['streefcijfer']);
+        parsedJson['onderwerp'], parsedJson['streefcijfer'].toDouble());
   }
   @override
   String toString() {
@@ -92,7 +92,7 @@ class Leerdoel {
 class Weekreflectie {
   String datum;
   int weeknummer;
-  int rating;
+  double rating;
   String leerdoel;
   String vooruitblik;
   Weekreflectie(this.datum, this.weeknummer, this.rating, this.leerdoel,
@@ -101,7 +101,7 @@ class Weekreflectie {
     return Weekreflectie(
         parsedJson['datum'],
         parsedJson['weeknummer'],
-        parsedJson['rating'],
+        parsedJson['rating'].toDouble(),
         parsedJson['leerdoel'],
         parsedJson['vooruitblik']);
   }
@@ -202,13 +202,17 @@ class Api {
 
     final response = await http.post(Uri.parse(groupApi), body: data);
 
-    var responseText = jsonDecode(response.body);
+    if (response.body != "") {
+      var responseText = jsonDecode(response.body);
 
-    if (responseText["response"] == "Log updated") {
-      return true;
-    } else {
-      return false;
+      if (responseText["response"] == "Log updated") {
+        return true;
+      } else {
+        return false;
+      }
     }
+
+    return true;
   }
 
   Future<bool> logUp(user_name, password, logs) async {

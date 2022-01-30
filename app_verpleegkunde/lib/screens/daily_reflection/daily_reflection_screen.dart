@@ -203,9 +203,10 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       }
       json += "]},";
     }
+    // json = json.substring(0, json.length - 1);
     json += "]";
     json += "}";
-    print(json);
+    print("json: " + json);
     return json;
   }
 
@@ -225,8 +226,10 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     for (var item in selectedTags) {
       tagsToReturn.add(Row(children: [
         TextButton(
-          child: Text(item,
-          textAlign: TextAlign.left,),
+          child: Text(
+            item,
+            textAlign: TextAlign.left,
+          ),
           onPressed: () => {gotoSubTag(item)},
         )
       ]));
@@ -312,9 +315,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         centerTitle: true,
       ),
       // Body of the application
-      body: ListView(
-        
-        children: [Column(children: bodies[activatedPage])]),
+      body: ListView(children: [Column(children: bodies[activatedPage])]),
     );
   }
 }
