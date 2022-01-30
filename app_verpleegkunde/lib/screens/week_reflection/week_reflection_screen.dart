@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../logging/log_controller.dart';
+import '../../controllers/log_controller.dart';
 
 class WeekReflectionScreen extends StatefulWidget {
   const WeekReflectionScreen({Key? key, required this.selectedDate})

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'image_cover.dart';
 import '../root_screen.dart';
 import '../../database_connection/api.dart';
-import '../../database_connection/list_controller.dart';
 import '../../database_connection/syncronisatie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';

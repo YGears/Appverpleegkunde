@@ -13,8 +13,8 @@ class BottomMenu extends StatelessWidget {
     return BottomNavigationBar(
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.bar_chart),
-          label: "Resultaten",
+          icon: Icon(Icons.article_outlined),
+          label: "Overzicht",
           backgroundColor: navbarColor,
         ),
         BottomNavigationBarItem(
