@@ -24,16 +24,16 @@ class Response {
   }
 }
 
-class learningGoal {
+class LearningGoal {
   String begin_datum;
   String eind_datum;
   String onderwerp;
   double streefcijfer;
-  learningGoal(
+  LearningGoal(
       this.begin_datum, this.eind_datum, this.onderwerp, this.streefcijfer);
-  factory learningGoal.fromJson(Map<String, dynamic> parsedJson) {
-    return learningGoal(parsedJson['begin_datum'], parsedJson['eind_datum'],
-        parsedJson['onderwerp'], parsedJson['streefcijfer'].toDouble());
+  factory LearningGoal.fromJson(Map<String, dynamic> parsedJson) {
+    return LearningGoal(parsedJson['begin_datum'], parsedJson['eind_datum'],
+        parsedJson['onderwerp'], double.parse(parsedJson['streefcijfer']));
   }
   @override
   String toString() {
@@ -41,14 +41,34 @@ class learningGoal {
   }
 
   DateTime get getBeginingDate {
-    return DateTime.parse(begin_datum);
+    List<String> gesplitst = begin_datum.split('/');
+    if (gesplitst[1].length < 2) {
+      gesplitst[1] = '0' + gesplitst[1];
+    }
+    if (gesplitst[0].length < 2) {
+      gesplitst[0] = '0' + gesplitst[0];
+    }
+
+    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
+    DateTime result = DateTime.parse(reassemble);
+    return result;
   }
 
   DateTime get getEndingDate {
-    return DateTime.parse(eind_datum);
+    List<String> gesplitst = eind_datum.split('/');
+    if (gesplitst[1].length < 2) {
+      gesplitst[1] = '0' + gesplitst[1];
+    }
+    if (gesplitst[0].length < 2) {
+      gesplitst[0] = '0' + gesplitst[0];
+    }
+
+    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
+    DateTime result = DateTime.parse(reassemble);
+    return result;
   }
 
-  String get getsubject {
+  String get getSubject {
     return onderwerp;
   }
 
@@ -69,7 +89,7 @@ class WeekReflection {
     return WeekReflection(
         parsedJson['datum'],
         parsedJson['weeknummer'],
-        parsedJson['rating'].toDouble(),
+        double.parse(parsedJson['rating']),
         parsedJson['leerdoel'],
         parsedJson['vooruitblik']);
   }
@@ -79,7 +99,17 @@ class WeekReflection {
   }
 
   DateTime get getDate {
-    return DateTime.parse(datum);
+    List<String> gesplitst = datum.split('/');
+    if (gesplitst[1].length < 2) {
+      gesplitst[1] = '0' + gesplitst[1];
+    }
+    if (gesplitst[0].length < 2) {
+      gesplitst[0] = '0' + gesplitst[0];
+    }
+
+    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
+    DateTime result = DateTime.parse(reassemble);
+    return result;
   }
 
   int get getWeekNumber {
@@ -160,7 +190,7 @@ class Api {
       if (data['leerdoel'] != null) {
         List<String> leerdoel = [];
         for (Map<String, dynamic> l in data['leerdoel']) {
-          learningGoal le = learningGoal.fromJson(l);
+          LearningGoal le = LearningGoal.fromJson(l);
           leerdoel.add(le.toString());
         }
         // print(leerdoel.toString());

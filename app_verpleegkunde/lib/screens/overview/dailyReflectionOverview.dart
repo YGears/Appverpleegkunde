@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/database_connection/api.dart';
 import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
@@ -8,16 +9,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../style.dart';
 
 class dailyReflectionOverview extends StatefulWidget {
-  var learningGoal;
+  var selectedLearningGoal;
 
-  dailyReflectionOverview(List<String> learninggoal, {Key? key})
+  dailyReflectionOverview(LearningGoal learninggoal, {Key? key})
       : super(key: key) {
-    learningGoal = learninggoal;
+    selectedLearningGoal = learninggoal;
   }
 
   @override
   dailyReflectionOverviewState createState() =>
-      dailyReflectionOverviewState(learningGoal);
+      dailyReflectionOverviewState(selectedLearningGoal);
 }
 
 class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
@@ -26,13 +27,9 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
   bool justOnce = false;
   List<dynamic> generatedBody = [];
 
-  String learninggoalSubject = '';
-  String learninggoalStartDate = '';
-  String learninggoalEndDate = '';
+  var learninggoalSubject;
   dailyReflectionOverviewState(learninggoal) {
-    learninggoalSubject = learninggoal[0];
-    learninggoalStartDate = learninggoal[1];
-    learninggoalEndDate = learninggoal[2];
+    learninggoalSubject = learninggoal;
   }
 
   @override
@@ -41,8 +38,8 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
 
     fillBody() async {
       List<dynamic> dailyReflections = await getDailyReflections(
-          formatDateTimes(learninggoalStartDate),
-          formatDateTimes(learninggoalEndDate));
+          learninggoalSubject.getBeginingDate,
+          learninggoalSubject.getEndingDate);
 
       setState(() {
         generatedBody = dailyReflections;
@@ -56,7 +53,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dagreflecties van$learninggoalSubject'),
+        title: Text('Dagreflecties van' + learninggoalSubject.getSubject),
       ),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -78,15 +75,15 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
 
   Widget _buildRow(daily_reflection reflection) {
     //cleanup reflection values
-    if (reflection.opmerking == "") {
-      reflection.opmerking = "geen opmerking geplaats";
-    }
-    if (reflection.tags == "") {
-      reflection.tags = ["geen tag gekozen"];
-    }
-    if (reflection.all_sub_tags.toString() == "") {
-      reflection.all_sub_tags = ["geen subtags gekozen"];
-    }
+    // if (reflection.getComment == "") {
+    //   reflection.opmerking = "geen opmerking geplaats";
+    // }
+    // if (reflection.tags == "") {
+    //   reflection.tags = ["geen tag gekozen"];
+    // }
+    // if (reflection.all_sub_tags.toString() == "") {
+    //   reflection.all_sub_tags = ["geen subtags gekozen"];
+    // }
 
     return Row(
       children: [
@@ -112,7 +109,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
                   Text('Rating: ${reflection.getRating}',
                       textAlign: TextAlign.left),
                   Text(
-                    'Tag: ${reflection.getTagList.toString()}',
+                    'Tag: ' + reflection.getTagList.toString(),
                     textAlign: TextAlign.right,
                   ),
                   Text('Subtag: ${reflection.getSubTagList.toString()}'),
@@ -124,38 +121,40 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     );
   }
 
-  Future<List<dynamic>> getDailyReflections(
+  Future<List<daily_reflection>> getDailyReflections(
       DateTime start, DateTime end) async {
-    List<dynamic> reflections = await reflectionController.getList;
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? reflections = [];
+    print(prefs.getStringList('daily_reflection'));
+    reflections = prefs.getStringList('daily_reflection');
+    print(reflections);
     List<daily_reflection> result = [];
 
-    for (var entry in reflections) {
-      if (entry != null) {
-        var decodedEntry = json.decode(entry);
-        if (start.difference(DateTime.parse(decodedEntry["datum"])).inHours <
-                0 &&
-            end.difference(DateTime.parse(decodedEntry["datum"])).inHours > 0) {
-          daily_reflection dailyReflection =
-              daily_reflection.fromJson(jsonDecode(entry));
-          result.add(dailyReflection);
-        }
+    for (var entry in reflections ?? []) {
+      daily_reflection decodedEntry =
+          daily_reflection.fromJson(json.decode(entry));
+      if (start.difference(decodedEntry.getDate).inHours < 0 &&
+          end.difference(decodedEntry.getDate).inHours > 0) {
+        daily_reflection dailyReflection =
+            daily_reflection.fromJson(jsonDecode(entry));
+        result.add(dailyReflection);
       }
     }
 
     return result;
   }
 
-  DateTime formatDateTimes(String datum) {
-    List<String> gesplitst = datum.split('/');
-    if (gesplitst[1].length < 2) {
-      gesplitst[1] = '0' + gesplitst[1];
-    }
-    if (gesplitst[0].length < 2) {
-      gesplitst[0] = '0' + gesplitst[0];
-    }
+  // DateTime formatDateTimes(String datum) {
+  //   List<String> gesplitst = datum.split('/');
+  //   if (gesplitst[1].length < 2) {
+  //     gesplitst[1] = '0' + gesplitst[1];
+  //   }
+  //   if (gesplitst[0].length < 2) {
+  //     gesplitst[0] = '0' + gesplitst[0];
+  //   }
 
-    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-    DateTime result = DateTime.parse(reassemble);
-    return result;
-  }
+  //   String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
+  //   DateTime result = DateTime.parse(reassemble);
+  //   return result;
+  // }
 }
