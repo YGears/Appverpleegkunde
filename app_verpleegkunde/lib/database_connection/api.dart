@@ -29,7 +29,7 @@ class Tag {
   factory Tag.fromJson(Map<String, dynamic> parsedJson) {
     List<String> tags = [];
     for (String w in parsedJson['sub_string']) {
-      tags.add('" + $w + "');
+      tags.add("\"$w\"");
     }
     return Tag(parsedJson['sub_tags']);
   }
@@ -66,7 +66,7 @@ class Reflecties {
       all_sub_tags.add(i.toString());
     }
     for (dynamic h in tag) {
-      tags.add('" + $h + "');
+      tags.add("\"$h\"");
     }
     return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": $tag, "all_sub_tags": $all_sub_tags}';
   }
