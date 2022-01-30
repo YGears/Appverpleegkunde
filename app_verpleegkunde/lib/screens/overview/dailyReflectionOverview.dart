@@ -79,14 +79,14 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
 
   Widget _buildRow(daily_reflection reflection) {
     //cleanup reflection values
-    if (reflection.comment == "") {
-      reflection.comment = "geen opmerking geplaats";
+    if (reflection.opmerking == "") {
+      reflection.opmerking = "geen opmerking geplaats";
     }
-    if (reflection.tag.isEmpty) {
-      reflection.tag = ["geen tag gekozen"];
+    if (reflection.tags == "") {
+      reflection.tags = ["geen tag gekozen"];
     }
-    if (reflection.subtag.isEmpty) {
-      reflection.subtag = ["geen subtags gekozen"];
+    if (reflection.all_sub_tags.toString() == "") {
+      reflection.all_sub_tags = ["geen subtags gekozen"];
     }
 
     return Row(
@@ -97,7 +97,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                reflection.date.substring(0, 16),
+                reflection.datum.substring(0, 16),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -113,11 +113,11 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
                   Text('Rating: ${reflection.rating}',
                       textAlign: TextAlign.left),
                   Text(
-                    'Tag: ${reflection.tag}',
+                    'Tag: ${reflection.tags}',
                     textAlign: TextAlign.right,
                   ),
-                  Text('Subtag: ${reflection.subtag}'),
-                  Text('Opmerking: ${reflection.comment}')
+                  Text('Subtag: ${reflection.all_sub_tags}'),
+                  Text('Opmerking: ${reflection.opmerking}')
                 ],
               )
             ]))
