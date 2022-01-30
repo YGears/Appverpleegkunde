@@ -5,11 +5,10 @@ import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../style.dart';
 
 class dailyReflectionOverview extends StatefulWidget {
-  List<String> learningGoal = [];
+  var learningGoal;
 
   dailyReflectionOverview(List<String> learninggoal, {Key? key})
       : super(key: key) {
@@ -110,14 +109,14 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Rating: ${reflection.rating}',
+                  Text('Rating: ${reflection.getRating}',
                       textAlign: TextAlign.left),
                   Text(
-                    'Tag: ${reflection.tags}',
+                    'Tag: ${reflection.getTagList.toString()}',
                     textAlign: TextAlign.right,
                   ),
-                  Text('Subtag: ${reflection.all_sub_tags}'),
-                  Text('Opmerking: ${reflection.opmerking}')
+                  Text('Subtag: ${reflection.getSubTagList.toString()}'),
+                  Text('Opmerking: ${reflection.getComment}')
                 ],
               )
             ]))

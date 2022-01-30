@@ -1,6 +1,5 @@
 class Tag {
   List<String> sub_tags;
-  List<String> tags = [];
   Tag(this.sub_tags);
   factory Tag.fromJson(Map<String, dynamic> parsedJson) {
     List<String> tags = [];
@@ -12,6 +11,10 @@ class Tag {
   @override
   String toString() {
     return '{"sub_tags": $sub_tags}';
+  }
+
+  List<String> get getSubTagList {
+    return sub_tags;
   }
 }
 
@@ -49,5 +52,25 @@ class daily_reflection {
       tags.add("\"$h\"");
     }
     return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": $tags, "all_sub_tags": $all_sub_tags}';
+  }
+
+  DateTime get getDate {
+    return DateTime.parse(datum);
+  }
+
+  double get getRating {
+    return rating;
+  }
+
+  String get getComment {
+    return opmerking;
+  }
+
+  List<String> get getTagList {
+    return tags;
+  }
+
+  List<String> get getSubTagList {
+    return all_sub_tags;
   }
 }

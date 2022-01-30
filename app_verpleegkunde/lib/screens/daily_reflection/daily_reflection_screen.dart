@@ -7,6 +7,7 @@ import 'package:flutter_application_1/screens/daily_reflection/sub_tags_screen.d
 import '../../app_colors.dart';
 import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../daily_reflection/daily_reflection.dart';
 
 class dailyReflectionPage extends StatefulWidget {
   const dailyReflectionPage({Key? key, required this.selectedDate})
@@ -26,7 +27,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   List<Row> generatedBody = [];
   List<Row> generatedTagBody = [];
   List<Row> generatedSubTagBody = [];
-  Map subtags = HashMap<String, List<String>>();
+  List<Tag> subtags = [];
 
   List<List<Row>> bodies = [];
   int activatedPage = 1;
@@ -82,144 +83,23 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     }
   }
 
-  gotoDailyReflection() {
-    setState(() {
-      activatedPage = 1;
-    });
-  }
-
-  addSubTag(String tag) {
-    if (!subtags.containsKey(activatedMainTag)) {
-      setState(() {
-        subtags[activatedMainTag] = [tag];
-      });
-    }
-
-    List<String> tempList = subtags[activatedMainTag];
-    if (subtags[activatedMainTag][0] == "") {
-      tempList = [];
-    }
-
-    if (!tempList.contains(tag)) {
-      setState(() {
-        tempList.add(tag);
-        subtags[activatedMainTag] = tempList;
-      });
-    }
-
-    generateSubTagBody();
-  }
-
-  addMainTag(tag) {
-    setState(() {
-      if (!selectedTags.contains(tag)) {
-        selectedTags.add(tag);
-        activatedMainTag = tag;
-        subtags[activatedMainTag] = [""];
-      }
-    });
-    gotoDailyReflection();
-  }
-
-  generateSubTagBody() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => update());
-    List<Row> subTagBody = [
-      Row(children: [
-        TextButton(
-            onPressed: () => {gotoDailyReflection()},
-            child: const Text("Ga Terug"))
-      ])
-    ];
-    for (String tag in listOfSubtags) {
-      subTagBody.add(Row(children: [
-        TextButton(
-          child: Text(tag),
-          onPressed: () => {addSubTag(tag)},
-        )
-      ]));
-    }
-    if (subtags[activatedMainTag] != null) {
-      if (subtags[activatedMainTag][0].toString() != "") {
-        for (String subTag in subtags[activatedMainTag]) {
-          subTagBody.add(Row(children: [
-            Text(subTag),
-          ]));
-        }
-      }
-    }
-    generatedSubTagBody = subTagBody;
-  }
-
-  generateTagBody() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => update());
-    List<Row> tagBody = [];
-    for (String tag in listOfTags) {
-      tagBody.add(Row(children: [
-        TextButton(
-          child: Text(tag),
-          onPressed: () => {addMainTag(tag)},
-        )
-      ]));
-    }
-    generatedTagBody = tagBody;
-  }
-
   String convertToJSON() {
-    var rating = dagRatingController.value.text;
+    var rating = double.parse(dagRatingController.value.text);
     var freeWrite = freeWriteController.value.text;
-    bool tagged = false;
-    String json = "{";
-
-    json += "\"datum\": \"$selectedDate\",";
-    if (rating != "") {
-      json += "\"rating\": $rating,";
-    } else {
-      json += "\"rating\": 0,";
-    }
-    json += "\"opmerking\": \"$freeWrite\",\"tag\": [";
-    for (String tag in selectedTags) {
-      tagged = true;
-      json += "\"$tag\",";
-    }
-    if (tagged) {
-      json = json.substring(0, json.length - 1);
-    }
-
-    json += "],\"all_sub_tags\": [";
-
-    for (String mainTag in selectedTags) {
-      tagged = false;
-      json += "{\"sub_tags\": [";
-      for (String subTag in subtags[mainTag]) {
-        if (subTag != "") {
-          json += "\"$subTag\",";
-          tagged = true;
-        }
-      }
-      if (tagged) {
-        json = json.substring(0, json.length - 1);
-      }
-      json += "]},";
-    }
-    json += "]}";
-    print(json);
-    return json;
+    return daily_reflection(
+            selectedDay, rating, freeWrite, selectedTags, subtags)
+        .toString();
   }
 
   Future<void> saveDailyReflection() async {
     log_controller().record("Dagreflectie opgeslagen.");
-    print("A");
     final prefs = await SharedPreferences.getInstance();
-    print("B, Wat moet deze lijst ophalen?");
     List<String>? dailyReflections = prefs.getStringList('daily_reflection');
-    print("C, Als ie er niet is dan leeg inizailzeren");
     dailyReflections ??= [];
-    //print("D, Voeg format toe aan deze kuhst");
+    dailyReflections.add(convertToJSON());
     print(convertToJSON());
-    //dailyReflections.add(convertToJSON());
-    //print("E, geen idee");
-    //prefs.setStringList('dag_reflectie', dailyReflections);
-    print("Done");
+    prefs.setStringList('dag_reflectie', dailyReflections);
+    print(prefs.getStringList('dag_reflectie'));
   }
 
   addTags() {
@@ -228,7 +108,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       tagsToReturn.add(Row(children: [
         TextButton(
           child: Text(item),
-          onPressed: () => {directToSubTags(context)},
+          onPressed: () =>
+              {directToSubTags(context, selectedTags.indexOf(item))},
         )
       ]));
     }
@@ -305,7 +186,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     );
 
     setState(() {
-      print(result);
       if (result != null) {
         log_controller().record("Mogelijke Tag geselecteerd.");
         ScaffoldMessenger.of(context)
@@ -313,12 +193,11 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           ..showSnackBar(
               SnackBar(content: Text('Tag geselecteerd! - $result')));
         selectedTags.add('$result');
-        print(selectedTags);
       }
     });
   }
 
-  void directToSubTags(BuildContext context) async {
+  void directToSubTags(BuildContext context, int tag) async {
     final subTag = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SubTagsScreen()),
@@ -326,19 +205,27 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
 
     setState(() {
       if (subTag != null) {
+        List<String> tagText = [];
+        tagText.add("\"$subTag\"");
+        if (subtags.asMap().containsKey(tag)) {
+          for (String t in subtags[tag].getSubTagList) {
+            tagText.add(t);
+          }
+          subtags[tag] = Tag(tagText);
+        } else {
+          subtags.add(Tag(tagText));
+        }
+
         log_controller().record("Mogelijke subtag geselecteerd.");
-        //hoe voeg ik het toe aan de hasmap
-        //https://stackoverflow.com/questions/53908405/how-to-add-a-new-pair-to-map-in-dart
-        print(selectedTags);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    generateTagBody();
+    // generateTagBody();
     generateBody();
-    generateSubTagBody();
+    // generateSubTagBody();
     bodies.clear();
     bodies.add(generatedTagBody);
     bodies.add(generatedBody);

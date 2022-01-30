@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/log_controller.dart';
 import 'package:http/http.dart' as http;
@@ -23,33 +24,49 @@ class Response {
   }
 }
 
-class Leerdoel {
+class learningGoal {
   String begin_datum;
   String eind_datum;
   String onderwerp;
   double streefcijfer;
-  Leerdoel(
+  learningGoal(
       this.begin_datum, this.eind_datum, this.onderwerp, this.streefcijfer);
-  factory Leerdoel.fromJson(Map<String, dynamic> parsedJson) {
-    return Leerdoel(parsedJson['begin_datum'], parsedJson['eind_datum'],
+  factory learningGoal.fromJson(Map<String, dynamic> parsedJson) {
+    return learningGoal(parsedJson['begin_datum'], parsedJson['eind_datum'],
         parsedJson['onderwerp'], parsedJson['streefcijfer'].toDouble());
   }
   @override
   String toString() {
     return '{ "begin_datum": "$begin_datum", "eind_datum": "$eind_datum", "onderwerp": "$onderwerp", "streefcijfer": "$streefcijfer"}';
   }
+
+  DateTime get getBeginingDate {
+    return DateTime.parse(begin_datum);
+  }
+
+  DateTime get getEndingDate {
+    return DateTime.parse(eind_datum);
+  }
+
+  String get getsubject {
+    return onderwerp;
+  }
+
+  double get getTargetGrade {
+    return streefcijfer;
+  }
 }
 
-class Weekreflectie {
+class WeekReflection {
   String datum;
   int weeknummer;
   double rating;
   String leerdoel;
   String vooruitblik;
-  Weekreflectie(this.datum, this.weeknummer, this.rating, this.leerdoel,
+  WeekReflection(this.datum, this.weeknummer, this.rating, this.leerdoel,
       this.vooruitblik);
-  factory Weekreflectie.fromJson(Map<String, dynamic> parsedJson) {
-    return Weekreflectie(
+  factory WeekReflection.fromJson(Map<String, dynamic> parsedJson) {
+    return WeekReflection(
         parsedJson['datum'],
         parsedJson['weeknummer'],
         parsedJson['rating'].toDouble(),
@@ -59,6 +76,26 @@ class Weekreflectie {
   @override
   String toString() {
     return '{"datum": "$datum", "rating": $weeknummer, "rating": $rating, "leerdoel": "$leerdoel", "vooruitblik": "$vooruitblik"}';
+  }
+
+  DateTime get getDate {
+    return DateTime.parse(datum);
+  }
+
+  int get getWeekNumber {
+    return weeknummer;
+  }
+
+  double get getsubject {
+    return rating;
+  }
+
+  String get getLearningGoal {
+    return leerdoel;
+  }
+
+  String get getPreview {
+    return vooruitblik;
   }
 }
 
@@ -123,7 +160,7 @@ class Api {
       if (data['leerdoel'] != null) {
         List<String> leerdoel = [];
         for (Map<String, dynamic> l in data['leerdoel']) {
-          Leerdoel le = Leerdoel.fromJson(l);
+          learningGoal le = learningGoal.fromJson(l);
           leerdoel.add(le.toString());
         }
         // print(leerdoel.toString());
@@ -132,7 +169,7 @@ class Api {
       if (data['week_reflectie'] != null) {
         List<String> week_reflectie = [];
         for (Map<String, dynamic> w in data['week_reflectie']) {
-          Weekreflectie we = Weekreflectie.fromJson(w);
+          WeekReflection we = WeekReflection.fromJson(w);
           week_reflectie.add(we.toString());
         }
         // print(week_reflectie.toString());
