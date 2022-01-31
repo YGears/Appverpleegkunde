@@ -213,6 +213,17 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     setState(() {
       List<String> tagText = [];
       if (subTag != null) {
+        if (subtags.isEmpty) {
+          print("----Filled----");
+          Map<String, List<String>> map = {'sub_tags': []};
+          subtags.add(map);
+        }
+        for (int toAdd = tag - (subtags.length - 1); toAdd > 0; toAdd--) {
+          print(toAdd);
+          print("added map--------------------------");
+          Map<String, List<String>> map = {'sub_tags': []};
+          subtags.add(map);
+        }
         // tagText.add("$subTag");
         if (subtags.asMap().containsKey(tag)) {
           for (List<String> t in subtags[tag].values) {
@@ -222,9 +233,15 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           subtags[tag].update('sub_tags', (dynamic) => tagText);
           // subtags[tag] = Tag.fromJson(map);
         } else {
-          tagText.add(subTag.toString());
-          Map<String, dynamic> map = {'sub_tags': tagText};
-          subtags.add(map);
+          // if (subtags.length - 1 >= tag) {
+          //   tagText.add(subTag.toString());
+          //   Map<String, dynamic> map = {'sub_tags': tagText};
+          //   subtags.add(map);
+          // } else {
+
+          // }
+          print(subtags.length);
+          print('error - TAGS ---> :(');
         }
         log_controller().record("Mogelijke subtag geselecteerd.");
       }
