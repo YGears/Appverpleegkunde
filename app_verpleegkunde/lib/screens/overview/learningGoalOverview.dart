@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_application_1/database_connection/api.dart';
+import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
 
 import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -168,14 +169,15 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     double gemCijfer = 0;
     double amountOfReflections = 0;
 
-    for (var entry in reflections) {
+    for (String entryString in reflections) {
+      daily_reflection entry =
+          daily_reflection.fromJson(jsonDecode(entryString));
       if (entry != null) {
         print(entry);
-        var decodedEntry = json.decode(entry);
-        if (start.difference(DateTime.parse(decodedEntry["datum"])).inHours <
-                0 &&
-            end.difference(DateTime.parse(decodedEntry["datum"])).inHours > 0) {
-          gemCijfer += decodedEntry["rating"] as double;
+
+        if (start.difference(entry.getDateType).inHours < 0 &&
+            end.difference(entry.getDateType).inHours > 0) {
+          gemCijfer += entry.getRating as double;
           amountOfReflections += 1;
         }
       }

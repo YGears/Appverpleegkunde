@@ -51,11 +51,30 @@ class daily_reflection {
     for (dynamic h in tag) {
       tags.add("\"$h\"");
     }
-    return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": $tags, "all_sub_tags": $all_sub_tags}';
+    print(all_sub_tags);
+    return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": ${tags.toString()}, "all_sub_tags": $all_sub_tags}';
   }
 
   DateTime get getDate {
     return DateTime.parse(datum);
+  }
+
+  DateTime get getDateType {
+    List<String> gesplitst = datum.split('/');
+    if (gesplitst[1].length < 2) {
+      gesplitst[1] = '0' + gesplitst[1];
+    }
+    if (gesplitst[2].length < 2) {
+      gesplitst[2] = '0' + gesplitst[2];
+    }
+
+    String reassemble = gesplitst[0] + "-" + gesplitst[1] + "-" + gesplitst[2];
+    DateTime result = DateTime.parse(reassemble);
+    return result;
+  }
+
+  String get getDateString {
+    return datum;
   }
 
   double get getRating {
@@ -71,6 +90,12 @@ class daily_reflection {
   }
 
   List<String> get getSubTagList {
+    return all_sub_tags;
+  }
+
+  List<String> getSubTagsByIndex(int i) {
+    String subTagText;
+    for (String subtags in all_sub_tags_raw[i].getSubTagList) {}
     return all_sub_tags;
   }
 }

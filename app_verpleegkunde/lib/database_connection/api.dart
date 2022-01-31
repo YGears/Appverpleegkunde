@@ -28,12 +28,18 @@ class LearningGoal {
   String begin_datum;
   String eind_datum;
   String onderwerp;
-  double streefcijfer;
+  int streefcijfer;
   LearningGoal(
       this.begin_datum, this.eind_datum, this.onderwerp, this.streefcijfer);
   factory LearningGoal.fromJson(Map<String, dynamic> parsedJson) {
+    int grade;
+    if (parsedJson['streefcijfer'].runtimeType == String) {
+      grade = int.parse(parsedJson['streefcijfer']);
+    } else {
+      grade = parsedJson['streefcijfer'];
+    }
     return LearningGoal(parsedJson['begin_datum'], parsedJson['eind_datum'],
-        parsedJson['onderwerp'], double.parse(parsedJson['streefcijfer']));
+        parsedJson['onderwerp'], grade);
   }
   @override
   String toString() {
@@ -73,7 +79,7 @@ class LearningGoal {
   }
 
   double get getTargetGrade {
-    return streefcijfer;
+    return streefcijfer.toDouble();
   }
 }
 

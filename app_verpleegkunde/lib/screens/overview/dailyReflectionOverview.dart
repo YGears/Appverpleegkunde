@@ -93,7 +93,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                reflection.datum.substring(0, 16),
+                reflection.getDateType.toString(),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -124,23 +124,29 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
   Future<List<daily_reflection>> getDailyReflections(
       DateTime start, DateTime end) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String>? reflections = [];
-    print(prefs.getStringList('daily_reflection'));
-    reflections = prefs.getStringList('daily_reflection');
-    print(reflections);
+    List<dynamic> reflections = await reflectionController.getList;
+    // print(prefs.getStringList('daily_reflection'));
     List<daily_reflection> result = [];
 
-    for (var entry in reflections ?? []) {
+    for (var entry in reflections) {
+      print(json.decode(entry));
       daily_reflection decodedEntry =
           daily_reflection.fromJson(json.decode(entry));
-      if (start.difference(decodedEntry.getDate).inHours < 0 &&
-          end.difference(decodedEntry.getDate).inHours > 0) {
-        daily_reflection dailyReflection =
-            daily_reflection.fromJson(jsonDecode(entry));
-        result.add(dailyReflection);
+      print(decodedEntry.toString());
+      // print("start: " +
+      //     start.toString() +
+      //     " | end: " +
+      //     end.toString() +
+      //     " | daily: " +
+      //     decodedEntry.getDateType.toString());
+      // print(decodedEntry);
+      if (start.difference(decodedEntry.getDateType).inHours <= 0 &&
+          end.difference(decodedEntry.getDateType).inHours >= 0) {
+        result.add(decodedEntry);
       }
     }
 
+    // print(result);
     return result;
   }
 

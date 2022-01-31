@@ -35,6 +35,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   final dagRatingController = TextEditingController();
   TextEditingController freeWriteController = TextEditingController();
 
+  list_controller dailyList = list_controller('daily_reflection');
   //MARK
   list_controller tagController = list_controller('tag');
   List listOfTags = [];
@@ -94,13 +95,15 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
 
   Future<void> saveDailyReflection() async {
     log_controller().record("Dagreflectie opgeslagen.");
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? dailyReflections = prefs.getStringList('daily_reflection');
-    dailyReflections ??= [];
-    dailyReflections.add(convertToJSON());
-    print(convertToJSON());
-    prefs.setStringList('dag_reflectie', dailyReflections);
-    print(prefs.getStringList('dag_reflectie'));
+    dailyList.add(convertToJSON());
+
+    // final prefs = await SharedPreferences.getInstance();
+    // List<String>? dailyReflections = prefs.getStringList('daily_reflection');
+    // dailyReflections ??= [];
+    // dailyReflections.add(convertToJSON());
+    // print(convertToJSON());
+    // prefs.setStringList('daily_reflection', dailyReflections);
+    // print(prefs.getStringList('daily_reflection'));
   }
 
   addTags() {
