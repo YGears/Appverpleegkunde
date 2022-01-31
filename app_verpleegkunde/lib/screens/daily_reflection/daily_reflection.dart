@@ -34,7 +34,7 @@ class daily_reflection {
       this.datum, this.rating, this.opmerking, this.tag, this.all_sub_tags_raw);
   factory daily_reflection.fromJson(Map<String, dynamic> parsedJson) {
     // print(parsedJson['all_sub_tags']);
-    List<Tag> ref = [Tag([])];
+    List<Tag> ref = [];
     if (parsedJson['all_sub_tags'] != null) {
       for (Map<String, dynamic> item in parsedJson['all_sub_tags']) {
         ref.add(Tag.fromJson(item));
@@ -102,6 +102,15 @@ class daily_reflection {
 
   String getSubTagsByIndex(int i) {
     String subTagText = "";
+    if (all_sub_tags_raw.isEmpty) {
+      return subTagText;
+    }
+    if (all_sub_tags_raw.length - 1 < i) {
+      return subTagText;
+    }
+    if (all_sub_tags_raw[i] == null) {
+      return subTagText;
+    }
     for (String subtags in all_sub_tags_raw[i].getSubTagList) {
       if (subTagText == "") {
         subTagText = subtags;
@@ -113,6 +122,15 @@ class daily_reflection {
   }
 
   String getTagsByIndex(int i) {
+    if (tags.isEmpty) {
+      return '';
+    }
+    if (tags.length - 1 < i) {
+      return '';
+    }
+    if (tags[i] == null) {
+      return '';
+    }
     return tags[i];
   }
 }
