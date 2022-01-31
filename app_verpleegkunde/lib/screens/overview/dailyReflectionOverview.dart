@@ -37,10 +37,10 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     log.record("Is naar de kies leerdoel pagina gegaan.");
 
     fillBody() async {
-      List<dynamic> dailyReflections = await getDailyReflections(
+      List<daily_reflection> dailyReflections = await getDailyReflections(
           learninggoalSubject.getBeginingDate,
           learninggoalSubject.getEndingDate);
-
+      print("test: " + dailyReflections[0].toString());
       setState(() {
         generatedBody = dailyReflections;
       });
@@ -109,10 +109,10 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
                   Text('Rating: ${reflection.getRating}',
                       textAlign: TextAlign.left),
                   Text(
-                    'Tag: ' + reflection.getTagList.toString(),
+                    'Tag: ' + reflection.getTagsByIndex(0),
                     textAlign: TextAlign.right,
                   ),
-                  Text('Subtag: ${reflection.getSubTagList.toString()}'),
+                  Text('Subtag: ${reflection.getSubTagsByIndex(1)}'),
                   Text('Opmerking: ${reflection.getComment}')
                 ],
               )
@@ -129,10 +129,10 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     List<daily_reflection> result = [];
 
     for (var entry in reflections) {
-      print(json.decode(entry));
+      print("entry: " + json.decode(entry).toString());
       daily_reflection decodedEntry =
           daily_reflection.fromJson(json.decode(entry));
-      print(decodedEntry.toString());
+      // print(decodedEntry);
       // print("start: " +
       //     start.toString() +
       //     " | end: " +
@@ -145,7 +145,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
         result.add(decodedEntry);
       }
     }
-
+    print("result: " + result.toString());
     // print(result);
     return result;
   }

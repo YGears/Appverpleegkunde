@@ -210,7 +210,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     setState(() {
       if (subTag != null) {
         List<String> tagText = [];
-        tagText.add("\"$subTag\"");
+        tagText.add("$subTag");
         if (subtags.asMap().containsKey(tag)) {
           for (String t in subtags[tag].getSubTagList) {
             tagText.add(t);

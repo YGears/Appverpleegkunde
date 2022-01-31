@@ -1,19 +1,23 @@
 class Tag {
-  List<String> sub_tags;
+  List<dynamic> sub_tags;
   Tag(this.sub_tags);
   factory Tag.fromJson(Map<String, dynamic> parsedJson) {
     List<String> tags = [];
-    for (String w in parsedJson['sub_string']) {
+    for (String w in parsedJson['sub_tags']) {
       tags.add("\"$w\"");
     }
     return Tag(parsedJson['sub_tags']);
   }
   @override
   String toString() {
-    return '{"sub_tags": $sub_tags}';
+    List<String> stringlist = [];
+    for (dynamic i in sub_tags) {
+      stringlist.add("\"$i\"");
+    }
+    return '{"sub_tags": $stringlist}';
   }
 
-  List<String> get getSubTagList {
+  List<dynamic> get getSubTagList {
     return sub_tags;
   }
 }
@@ -29,13 +33,14 @@ class daily_reflection {
   daily_reflection(
       this.datum, this.rating, this.opmerking, this.tag, this.all_sub_tags_raw);
   factory daily_reflection.fromJson(Map<String, dynamic> parsedJson) {
-    List<Tag> ref;
-    if (parsedJson['all_sub_tags_raw'] == null) {
-      ref = [Tag([])];
-    } else {
-      ref = parsedJson['all_sub_tags_raw'];
+    print(parsedJson['all_sub_tags']);
+    List<Tag> ref = [Tag([])];
+    if (parsedJson['all_sub_tags'] != null) {
+      for (Map<String, dynamic> item in parsedJson['all_sub_tags']) {
+        ref.add(Tag.fromJson(item));
+      }
     }
-    print(parsedJson);
+    // print(parsedJson);
     return daily_reflection(
         parsedJson['datum'],
         parsedJson['rating'].toDouble(),
@@ -51,7 +56,7 @@ class daily_reflection {
     for (dynamic h in tag) {
       tags.add("\"$h\"");
     }
-    print(all_sub_tags);
+    // print(all_sub_tags);
     return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": ${tags.toString()}, "all_sub_tags": $all_sub_tags}';
   }
 
@@ -93,9 +98,19 @@ class daily_reflection {
     return all_sub_tags;
   }
 
-  List<String> getSubTagsByIndex(int i) {
-    String subTagText;
-    for (String subtags in all_sub_tags_raw[i].getSubTagList) {}
-    return all_sub_tags;
+  String getSubTagsByIndex(int i) {
+    String subTagText = "";
+    for (String subtags in all_sub_tags_raw[i].getSubTagList) {
+      if (subTagText == "") {
+        subTagText = subtags;
+      } else {
+        subTagText = subTagText + ", " + subtags;
+      }
+    }
+    return subTagText;
+  }
+
+  String getTagsByIndex(int i) {
+    return tags[i];
   }
 }
