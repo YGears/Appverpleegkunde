@@ -50,6 +50,7 @@ class daily_reflection {
   }
   @override
   String toString() {
+    tags = [];
     for (Tag i in all_sub_tags_raw) {
       all_sub_tags.add(i.toString());
     }
