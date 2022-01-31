@@ -175,10 +175,9 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       daily_reflection entry =
           daily_reflection.fromJson(jsonDecode(entryString));
       if (entry != null) {
-        print(entry);
 
-        if (start.difference(entry.getDateType).inHours < -1 &&
-            end.difference(entry.getDateType).inHours > -1) {
+        if (start.difference(entry.getDateType).inHours <= 0 &&
+            end.difference(entry.getDateType).inHours >= 0) {
           gemCijfer += entry.getRating as double;
           amountOfReflections += 1;
         }

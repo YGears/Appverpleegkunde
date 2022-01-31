@@ -127,9 +127,9 @@ class daily_reflection {
     if (tags.isEmpty) {
       return '';
     }
-    if (tags.length - 1 < i) {
-      return '';
-    }
+    // if (tags.length - 1 < i) {
+    //   return '';
+    // }
     if (tags[i] == null) {
       return '';
     }

@@ -75,6 +75,32 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
   }
 
   Widget _buildRow(daily_reflection reflection) {
+    List<Widget> buildSubTagList(){
+      var body = <Widget>[
+        Text('Rating: ${reflection.getRating}',
+            textAlign: TextAlign.left),
+        Text(" ",
+          textAlign: TextAlign.right,
+        ),
+        Text('Opmerking: ${reflection.getComment}'),
+        Text(" ",
+          textAlign: TextAlign.right,
+        ),
+        ];
+        
+      print(reflection);
+      
+      for(int tag_amount = 0; tag_amount < reflection.getTagList.length; tag_amount++){
+        body.add(Text('Tag: ${reflection.getTagsByIndex(tag_amount)}'));
+        body.add(Text('Subtag: ${reflection.getSubTagsByIndex(tag_amount)}'));
+        body.add(Text(" ",
+          textAlign: TextAlign.right,
+        ));
+      }
+
+      return body;
+    }
+    
     return Row(
       children: [
         Container(
@@ -83,7 +109,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                reflection.getDateType.toString(),
+                reflection.getDateType.toString().substring(0,10),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -95,16 +121,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('Rating: ${reflection.getRating}',
-                      textAlign: TextAlign.left),
-                  Text(
-                    'Tag: ' + reflection.getTagsByIndex(2),
-                    textAlign: TextAlign.right,
-                  ),
-                  Text('Subtag: ${reflection.getSubTagsByIndex(2)}'),
-                  Text('Opmerking: ${reflection.getComment}')
-                ],
+                children: buildSubTagList(),
               )
             ]))
       ],
