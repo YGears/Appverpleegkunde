@@ -1,3 +1,4 @@
+// ignore_for_file: file_names
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
       List<daily_reflection> dailyReflections = await getDailyReflections(
           learninggoalSubject.getBeginingDate,
           learninggoalSubject.getEndingDate);
+      // print("test: " + dailyReflections[0].toString());
       setState(() {
         generatedBody = dailyReflections;
       });

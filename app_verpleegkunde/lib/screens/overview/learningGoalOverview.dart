@@ -1,3 +1,4 @@
+// ignore_for_file: file_names
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_application_1/database_connection/api.dart';
@@ -102,8 +103,8 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       gemiddelde = 0;
     }
     var onderwerp = learningGoal.getSubject;
-    var startDate = learningGoal.getBeginingDate;
-    var endDate = learningGoal.getEndingDate;
+    var startDate = learningGoal.getBeginingDate.toString().substring(0, 10);
+    var endDate = learningGoal.getEndingDate.toString().substring(0, 10);
     var streefcijfer = learningGoal.getTargetGrade.toString();
     return Container(
         width: 300,
@@ -176,8 +177,8 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       if (entry != null) {
         print(entry);
 
-        if (start.difference(entry.getDateType).inHours < 0 &&
-            end.difference(entry.getDateType).inHours > 0) {
+        if (start.difference(entry.getDateType).inHours < -1 &&
+            end.difference(entry.getDateType).inHours > -1) {
           gemCijfer += entry.getRating as double;
           amountOfReflections += 1;
         }
