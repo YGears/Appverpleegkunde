@@ -33,14 +33,14 @@ class daily_reflection {
   daily_reflection(
       this.datum, this.rating, this.opmerking, this.tag, this.all_sub_tags_raw);
   factory daily_reflection.fromJson(Map<String, dynamic> parsedJson) {
-    print(parsedJson['all_sub_tags']);
+    // print(parsedJson['all_sub_tags']);
     List<Tag> ref = [Tag([])];
     if (parsedJson['all_sub_tags'] != null) {
       for (Map<String, dynamic> item in parsedJson['all_sub_tags']) {
         ref.add(Tag.fromJson(item));
       }
     }
-    // print(parsedJson);
+    print("ref: " + ref.toString());
     return daily_reflection(
         parsedJson['datum'],
         parsedJson['rating'].toDouble(),
@@ -51,6 +51,7 @@ class daily_reflection {
   @override
   String toString() {
     tags = [];
+    print(all_sub_tags_raw.length);
     for (Tag i in all_sub_tags_raw) {
       all_sub_tags.add(i.toString());
     }

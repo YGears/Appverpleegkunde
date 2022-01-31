@@ -74,17 +74,6 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
   }
 
   Widget _buildRow(daily_reflection reflection) {
-    //cleanup reflection values
-    // if (reflection.getComment == "") {
-    //   reflection.opmerking = "geen opmerking geplaats";
-    // }
-    // if (reflection.tags == "") {
-    //   reflection.tags = ["geen tag gekozen"];
-    // }
-    // if (reflection.all_sub_tags.toString() == "") {
-    //   reflection.all_sub_tags = ["geen subtags gekozen"];
-    // }
-
     return Row(
       children: [
         Container(
@@ -125,42 +114,18 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
       DateTime start, DateTime end) async {
     final prefs = await SharedPreferences.getInstance();
     List<dynamic> reflections = await reflectionController.getList;
-    // print(prefs.getStringList('daily_reflection'));
     List<daily_reflection> result = [];
 
     for (var entry in reflections) {
       print("entry: " + json.decode(entry).toString());
       daily_reflection decodedEntry =
           daily_reflection.fromJson(json.decode(entry));
-      // print(decodedEntry);
-      // print("start: " +
-      //     start.toString() +
-      //     " | end: " +
-      //     end.toString() +
-      //     " | daily: " +
-      //     decodedEntry.getDateType.toString());
-      // print(decodedEntry);
       if (start.difference(decodedEntry.getDateType).inHours <= 0 &&
           end.difference(decodedEntry.getDateType).inHours >= 0) {
         result.add(decodedEntry);
       }
     }
     print("result: " + result.toString());
-    // print(result);
     return result;
   }
-
-  // DateTime formatDateTimes(String datum) {
-  //   List<String> gesplitst = datum.split('/');
-  //   if (gesplitst[1].length < 2) {
-  //     gesplitst[1] = '0' + gesplitst[1];
-  //   }
-  //   if (gesplitst[0].length < 2) {
-  //     gesplitst[0] = '0' + gesplitst[0];
-  //   }
-
-  //   String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-  //   DateTime result = DateTime.parse(reassemble);
-  //   return result;
-  // }
 }

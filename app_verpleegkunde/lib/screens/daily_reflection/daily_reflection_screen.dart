@@ -28,7 +28,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   List<Row> generatedBody = [];
   List<Row> generatedTagBody = [];
   List<Row> generatedSubTagBody = [];
-  List<Tag> subtags = [];
+  List<Map<String, dynamic>> subtags = [];
 
   List<List<Row>> bodies = [];
   int activatedPage = 1;
@@ -88,8 +88,11 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   String convertToJSON() {
     var rating = double.parse(dagRatingController.value.text);
     var freeWrite = freeWriteController.value.text;
-    return daily_reflection(
-            selectedDay, rating, freeWrite, selectedTags, subtags)
+    List<Tag> temp = [];
+    for (Map<String, dynamic> i in subtags) {
+      temp.add(Tag.fromJson(i));
+    }
+    return daily_reflection(selectedDay, rating, freeWrite, selectedTags, temp)
         .toString();
   }
 
@@ -208,18 +211,26 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     );
 
     setState(() {
+      List<String> tagText = [];
+      print("subTag: " + subTag.toString());
       if (subTag != null) {
-        List<String> tagText = [];
-        tagText.add("$subTag");
+        // tagText.add("$subTag");
         if (subtags.asMap().containsKey(tag)) {
-          for (String t in subtags[tag].getSubTagList) {
-            tagText.add(t);
+          for (List<String> t in subtags[tag].values) {
+            tagText = t;
           }
-          subtags[tag] = Tag(tagText);
+          tagText.add(subTag);
+          Map<String, dynamic> map = Map();
+          map.update('sub_tags', (dynamic) => tagText);
+          subtags[tag] = map;
+          // subtags[tag] = Tag.fromJson(map);
         } else {
-          subtags.add(Tag(tagText));
+          tagText.add(subTag.toString());
+          Map<String, dynamic> map = {'sub_tags': tagText};
+          subtags.add(map);
         }
-
+        print("hhhhL: " + subtags.toString());
+        print("tags: " + tagText.toString());
         log_controller().record("Mogelijke subtag geselecteerd.");
       }
     });
