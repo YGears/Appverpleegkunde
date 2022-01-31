@@ -214,13 +214,13 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       List<String> tagText = [];
       if (subTag != null) {
         if (subtags.isEmpty) {
-          print("----Filled----");
+          // print("----Filled----");
           Map<String, List<String>> map = {'sub_tags': []};
           subtags.add(map);
         }
         for (int toAdd = tag - (subtags.length - 1); toAdd > 0; toAdd--) {
-          print(toAdd);
-          print("added map--------------------------");
+          // print(toAdd);
+          // print("added map--------------------------");
           Map<String, List<String>> map = {'sub_tags': []};
           subtags.add(map);
         }
@@ -240,8 +240,8 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           // } else {
 
           // }
-          print(subtags.length);
-          print('error - TAGS ---> :(');
+          // print(subtags.length);
+          // print('error - TAGS ---> :(');
         }
         log_controller().record("Mogelijke subtag geselecteerd.");
       }

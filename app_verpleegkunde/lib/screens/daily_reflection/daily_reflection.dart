@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Tag {
   List<dynamic> sub_tags;
   Tag(this.sub_tags);
@@ -63,7 +65,7 @@ class daily_reflection {
   }
 
   DateTime get getDate {
-    return DateTime.parse(datum);
+    return DateFormat("dd/MM/yyyy").parse(datum);
   }
 
   DateTime get getDateType {

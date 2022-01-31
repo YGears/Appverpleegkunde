@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_application_1/database_connection/api.dart';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
+import 'package:intl/intl.dart';
 
 import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -101,8 +102,8 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       gemiddelde = 0;
     }
     var onderwerp = learningGoal.getSubject;
-    var startDate = learningGoal.getBeginingDate.toString();
-    var endDate = learningGoal.getEndingDate.toString();
+    var startDate = learningGoal.getBeginingDate;
+    var endDate = learningGoal.getEndingDate;
     var streefcijfer = learningGoal.getTargetGrade.toString();
     return Container(
         width: 300,

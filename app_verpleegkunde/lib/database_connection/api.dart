@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/log_controller.dart';
 import 'package:http/http.dart' as http;
@@ -56,8 +57,8 @@ class LearningGoal {
     }
 
     String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-    DateTime result = DateTime.parse(reassemble);
-    return result;
+    // DateTime result = DateTime.parse(reassemble);
+    return DateFormat("dd/MM/yyyy").parse(begin_datum);
   }
 
   DateTime get getEndingDate {
@@ -70,8 +71,8 @@ class LearningGoal {
     }
 
     String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-    DateTime result = DateTime.parse(reassemble);
-    return result;
+    // DateTime result = DateTime.parse(reassemble);
+    return DateFormat("dd/MM/yyyy").parse(eind_datum);
   }
 
   String get getSubject {

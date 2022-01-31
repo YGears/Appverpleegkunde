@@ -123,7 +123,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
         result.add(decodedEntry);
       }
     }
-    print("result: " + result.toString());
+    // print("result: " + result.toString());
     return result;
   }
 }
