@@ -225,7 +225,7 @@ class Api {
         "UpdateUser?name=$user_name&password=$password&subscription-key=$key";
 
     final response = await http.post(Uri.parse(groupApi), body: data);
-
+    print(response.body);
     if (response.body != "") {
       var responseText = jsonDecode(response.body);
 

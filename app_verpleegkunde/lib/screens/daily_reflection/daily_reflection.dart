@@ -61,7 +61,7 @@ class daily_reflection {
       tags.add("\"$h\"");
     }
     // print(all_sub_tags);
-    return '{ "datum": "$datum", "rating": $rating, "opmerking": "$opmerking", "tag": ${tags.toString()}, "all_sub_tags": $all_sub_tags}';
+    return '{ "datum": "$datum", "rating": ${rating.toInt()}, "opmerking": "$opmerking", "tag": ${tags.toString()}, "all_sub_tags": $all_sub_tags}';
   }
 
   DateTime get getDate {

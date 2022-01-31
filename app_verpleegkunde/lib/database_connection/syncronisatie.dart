@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
+import 'package:flutter_application_1/screens/learning_goal/choose_learning_goal.dart';
 import 'package:intl/intl.dart';
 import '../controllers/list_controller.dart';
 import '../controllers/log_controller.dart';
@@ -53,7 +55,7 @@ class Syncronisation {
     }
 
     // if (time_diff > 0) {
-    if(true){
+    if (true) {
       Api api = new Api();
       var time = DateTime.now();
       var today = DateFormat('yyyy-MM-dd kk:mm:ss').format(time).toString();
@@ -61,16 +63,50 @@ class Syncronisation {
       var name = prefs.getString('user');
       var password = prefs.getString('password');
       var reflectie_json = await list_controller("daily_reflection").getList;
+      List<daily_reflection> reflections = [];
+      for (String i in reflectie_json) {
+        reflections.add(daily_reflection.fromJson(jsonDecode(i)));
+      }
       var leerdoel_json = await list_controller("leerdoel").getList;
+      List<LearningGoal> leerdoel = [];
+      for (String i in leerdoel_json) {
+        leerdoel.add(LearningGoal.fromJson(jsonDecode(i)));
+      }
       var week_reflectie_json = await list_controller("week_reflectie").getList;
+      List<WeekReflection> weekreflecties = [];
+      for (String i in week_reflectie_json) {
+        weekreflecties.add(WeekReflection.fromJson(jsonDecode(i)));
+      }
 
       var data = "{";
-      data += "\"reflectie\":" + reflectie_json.toString() + ",";
-      data += "\"leerdoel\":" + leerdoel_json.toString() + ",";
-      data += "\"weekreflectie\":" + week_reflectie_json.toString() + ",";
-      data += "}";
+      data += "\"reflectie\":[";
+      for (daily_reflection i in reflections) {
+        data += i.toString();
+        if (i != reflections.last) {
+          data += ",";
+        }
+      }
 
-      if (await api.syncUp(name, password, data)) {
+      data += "], \"leerdoel\":[";
+      for (LearningGoal i in leerdoel) {
+        data += i.toString();
+        if (i != leerdoel.last) {
+          data += ",";
+        }
+      }
+
+      data += "], \"weekreflectie\":[";
+      for (WeekReflection i in weekreflecties) {
+        data += i.toString();
+        if (i != weekreflecties.last) {
+          data += ",";
+        }
+      }
+      data += "]}";
+
+      print("Data: " + data);
+
+      if (await api.syncUp(name, password, data.toString())) {
         if (await send_log_data()) {
           prefs.setString("syncCheck", "{\"timestamp\":\"$today\"}");
           prefs.setStringList("log", [
