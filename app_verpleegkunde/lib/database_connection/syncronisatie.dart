@@ -52,7 +52,8 @@ class Syncronisation {
           .inHours;
     }
 
-    if (time_diff > 0) {
+    // if (time_diff > 0) {
+    if(true){
       Api api = new Api();
       var time = DateTime.now();
       var today = DateFormat('yyyy-MM-dd kk:mm:ss').format(time).toString();
