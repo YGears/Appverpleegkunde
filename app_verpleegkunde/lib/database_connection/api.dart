@@ -95,7 +95,7 @@ class WeekReflection {
     return WeekReflection(
         parsedJson['datum'],
         parsedJson['weeknummer'],
-        double.parse(parsedJson['rating']),
+        parsedJson['rating'].toDouble(),
         parsedJson['leerdoel'],
         parsedJson['vooruitblik']);
   }

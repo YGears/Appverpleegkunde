@@ -9,6 +9,7 @@ import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../daily_reflection/daily_reflection.dart';
 import '../../database_connection/syncronisatie.dart';
+import '../root_screen.dart';
 
 class dailyReflectionPage extends StatefulWidget {
   const dailyReflectionPage({Key? key, required this.selectedDate})
@@ -98,15 +99,20 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
 
   Future<void> saveDailyReflection() async {
     log_controller().record("Dagreflectie opgeslagen.");
-    dailyList.add(convertToJSON());
-
-    // final prefs = await SharedPreferences.getInstance();
-    // List<String>? dailyReflections = prefs.getStringList('daily_reflection');
-    // dailyReflections ??= [];
-    // dailyReflections.add(convertToJSON());
-    // print(convertToJSON());
-    // prefs.setStringList('daily_reflection', dailyReflections);
-    // print(prefs.getStringList('daily_reflection'));
+    if (dagRatingController.value.text == '') {
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                title: Text('Foutmelding'),
+                content: Text('Geen Rating gegeven'),
+              ));
+    } else {
+      dailyList.add(convertToJSON());
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RootScreen()),
+      );
+    }
   }
 
   addTags() {
@@ -120,16 +126,25 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         )
       ]));
     }
+
     return tagsToReturn;
   }
 
   generateBody() {
     List<Row> screenForm = [
+      Row(children: const [
+        Text(""),
+      ]),
       Row(
         children: [
           const Text("Reflectie op dag: "),
           ElevatedButton(
-              child: Text(selectedDay), onPressed: () => {_selectDate(context)})
+              style: ElevatedButton.styleFrom(
+                onPrimary: Colors.white,
+                primary: Colors.orange,
+              ),
+              child: Text(selectedDay),
+              onPressed: () => {_selectDate(context)})
         ],
       ),
       Row(
@@ -175,6 +190,10 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       Row(
         children: [
           ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                onPrimary: Colors.white,
+                primary: Colors.orange,
+              ),
               child: const Text("Sla reflectie op"),
               onPressed: () => {saveDailyReflection()})
         ],

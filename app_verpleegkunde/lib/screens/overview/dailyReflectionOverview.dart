@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/database_connection/api.dart';
+import '../../app_colors.dart';
 import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
@@ -55,6 +56,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Dagreflecties van' + learninggoalSubject.getSubject),
+        backgroundColor: themeColor,
       ),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -75,32 +77,36 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
   }
 
   Widget _buildRow(daily_reflection reflection) {
-    List<Widget> buildSubTagList(){
+    List<Widget> buildSubTagList() {
       var body = <Widget>[
-        Text('Rating: ${reflection.getRating}',
-            textAlign: TextAlign.left),
-        Text(" ",
+        Text('Rating: ${reflection.getRating}', textAlign: TextAlign.left),
+        Text(
+          " ",
           textAlign: TextAlign.right,
         ),
         Text('Opmerking: ${reflection.getComment}'),
-        Text(" ",
+        Text(
+          " ",
           textAlign: TextAlign.right,
         ),
-        ];
-        
+      ];
+
       print(reflection);
-      
-      for(int tag_amount = 0; tag_amount < reflection.getTagList.length; tag_amount++){
+
+      for (int tag_amount = 0;
+          tag_amount < reflection.getTagList.length;
+          tag_amount++) {
         body.add(Text('Tag: ${reflection.getTagsByIndex(tag_amount)}'));
         body.add(Text('Subtag: ${reflection.getSubTagsByIndex(tag_amount)}'));
-        body.add(Text(" ",
+        body.add(Text(
+          " ",
           textAlign: TextAlign.right,
         ));
       }
 
       return body;
     }
-    
+
     return Row(
       children: [
         Container(
@@ -109,7 +115,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                reflection.getDateType.toString().substring(0,10),
+                reflection.getDateType.toString().substring(0, 10),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

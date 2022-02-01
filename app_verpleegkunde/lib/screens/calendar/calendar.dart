@@ -147,6 +147,9 @@ class _CalendarState extends State<Calendar> {
     createCalendar();
     syncWithDatabase();
     return Column(children: [
+      Row(
+        children: const [Text("")],
+      ),
       Row(children: <Widget>[
         const Spacer(flex: 2),
         Expanded(
@@ -169,6 +172,9 @@ class _CalendarState extends State<Calendar> {
         ),
         const Spacer(flex: 2),
       ]),
+      Row(
+        children: const [Text("")],
+      ),
       Row(children: const <Widget>[
         Expanded(
             flex: 2, // 20%
@@ -196,6 +202,9 @@ class _CalendarState extends State<Calendar> {
             flex: 1, // 20%
             child: Text("Zo")),
       ]),
+      Row(
+        children: const [Text("")],
+      ),
       Table(
           defaultColumnWidth: const FlexColumnWidth(1),
           columnWidths: const {0: FlexColumnWidth(2)},

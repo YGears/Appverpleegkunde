@@ -154,7 +154,8 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
               ),
               TextButton(
                 onPressed: () {
-                  _navigateAndDisplaySelection(context, 1, learningGoal);
+                  //_navigateAndDisplaySelection(context, 1, learningGoal);
+                  null;
                 },
                 child: const Text(
                   'Weekreflecties',
@@ -175,7 +176,6 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       daily_reflection entry =
           daily_reflection.fromJson(jsonDecode(entryString));
       if (entry != null) {
-
         if (start.difference(entry.getDateType).inHours <= 0 &&
             end.difference(entry.getDateType).inHours >= 0) {
           gemCijfer += entry.getRating as double;

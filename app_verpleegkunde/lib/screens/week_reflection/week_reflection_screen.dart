@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../controllers/log_controller.dart';
+import '../root_screen.dart';
 
 class WeekReflectionScreen extends StatefulWidget {
   const WeekReflectionScreen({Key? key, required this.selectedDate})
@@ -139,9 +140,22 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     List<String>? dailyReflections =
         prefs.getStringList('WeekReflectionScreen');
     dailyReflections ??= [];
-    dailyReflections.add(convertToJSON());
+    if (dagRatingController.value.text == '') {
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                title: Text('Foutmelding'),
+                content: Text('Geen Rating gegeven'),
+              ));
+    } else {
+      dailyReflections.add(convertToJSON());
 
-    prefs.setStringList('week_reflectie', dailyReflections);
+      prefs.setStringList('week_reflectie', dailyReflections);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RootScreen()),
+      );
+    }
   }
 
   addTags() {
@@ -160,11 +174,19 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   generateBody() {
     log_controller().record("Naar pagina weekreflectie maken gegaan.");
     List<Row> tempBody = [
+      Row(children: const [
+        Text(""),
+      ]),
       Row(
         children: [
           const Text("Reflectie op week (Maandag - Zondag): "),
           ElevatedButton(
-              child: Text(selectedDay), onPressed: () => {_selectDate(context)})
+              style: ElevatedButton.styleFrom(
+                onPrimary: Colors.white,
+                primary: Colors.orange,
+              ),
+              child: Text(selectedDay),
+              onPressed: () => {_selectDate(context)})
         ],
       ),
       Row(
@@ -209,6 +231,10 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
       Row(
         children: [
           ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                onPrimary: Colors.white,
+                primary: Colors.orange,
+              ),
               child: const Text("Reflectie Opslaan"),
               onPressed: () => {saveDailyReflection()})
         ],

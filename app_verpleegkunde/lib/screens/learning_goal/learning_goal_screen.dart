@@ -168,8 +168,8 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
                 const Text("Startdatum"),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.yellow,
-                      primary: Colors.red,
+                      onPrimary: Colors.white,
+                      primary: Colors.orange,
                     ),
                     child: Text(dateFormating(startDate)),
                     onPressed: () async => selectStartDate(context, startDate))
@@ -180,6 +180,10 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
               Column(children: <Widget>[
                 const Text("Einddatum"),
                 ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      onPrimary: Colors.white,
+                      primary: Colors.orange,
+                    ),
                     child: Text(dateFormating(endDate)),
                     onPressed: () async => selectEndDate(context))
               ]),
@@ -204,6 +208,10 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
         ),
         ListTile(title: Center(child: Text(selectedLearningGoal))),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            onPrimary: Colors.white,
+            primary: Colors.orange,
+          ),
           child: const Text("Selecteer leerdoel"),
           onPressed: () => {_navigateAndDisplaySelection(context)},
         ),
@@ -228,6 +236,10 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
         ),
         ListTile(title: Center(child: Text('$streefCijfer / 10'))),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            onPrimary: Colors.white,
+            primary: Colors.orange,
+          ),
           child: const Text("Selecteer streefcijfer"),
           onPressed: () => {
             showDialog(
