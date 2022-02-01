@@ -174,6 +174,7 @@ class _Leerdoelen extends State<Leerdoelen> {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Favoriete leerdoelen'),
+              backgroundColor: themeColor,
             ),
             body: ListView(children: divided),
           );

@@ -205,7 +205,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
         ],
       ),
       Row(
-        children: const [Text("Vooruitblik:")],
+        children: const [Text("Terugblik:")],
       ),
       Row(
         children: [
