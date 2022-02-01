@@ -101,7 +101,7 @@ class WeekReflection {
   }
   @override
   String toString() {
-    return '{"datum": "$datum", "rating": $weeknummer, "rating": $rating, "leerdoel": "$leerdoel", "vooruitblik": "$vooruitblik"}';
+    return '{"datum": "$datum", "rating": $weeknummer, "rating": ${rating.toInt()}, "leerdoel": "$leerdoel", "vooruitblik": "$vooruitblik"}';
   }
 
   DateTime get getDate {
