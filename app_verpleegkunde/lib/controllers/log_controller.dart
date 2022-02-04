@@ -6,7 +6,7 @@ class LogController {
   record(String action) {
     var timestamp = DateTime.now();
 
-    String log_entry = "{\"timestamp\": \"" +
+    String logEntry = "{\"timestamp\": \"" +
       timestamp.year.toString() +
       "-" +
       timestamp.month.toString() +
@@ -22,7 +22,7 @@ class LogController {
       action +
       "\"}";
 
-    dataControllerLog.add(log_entry);
+    dataControllerLog.add(logEntry);
   }
 
   get() {
