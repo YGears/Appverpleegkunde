@@ -1,0 +1,2 @@
+# .gitignore 
+../database_connection/api_config.dart
