@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Style {
-  BoxDecoration borderStyling() {
+  BoxDecoration defaultBoxStyling() {
     return BoxDecoration(
       color: Colors.orange[50],
       border: Border.all(width: 3.0),

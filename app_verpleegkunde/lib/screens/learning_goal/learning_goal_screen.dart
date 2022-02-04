@@ -147,7 +147,7 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
     return Container(
         margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         padding: const EdgeInsets.all(20.0),
-        decoration: Style().borderStyling(),
+        decoration: Style().defaultBoxStyling(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -196,7 +196,7 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
     return Container(
       margin: const EdgeInsets.only(left: 40.0, right: 40.0),
       padding: const EdgeInsets.all(20.0),
-      decoration: Style().borderStyling(),
+      decoration: Style().defaultBoxStyling(),
       child: Column(children: <Widget>[
         const Text(
           "Kies een leerdoel voor de periode",
@@ -224,7 +224,7 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
     return Container(
       margin: const EdgeInsets.only(left: 40.0, right: 40.0),
       padding: const EdgeInsets.all(20.0),
-      decoration: Style().borderStyling(),
+      decoration: Style().defaultBoxStyling(),
       child: Column(children: <Widget>[
         const Text(
           "Kies een streefcijfer voor het leerdoel",
