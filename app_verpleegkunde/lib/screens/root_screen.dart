@@ -43,7 +43,7 @@ class RootScreenState extends State<RootScreen> {
     screens.add(dailyReflectionPage(selectedDate: currentDateTime));
   }
 
-  void onClicked(int index) {
+  void navigateToSelectedScreen(int index) {
     //Function to switch index if navbar is touched
     syncWithDatabase();
     setState(() {
@@ -58,7 +58,7 @@ class RootScreenState extends State<RootScreen> {
   }
 
   Future<bool> onPressReturnToHome() async {
-    onClicked(2);
+    navigateToSelectedScreen(2);
     return false;
   }
 
@@ -85,7 +85,7 @@ class RootScreenState extends State<RootScreen> {
           body: Center(child: screens[selectedScreenIndex]),
           bottomNavigationBar: BottomMenu(
             selectedIndex: selectedIndex,
-            onClicked: onClicked,
+            onClicked: navigateToSelectedScreen,
           ),
         ));
   }
