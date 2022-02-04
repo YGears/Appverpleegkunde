@@ -11,7 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Api {
   var key = dotenv.env['API_KEY'];
-  var logger = log_controller();
+  var logger = LogController();
   var url = dotenv.env['API_URL'];
 
   Future<bool> login(id, password) async {
@@ -19,7 +19,7 @@ class Api {
     String? user = prefs.getString('user');
 
     if ((user == null || user == "") && id != "") {
-      Uri apiUrl = Uri.parse(url + "Login?name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key");
+      Uri apiUrl = Uri.parse(url! + "Login?name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key");
 
       final response = await http.get(
        apiUrl,
@@ -65,7 +65,7 @@ class Api {
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
 
-    Uri apiUrl =  Uri.parse(url + "GetReflecties?=&name=$user&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key");
+    Uri apiUrl =  Uri.parse(url! + "GetReflecties?=&name=$user&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key");
 
     final response = await http.get(apiUrl);
 
@@ -81,7 +81,7 @@ class Api {
   }
 
   Future<bool> syncUp(userName, password, data) async {
-    Uri apiUrl = Uri.parse(url + "UpdateUser?name=$userName&password=$password&subscription-key=$key");
+    Uri apiUrl = Uri.parse(url! + "UpdateUser?name=$userName&password=$password&subscription-key=$key");
 
     final response = await http.post(apiUrl, body: data);
     
@@ -98,7 +98,7 @@ class Api {
   }
 
   Future<bool> logUp(userName, password, logs) async {
-    Uri apiUrl = Uri.parse(url + "UpdateLogs?name=$userName&password=$password&subscription-key=$key");
+    Uri apiUrl = Uri.parse(url! + "UpdateLogs?name=$userName&password=$password&subscription-key=$key");
 
     final response = await http.post(apiUrl, body: logs);
 

@@ -26,7 +26,7 @@ class Syncronisation {
     final prefs = await SharedPreferences.getInstance();
     Api api = new Api();
 
-    log_controller log_control = log_controller();
+    LogController log_control = LogController();
 
     var data = await log_control.get();
     // print(data);

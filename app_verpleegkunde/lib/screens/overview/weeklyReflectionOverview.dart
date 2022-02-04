@@ -20,7 +20,7 @@ class weeklyReflectionOverview extends StatefulWidget {
 }
 
 class weeklyReflectionOverviewState extends State<weeklyReflectionOverview> {
-  log_controller log = log_controller();
+  LogController log = LogController();
 
   List<String> learninggoal = [];
   weeklyReflectionOverviewState(this.learninggoal);

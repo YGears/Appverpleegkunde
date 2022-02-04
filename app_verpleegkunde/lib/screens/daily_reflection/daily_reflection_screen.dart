@@ -98,7 +98,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   }
 
   Future<void> saveDailyReflection() async {
-    log_controller().record("Dagreflectie opgeslagen.");
+    LogController().record("Dagreflectie opgeslagen.");
     if (dagRatingController.value.text == '') {
       showDialog(
           context: context,
@@ -213,7 +213,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
 
     setState(() {
       if (result != null) {
-        log_controller().record("Mogelijke Tag geselecteerd.");
+        LogController().record("Mogelijke Tag geselecteerd.");
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(
@@ -262,7 +262,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           // print(subtags.length);
           // print('error - TAGS ---> :(');
         }
-        log_controller().record("Mogelijke subtag geselecteerd.");
+        LogController().record("Mogelijke subtag geselecteerd.");
       }
     });
   }

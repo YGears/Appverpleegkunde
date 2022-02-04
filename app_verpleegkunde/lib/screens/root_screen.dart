@@ -18,7 +18,7 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreen extends State<RootScreen> {
-  log_controller log = log_controller();
+  LogController log = LogController();
   //Start index of screen list
   int selectedIndex = 2;
   var selectedScreenIndex = 2;

@@ -100,9 +100,8 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
 
   generateTagBody() async {
     List<String> tags = await getTags();
-    // var jtag = json.decode(tags[0])["onderwerp"];
-    // print(jtag);
     List<Row> tagBody = [];
+
     for (String tag in tags) {
       tagBody.add(Row(children: [
         TextButton(
@@ -135,10 +134,10 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   }
 
   Future<void> saveDailyReflection() async {
-    log_controller().record("Weekreflectie opgeslagen.");
+    LogController().record("Weekreflectie opgeslagen.");
     final prefs = await SharedPreferences.getInstance();
     List<String>? dailyReflections =
-        prefs.getStringList('WeekReflectionScreen');
+        prefs.getStringList('week_reflectie');
     dailyReflections ??= [];
     if (dagRatingController.value.text == '') {
       showDialog(
@@ -172,7 +171,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   }
 
   generateBody() {
-    log_controller().record("Naar pagina weekreflectie maken gegaan.");
+    LogController().record("Naar pagina weekreflectie maken gegaan.");
     List<Row> tempBody = [
       Row(children: const [
         Text(""),

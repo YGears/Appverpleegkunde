@@ -66,7 +66,7 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
   }
 
   Future<void> createLearningGoal() async {
-    log_controller().record("Een nieuw leerdoel aangemaakt.");
+    LogController().record("Een nieuw leerdoel aangemaakt.");
 
     String beginDate = dateFormating(startDate);
     String lastDate = dateFormating(endDate);
@@ -102,7 +102,7 @@ class _LearningGoalScreenState extends State<LearningGoalScreen> {
 
     setState(() {
       if ('$result' != 'null') {
-        log_controller().record("Mogelijke leerdoel geselecteerd.");
+        LogController().record("Mogelijke leerdoel geselecteerd.");
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(SnackBar(
