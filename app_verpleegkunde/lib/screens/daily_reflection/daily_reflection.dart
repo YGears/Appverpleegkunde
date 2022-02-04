@@ -24,7 +24,7 @@ class Tag {
   }
 }
 
-class daily_reflection {
+class DailyReflection {
   String datum;
   double rating;
   String opmerking;
@@ -32,9 +32,9 @@ class daily_reflection {
   List<Tag> all_sub_tags_raw = [];
   List<String> all_sub_tags = [];
   List<String> tags = [];
-  daily_reflection(
+  DailyReflection(
       this.datum, this.rating, this.opmerking, this.tag, this.all_sub_tags_raw);
-  factory daily_reflection.fromJson(Map<String, dynamic> parsedJson) {
+  factory DailyReflection.fromJson(Map<String, dynamic> parsedJson) {
     // print(parsedJson['all_sub_tags']);
     List<Tag> ref = [];
     if (parsedJson['all_sub_tags'] != null) {
@@ -43,12 +43,8 @@ class daily_reflection {
       }
     }
     print("ref: " + ref.toString());
-    return daily_reflection(
-        parsedJson['datum'],
-        parsedJson['rating'].toDouble(),
-        parsedJson['opmerking'],
-        parsedJson['tag'],
-        ref);
+    return DailyReflection(parsedJson['datum'], parsedJson['rating'].toDouble(),
+        parsedJson['opmerking'], parsedJson['tag'], ref);
   }
   @override
   String toString() {

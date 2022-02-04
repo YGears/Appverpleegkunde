@@ -22,17 +22,16 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   var selectedDay = "";
   String activatedMainTag = "";
 
-  List<Row> generatedBody = [];
-  List<Row> generatedTagBody = [];
-  List<Row> generatedSubTagBody = [];
+  List<Row> listOfBodyComponents = [];
   List<Map<String, dynamic>> subtags = [];
 
-  List<List<Row>> bodies = [];
+  List<List<Row>> Body = [];
   int activatedPage = 1;
-  final dagRatingController = TextEditingController();
+  final dailyRatingController = TextEditingController();
   TextEditingController freeWriteController = TextEditingController();
 
-  list_controller dailyList = list_controller('daily_reflection');
+  list_controller dailyReflectionController =
+      list_controller('daily_reflection');
   list_controller tagController = list_controller('tag');
   list_controller subtagController = list_controller('subtag');
 
@@ -60,11 +59,11 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    dagRatingController.dispose();
+    dailyRatingController.dispose();
     super.dispose();
   }
 
-  _selectDate(BuildContext context) async {
+  selectDate(BuildContext context) async {
     final DateTime? selected = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -84,19 +83,26 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   }
 
   String convertToJSON() {
-    var rating = double.parse(dagRatingController.value.text);
-    var freeWrite = freeWriteController.value.text;
-    List<Tag> temp = [];
-    for (Map<String, dynamic> i in subtags) {
-      temp.add(Tag.fromJson(i));
+    // Covert all values that are needed voor a daily reflection to as String in the JSON format
+    double rating = double.parse(dailyRatingController.value.text);
+    String freeWrite = freeWriteController.value.text;
+    List<Tag> listOfSubTags = [];
+
+    for (Map<String, dynamic> subtag in subtags) {
+      listOfSubTags.add(Tag.fromJson(subtag));
     }
-    return daily_reflection(selectedDay, rating, freeWrite, selectedTags, temp)
+
+    return DailyReflection(
+            selectedDay, rating, freeWrite, selectedTags, listOfSubTags)
         .toString();
   }
 
   Future<void> saveDailyReflection() async {
+    //Function to save daily reflection to JSON of daily reflections
+    //Create a log
     log_controller().record("Dagreflectie opgeslagen.");
-    if (dagRatingController.value.text == '') {
+    //When trying to make a reflection without rating throw dialog
+    if (dailyRatingController.value.text == '') {
       showDialog(
           context: context,
           builder: (_) => const AlertDialog(
@@ -104,7 +110,9 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
                 content: Text('Geen Rating gegeven'),
               ));
     } else {
-      dailyList.add(convertToJSON());
+      // when rating is choosen than add string from coverToJSON to json
+      dailyReflectionController.add(convertToJSON());
+      //Redirect to the calendar/home view
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const RootScreen()),
@@ -113,22 +121,24 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   }
 
   addTags() {
-    List<Row> tagsToReturn = [];
-    for (var item in selectedTags) {
-      tagsToReturn.add(Row(children: [
+    //Function that will return a List of Row components of the selectedTags
+    // A Row component is a tag that is selected and can redirect to assign its subtags
+    List<Row> rowOfSelectedTags = [];
+    for (String tag in selectedTags) {
+      rowOfSelectedTags.add(Row(children: [
         TextButton(
-          child: Text(item),
-          onPressed: () =>
-              {directToSubTags(context, selectedTags.indexOf(item))},
+          child: Text(tag),
+          onPressed: () => {
+            navigateAndSelectSubTagScreen(context, selectedTags.indexOf(tag))
+          },
         )
       ]));
     }
-
-    return tagsToReturn;
+    return rowOfSelectedTags;
   }
 
-  generateBody() {
-    List<Row> screenForm = [
+  generateDailyReflectionScreen() {
+    List<Row> screenContent = [
       Row(children: const [
         Text(""),
       ]),
@@ -141,7 +151,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
                 primary: Colors.orange,
               ),
               child: Text(selectedDay),
-              onPressed: () => {_selectDate(context)})
+              onPressed: () => {selectDate(context)})
         ],
       ),
       Row(
@@ -155,7 +165,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(1)
                 ],
-                controller: dagRatingController),
+                controller: dailyRatingController),
           ),
         ],
       ),
@@ -174,16 +184,15 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
           TextButton(
             child: const Text("Selecteer een Tag"),
             onPressed: () => {
-              _navigateAndDisplaySelection(context),
+              navigateAndSelectTagScreen(context),
             },
           ),
         ],
       ),
     ];
-    //MARK hier kijken
-    screenForm.addAll(addTags());
 
-    screenForm.add(
+    screenContent.addAll(addTags());
+    screenContent.add(
       Row(
         children: [
           ElevatedButton(
@@ -198,11 +207,11 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
     );
 
     setState(() {
-      generatedBody = screenForm;
+      listOfBodyComponents = screenContent;
     });
   }
 
-  void _navigateAndDisplaySelection(BuildContext context) async {
+  void navigateAndSelectTagScreen(BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const DailyReflections()),
@@ -220,7 +229,8 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
     });
   }
 
-  void directToSubTags(BuildContext context, int tag) async {
+  void navigateAndSelectSubTagScreen(
+      BuildContext context, int maintagIndex) async {
     final subTag = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SubTagsScreen()),
@@ -230,24 +240,21 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
       List<String> tagText = [];
       if (subTag != null) {
         if (subtags.isEmpty) {
-          // print("----Filled----");
-          Map<String, List<String>> map = {'sub_tags': []};
-          subtags.add(map);
+          Map<String, List<String>> mapOfSubTags = {'sub_tags': []};
+          subtags.add(mapOfSubTags);
         }
-        for (int toAdd = tag - (subtags.length - 1); toAdd > 0; toAdd--) {
-          // print(toAdd);
-          // print("added map--------------------------");
-          Map<String, List<String>> map = {'sub_tags': []};
-          subtags.add(map);
+        for (int toAdd = maintagIndex - (subtags.length - 1);
+            toAdd > 0;
+            toAdd--) {
+          Map<String, List<String>> mapOfSubTags = {'sub_tags': []};
+          subtags.add(mapOfSubTags);
         }
-        // tagText.add("$subTag");
-        if (subtags.asMap().containsKey(tag)) {
-          for (List<String> t in subtags[tag].values) {
-            tagText = t;
+        if (subtags.asMap().containsKey(maintagIndex)) {
+          for (List<String> tag in subtags[maintagIndex].values) {
+            tagText = tag;
           }
           tagText.add(subTag);
-          subtags[tag].update('sub_tags', (dynamic) => tagText);
-          // subtags[tag] = Tag.fromJson(map);
+          subtags[maintagIndex].update('sub_tags', (dynamic) => tagText);
         }
         log_controller().record("Mogelijke subtag geselecteerd.");
       }
@@ -256,18 +263,16 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    generateBody();
-    bodies.clear();
-    bodies.add(generatedTagBody);
-    bodies.add(generatedBody);
-    bodies.add(generatedSubTagBody);
+    generateDailyReflectionScreen();
+    Body.clear();
+    Body.add(listOfBodyComponents);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hanze Verpleegkunde'),
         backgroundColor: themeColor,
         centerTitle: true,
       ),
-      body: ListView(children: [Column(children: bodies[activatedPage])]),
+      body: ListView(children: [Column(children: Body[activatedPage])]),
     );
   }
 }

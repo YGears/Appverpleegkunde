@@ -173,8 +173,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     double amountOfReflections = 0;
 
     for (String entryString in reflections) {
-      daily_reflection entry =
-          daily_reflection.fromJson(jsonDecode(entryString));
+      DailyReflection entry = DailyReflection.fromJson(jsonDecode(entryString));
       if (entry != null) {
         if (start.difference(entry.getDateType).inHours <= 0 &&
             end.difference(entry.getDateType).inHours >= 0) {
