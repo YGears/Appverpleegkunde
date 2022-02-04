@@ -6,11 +6,13 @@ import '../screens/week_reflection/week_reflection_class.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/log_controller.dart';
 import 'package:http/http.dart' as http;
+import '../screens/daily_reflection/daily_reflection.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Api {
-  var key = "77375a9effb64452bf5d2952cf76ee80";
+  var key = dotenv.env['API_KEY'];
   var logger = log_controller();
-  var url = "https://nurseitapi.azure-api.net/";
+  var url = dotenv.env['API_URL'];
 
   Future<bool> login(id, password) async {
     final prefs = await SharedPreferences.getInstance();
