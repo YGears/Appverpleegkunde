@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter_application_1/database_connection/api.dart';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
 import 'package:intl/intl.dart';
+import '../learning_goal/learning_goal.dart';
+import '../week_reflection/week_reflection_class.dart';
 
 import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';

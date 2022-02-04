@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/database_connection/api.dart';
+import '../learning_goal/learning_goal.dart';
+import '../week_reflection/week_reflection_class.dart';
 import '../../app_colors.dart';
 import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
