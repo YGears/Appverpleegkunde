@@ -138,11 +138,9 @@ class WeekReflection {
 // in order to use the group api, replace privateApi with groupApi on line 30,
 // comment out line 32
 class Api {
-  var key =
-      "77375a9effb64452bf5d2952cf76ee80"; //a1d6d355d8ca4295b4bdd1592fef5358
+  var key = "a1d6d355d8ca4295b4bdd1592fef5358";
   var log = log_controller();
-  var url =
-      "https://nurseitapi.azure-api.net/"; //"https://nurse-it-hanze-env-apim.azure-api.net/"
+  var url = "https://nurse-it-hanze-env-apim.azure-api.net/";
 
   Future<bool> login(id, password) async {
     // return true;
