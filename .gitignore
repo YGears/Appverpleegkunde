@@ -1,2 +1,2 @@
 # .gitignore 
-../database_connection/api_config.dart
+Appverpleegkunde/app_verpleegkunde/lib/database_connection/api_config.dart
