@@ -1,30 +1,31 @@
 import "list_controller.dart";
 
 class log_controller {
-  var log_save_controller = list_controller("log");
+  var data_controller_log = list_controller("log");
 
   record(String action) {
-    var time = DateTime.now();
-    String now = "{\"timestamp\": \"" +
-        time.year.toString() +
-        "-" +
-        time.month.toString() +
-        "-" +
-        time.day.toString() +
-        "T" +
-        time.hour.toString() +
-        ":" +
-        time.minute.toString() +
-        ":" +
-        time.second.toString() +
-        "\", \"action\": \"" +
-        action +
-        "\"}";
-    log_save_controller.add(now);
-    print(now);
+    var timestamp = DateTime.now();
+    
+    String log_entry = "{\"timestamp\": \"" +
+      timestamp.year.toString() +
+      "-" +
+      timestamp.month.toString() +
+      "-" +
+      timestamp.day.toString() +
+      "T" +
+      timestamp.hour.toString() +
+      ":" +
+      timestamp.minute.toString() +
+      ":" +
+      timestamp.second.toString() +
+      "\", \"action\": \"" +
+      action +
+      "\"}";
+
+    data_controller_log.add(log_entry);
   }
 
   get() {
-    return log_save_controller.getList;
+    return data_controller_log.getList;
   }
 }
