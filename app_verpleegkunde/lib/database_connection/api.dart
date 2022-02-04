@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/log_controller.dart';
 import 'package:http/http.dart' as http;
 import '../screens/daily_reflection/daily_reflection.dart';
-import 'api_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Response {
   final String response;
@@ -139,16 +139,16 @@ class WeekReflection {
 // in order to use the group api, replace privateApi with groupApi on line 30,
 // comment out line 32
 class Api {
-  var key = apiKey;
+  var key = dotenv.env['API_KEY'];
   var log = log_controller();
-  var url = apiUrl;
+  var url = dotenv.env['API_URL'];
 
   Future<bool> login(id, password) async {
     // return true;
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
     if ((user == null || user == "") && id != "") {
-      var groupApi = url +
+      var groupApi = url! +
           "Login?name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key";
 
       final response = await http.get(
@@ -173,7 +173,7 @@ class Api {
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
 
-    var groupApi = url +
+    var groupApi = url! +
         "getReflecties?=&name=$user&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key";
 
     final response = await http.get(
@@ -222,7 +222,7 @@ class Api {
   }
 
   Future<bool> syncUp(user_name, password, data) async {
-    var groupApi = url +
+    var groupApi = url! +
         "UpdateUser?name=$user_name&password=$password&subscription-key=$key";
 
     final response = await http.post(Uri.parse(groupApi), body: data);
@@ -241,7 +241,7 @@ class Api {
   }
 
   Future<bool> logUp(user_name, password, logs) async {
-    var groupApi = url +
+    var groupApi = url! +
         "UpdateLogs?name=$user_name&password=$password&subscription-key=$key";
 
     final response = await http.post(Uri.parse(groupApi), body: logs);

@@ -1,2 +1,2 @@
 # .gitignore 
-Appverpleegkunde/app_verpleegkunde/lib/database_connection/api_config.dart
+.env
