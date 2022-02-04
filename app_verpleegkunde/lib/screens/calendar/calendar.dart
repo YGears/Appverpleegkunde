@@ -22,10 +22,10 @@ class CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    var year = selectedDate.year;
-    var month = selectedDate.month;
+    int year = selectedDate.year;
+    int month = selectedDate.month;
     var calendarTable = <TableRow>[];
-    var monthName = Year().months[selectedDate.month - 1];
+    String monthName = Year().months[selectedDate.month - 1];
 
     syncWithDatabase() async {
       //wat
@@ -49,7 +49,7 @@ class CalendarState extends State<Calendar> {
 
     createCalendar() {
       int currentDayInMonth = 0;
-      var weekNumsInMonth = Year().listOfWeeks(year, month);
+      List weekNumsInMonth = Year().listOfWeeks(year, month);
       // Create x rows based on length of a given month in a given
       // Than for every row, give a week children if day is in week
       for (var week = 0; week < weekNumsInMonth.length; week++) {
@@ -62,7 +62,7 @@ class CalendarState extends State<Calendar> {
         ]);
 
         //DAG ITEMS IN DEZE WEEK
-        for (var day = 1; day < 8; day++) {
+        for (int day = 1; day < 8; day++) {
           // COMPLEX IF STATEMENT EXPLAINATION
           if ((week == 0 && day < DateTime(year, month, 1).weekday) ||
               (week == (weekNumsInMonth.length - 1) &&
