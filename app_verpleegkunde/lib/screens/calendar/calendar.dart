@@ -1,74 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'year.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key, required this.parent}) : super(key: key);
   final parent; //Andere naam
   @override
-  State<Calendar> createState() => _CalendarState(parent); //Andere naam
+  State<Calendar> createState() => CalendarState(parent); //Andere naam
 }
 
-class _CalendarState extends State<Calendar> {
+class CalendarState extends State<Calendar> {
   int tableWidth = 10;
   int count = 0;
   var parent; //Andere naam
   List daysInWeek = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
   DateTime selectedDate = DateTime.now();
 
-  _CalendarState(var newParent) {
+  CalendarState(var newParent) {
     //Andere naam
     this.parent = newParent; //Andere naam
-  }
-
-  List<String> months = [
-    'Januari',
-    'Februari',
-    'Maart',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Augustus',
-    'September',
-    'Oktober',
-    'November',
-    'December'
-  ];
-
-  int numOfWeeks(int year) {
-    /// Calculates number of weeks for a given year as per https://en.wikipedia.org/wiki/ISO_week_date#Weeks_per_year
-    DateTime dec28 = DateTime(year, 12, 28);
-    int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
-    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
-  }
-
-  int weekNumber(DateTime date) {
-    /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
-    int dayOfYear = int.parse(DateFormat("D").format(date));
-    int woy = ((dayOfYear - date.weekday + 10) / 7).floor();
-    if (woy < 1) {
-      woy = numOfWeeks(date.year - 1);
-    } else if (woy > numOfWeeks(date.year)) {
-      woy = 1;
-    }
-    return woy;
-  }
-
-  List listOfWeeks(year, month) {
-    // Fill a list witch contains all weeksNumbers of a given month in a given year
-    // Integer that holds the last day of given month in  a given year
-    int lastCurrentDayInMonth = DateTime(year, month + 1, 0).day;
-    // -1 is gap between days, -8 is gap(-8 start)*-1 get positive number
-    int mondayOffset = (DateTime(year, month, 1).weekday - 1 - 8) * -1;
-    List listOfWeekNumb = [];
-    listOfWeekNumb.add(weekNumber(DateTime(year, month, 1)));
-    // Add weeknumber of the every monday of a given month in a given year, starting with the first monday
-    // Increase this by a week (7 days) until this number becomes higher that the lenght of the month, than stop
-    while (mondayOffset <= lastCurrentDayInMonth) {
-      listOfWeekNumb.add(weekNumber(DateTime(year, month, mondayOffset)));
-      mondayOffset += 7;
-    }
-    return listOfWeekNumb;
   }
 
   @override
@@ -76,7 +25,7 @@ class _CalendarState extends State<Calendar> {
     var year = selectedDate.year;
     var month = selectedDate.month;
     var calendarTable = <TableRow>[];
-    var monthName = months[selectedDate.month - 1];
+    var monthName = Year().months[selectedDate.month - 1];
 
     syncWithDatabase() async {
       //wat
@@ -100,7 +49,7 @@ class _CalendarState extends State<Calendar> {
 
     createCalendar() {
       int currentDayInMonth = 0;
-      var weekNumsInMonth = listOfWeeks(year, month);
+      var weekNumsInMonth = Year().listOfWeeks(year, month);
       // Create x rows based on length of a given month in a given
       // Than for every row, give a week children if day is in week
       for (var week = 0; week < weekNumsInMonth.length; week++) {
