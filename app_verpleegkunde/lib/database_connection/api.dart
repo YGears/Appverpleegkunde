@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import '../screens/learning_goal/learning_goal.dart';
+import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
+import 'package:flutter_application_1/screens/learning_goal/learning_goal.dart';
 import '../screens/week_reflection/week_reflection_class.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/log_controller.dart';
 import 'package:http/http.dart' as http;
-import '../screens/daily_reflection/daily_reflection.dart';
-import 'response.dart';
 
-// in order to use the group api, replace privateApi with groupApi on line 30,
-// comment out line 32
 class Api {
   var key = "77375a9effb64452bf5d2952cf76ee80";
   var logger = log_controller();
@@ -20,16 +17,16 @@ class Api {
     String? user = prefs.getString('user');
 
     if ((user == null || user == "") && id != "") {
-      var groupApi = url + "Login?name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key";
+      Uri apiUrl = Uri.parse(url + "Login?name=$id&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key");
 
       final response = await http.get(
-        Uri.parse(groupApi),
+       apiUrl,
       );
 
-      var data = jsonDecode(response.body);
+      var responseData = jsonDecode(response.body);
 
-      if (data['response'] != null) {
-        if (data['response'] == "Logged in") {
+      if (responseData['response'] != null) {
+        if (responseData['response'] == "Logged in") {
           logger.record("Logged in");
           return true;
         }
@@ -38,15 +35,27 @@ class Api {
     }
     return false;
   }
-  fill_with_data_if_empty(data, prefs, list_to_access){
-      if (data[list_to_access] != null) {
-        List<String> data_list = [];
+  
+  saveDataFromServer(data, prefs, listName){
+      if (data[listName] != null) {
+        List<String> dataList = [];
 
-        for (Map<String, dynamic> weekly_reflection in data[list_to_access]) {
-          data_list.add(WeekReflection.fromJson(weekly_reflection).toString());
+        for (Map<String, dynamic> entry in data[listName]) {
+          switch (listName) {
+            case "daily_reflection":
+              dataList.add(daily_reflection.fromJson(entry).toString());
+              break;
+            case "leerdoel":
+              dataList.add(LearningGoal.fromJson(entry).toString());
+              break;
+            case "week_reflectie":
+              dataList.add(WeekReflection.fromJson(entry).toString());
+              break;
+            default:
+          }
         }
         
-        prefs.setStringList(list_to_access, data_list);
+        prefs.setStringList(listName, dataList);
       }
   }
 
@@ -54,45 +63,43 @@ class Api {
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
 
-    var groupApi = url + "GetReflecties?=&name=$user&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key";
+    Uri apiUrl =  Uri.parse(url + "GetReflecties?=&name=$user&password=KoekjesZijnGemaaktVanDeeg&subscription-key=$key");
 
-    final response = await http.get(
-      Uri.parse(groupApi),
-    );
+    final response = await http.get(apiUrl);
 
     var data = jsonDecode(response.body);
 
     if (data != null) {
-      fill_with_data_if_empty(data, prefs, "daily_reflection");
-      fill_with_data_if_empty(data, prefs, "leerdoel");
-      fill_with_data_if_empty(data, prefs, "week_reflectie");
+      saveDataFromServer(data, prefs, "daily_reflection");
+      saveDataFromServer(data, prefs, "leerdoel");
+      saveDataFromServer(data, prefs, "week_reflectie");
       return true;
     }
     return false;
   }
 
-  Future<bool> syncUp(user_name, password, data) async {
-    var groupApi = url + "UpdateUser?name=$user_name&password=$password&subscription-key=$key";
+  Future<bool> syncUp(userName, password, data) async {
+    Uri apiUrl = Uri.parse(url + "UpdateUser?name=$userName&password=$password&subscription-key=$key");
 
-    final response = await http.post(Uri.parse(groupApi), body: data);
+    final response = await http.post(apiUrl, body: data);
     
     if (response.body != "") {
       var responseText = jsonDecode(response.body);
 
       if (responseText["response"] == "Log updated") {
+        logger.record("Updated reflections");
         return true;
-      } else {
-        return false;
       }
     }
 
-    return true;
+    return false;
   }
 
-  Future<bool> logUp(user_name, password, logs) async {
-    var groupApi = url + "UpdateLogs?name=$user_name&password=$password&subscription-key=$key";
+  Future<bool> logUp(userName, password, logs) async {
+    Uri apiUrl = Uri.parse(url + "UpdateLogs?name=$userName&password=$password&subscription-key=$key");
 
-    final response = await http.post(Uri.parse(groupApi), body: logs);
+    final response = await http.post(apiUrl, body: logs);
+
     var data = jsonDecode(response.body);
 
     if (data['response'] != null) {
