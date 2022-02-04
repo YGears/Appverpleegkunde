@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/log_controller.dart';
 import 'package:http/http.dart' as http;
 import '../screens/daily_reflection/daily_reflection.dart';
+import 'api_config.dart';
 
 class Response {
   final String response;
@@ -138,9 +139,9 @@ class WeekReflection {
 // in order to use the group api, replace privateApi with groupApi on line 30,
 // comment out line 32
 class Api {
-  var key = "a1d6d355d8ca4295b4bdd1592fef5358";
+  var key = apiKey;
   var log = log_controller();
-  var url = "https://nurse-it-hanze-env-apim.azure-api.net/";
+  var url = apiUrl;
 
   Future<bool> login(id, password) async {
     // return true;
