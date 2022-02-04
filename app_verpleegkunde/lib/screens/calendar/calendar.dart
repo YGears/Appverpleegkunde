@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/database_connection/syncronisatie.dart';
 import 'package:intl/intl.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key, required this.parent}) : super(key: key);
-  final parent;
+  final parent; //Andere naam
   @override
-  State<Calendar> createState() => _CalendarState(parent);
+  State<Calendar> createState() => _CalendarState(parent); //Andere naam
 }
 
 class _CalendarState extends State<Calendar> {
   int tableWidth = 10;
   int count = 0;
-  var parent;
-  var daysInWeek = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
+  var parent; //Andere naam
+  List daysInWeek = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
   DateTime selectedDate = DateTime.now();
 
   _CalendarState(var newParent) {
-    this.parent = newParent;
+    //Andere naam
+    this.parent = newParent; //Andere naam
   }
 
   List<String> months = [
@@ -57,14 +57,14 @@ class _CalendarState extends State<Calendar> {
   List listOfWeeks(year, month) {
     // Fill a list witch contains all weeksNumbers of a given month in a given year
     // Integer that holds the last day of given month in  a given year
-    int lastcurrentDayInMonth = DateTime(year, month + 1, 0).day;
+    int lastCurrentDayInMonth = DateTime(year, month + 1, 0).day;
     // -1 is gap between days, -8 is gap(-8 start)*-1 get positive number
     int mondayOffset = (DateTime(year, month, 1).weekday - 1 - 8) * -1;
-    var listOfWeekNumb = [];
+    List listOfWeekNumb = [];
     listOfWeekNumb.add(weekNumber(DateTime(year, month, 1)));
     // Add weeknumber of the every monday of a given month in a given year, starting with the first monday
     // Increase this by a week (7 days) until this number becomes higher that the lenght of the month, than stop
-    while (mondayOffset <= lastcurrentDayInMonth) {
+    while (mondayOffset <= lastCurrentDayInMonth) {
       listOfWeekNumb.add(weekNumber(DateTime(year, month, mondayOffset)));
       mondayOffset += 7;
     }
@@ -79,18 +79,12 @@ class _CalendarState extends State<Calendar> {
     var monthName = months[selectedDate.month - 1];
 
     syncWithDatabase() async {
+      //wat
       // await Syncronisation.syncUp();
     }
 
-    dag() async {
-      setState(() {
-        count = count + 1;
-      });
-    }
-
-    specifiekeDagReflectie(var dag) async {
-      // print(dadayteS);
-      parent.gotoDailyReflection(dag);
+    goToSelectedDailyRefelection(var day) async {
+      parent.redirectToDailyReflectionScreen(day);
     }
 
     nextMonth(increment) {
@@ -127,9 +121,9 @@ class _CalendarState extends State<Calendar> {
             calendarRow.children!.add(const Text(""));
           } else {
             currentDayInMonth++;
-            var dag = DateTime(year, month, currentDayInMonth);
+            var currentDay = DateTime(year, month, currentDayInMonth);
             calendarRow.children!.add(TextButton(
-                onPressed: () => specifiekeDagReflectie(dag),
+                onPressed: () => goToSelectedDailyRefelection(currentDay),
                 child: Text(currentDayInMonth.toString(),
                     style: const TextStyle(
                         color: Colors.black,
