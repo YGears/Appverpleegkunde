@@ -1,14 +1,19 @@
-// ignore_for_file: camel_case_types
-
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/app_colors.dart';
+import 'package:flutter_application_1/controllers/log_controller.dart';
+import 'package:flutter_application_1/screens/daily_reflection/dailyreflect.dart';
+import 'package:flutter_application_1/screens/daily_reflection/sub_tags_screen.dart';
+import '../../app_colors.dart';
+import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../daily_reflection/daily_reflection.dart';
+import '../../database_connection/syncronisatie.dart';
+import '../root_screen.dart';
 
 class dailyReflectionPage extends StatefulWidget {
-  dailyReflectionPage({Key? key, required this.selectedDate}) : super(key: key);
+  const dailyReflectionPage({Key? key, required this.selectedDate})
+      : super(key: key);
   final DateTime selectedDate;
   @override
   State<dailyReflectionPage> createState() =>
@@ -24,11 +29,28 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   List<Row> generatedBody = [];
   List<Row> generatedTagBody = [];
   List<Row> generatedSubTagBody = [];
-  Map subtags = HashMap<String, List<String>>();
+  List<Map<String, dynamic>> subtags = [];
+
   List<List<Row>> bodies = [];
   int activatedPage = 1;
   final dagRatingController = TextEditingController();
   TextEditingController freeWriteController = TextEditingController();
+
+  list_controller dailyList = list_controller('daily_reflection');
+  //MARK
+  list_controller tagController = list_controller('tag');
+  List listOfTags = [];
+  list_controller subtagController = list_controller('subtag');
+  List listOfSubtags = [];
+
+  Future<void> update() async {
+    List savedTags = await tagController.getList;
+    List savedSubtags = await subtagController.getList;
+    setState(() {
+      listOfTags = savedTags;
+      listOfSubtags = savedSubtags;
+    });
+  }
 
   _dailyReflectionPageState(this.selectedDate) {
     selectedDay = selectedDate.year.toString() +
@@ -64,160 +86,33 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     }
   }
 
-  List getTags() {
-    List list = ["Leerdoel1", "stage", "tag1", "tag2", "leuk"];
-    return list;
-  }
-
-  gotoTagBody() {
-    setState(() {
-      activatedPage = 0;
-    });
-  }
-
-  gotoSubTag(tag) {
-    setState(() {
-      activatedMainTag = tag;
-      activatedPage = 2;
-    });
-  }
-
-  gotoDailyReflection() {
-    setState(() {
-      activatedPage = 1;
-    });
-  }
-
-  addSubTag(String tag) {
-    if (!subtags.containsKey(activatedMainTag)) {
-      setState(() {
-        subtags[activatedMainTag] = [tag];
-      });
-    }
-
-    List<String> tempList = subtags[activatedMainTag];
-    if (subtags[activatedMainTag][0] == "") {
-      tempList = [];
-    }
-
-    if (!tempList.contains(tag)) {
-      setState(() {
-        tempList.add(tag);
-        subtags[activatedMainTag] = tempList;
-      });
-    }
-
-    generateSubTagBody();
-  }
-
-  addMainTag(tag) {
-    setState(() {
-      if (!selectedTags.contains(tag)) {
-        selectedTags.add(tag);
-        activatedMainTag = tag;
-        subtags[activatedMainTag] = [""];
-      }
-    });
-    gotoDailyReflection();
-  }
-
-  generateSubTagBody() {
-    List tags = getTags();
-    List<Row> subTagBody = [
-      Row(children: [
-        TextButton(
-            onPressed: () => {gotoDailyReflection()},
-            child: const Text("Ga Terug"))
-      ])
-    ];
-    for (String tag in tags) {
-      subTagBody.add(Row(children: [
-        TextButton(
-          child: Text(tag),
-          onPressed: () => {addSubTag(tag)},
-        )
-      ]));
-    }
-    if (subtags[activatedMainTag] != null) {
-      if (subtags[activatedMainTag][0].toString() != "") {
-        for (String subTag in subtags[activatedMainTag]) {
-          subTagBody.add(Row(children: [
-            Text(subTag),
-          ]));
-        }
-      }
-    }
-    generatedSubTagBody = subTagBody;
-  }
-
-  generateTagBody() {
-    List tags = getTags();
-    List<Row> tagBody = [];
-    for (String tag in tags) {
-      tagBody.add(Row(children: [
-        TextButton(
-          child: Text(tag),
-          onPressed: () => {addMainTag(tag)},
-        )
-      ]));
-    }
-    generatedTagBody = tagBody;
-  }
-
   String convertToJSON() {
-    var rating = dagRatingController.value.text;
+    var rating = double.parse(dagRatingController.value.text);
     var freeWrite = freeWriteController.value.text;
-    bool tagged = false;
-    String json = "{";
-
-    json += "\"datum\": \"$selectedDate\",";
-    if (rating != "") {
-      json += "\"rating\": $rating,";
-    } else {
-      json += "\"rating\": 0,";
+    List<Tag> temp = [];
+    for (Map<String, dynamic> i in subtags) {
+      temp.add(Tag.fromJson(i));
     }
-    json += "\"opmerking\": \"$freeWrite\",";
-    json += "\"tag\": [";
-    for (String tag in selectedTags) {
-      tagged = true;
-      json += "\"$tag\",";
-    }
-    if (tagged) {
-      json = json.substring(0, json.length - 1);
-    }
-
-    json += "],";
-    json += "\"all_sub_tags\": [";
-
-    for (String mainTag in selectedTags) {
-      tagged = false;
-      json += "{\"sub_tags\": [";
-      for (String subTag in subtags[mainTag]) {
-        if (subTag != "") {
-          json += "\"$subTag\",";
-          tagged = true;
-        }
-      }
-      if (tagged) {
-        json = json.substring(0, json.length - 1);
-      }
-      json += "]},";
-    }
-    json += "]";
-    json += "}";
-    print(json);
-    return json;
+    return daily_reflection(selectedDay, rating, freeWrite, selectedTags, temp)
+        .toString();
   }
 
   Future<void> saveDailyReflection() async {
-    print("printing.....");
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? dailyReflections = prefs.getStringList('daily_reflection');
-    dailyReflections ??= [];
-    dailyReflections.add(convertToJSON());
-
-    prefs.setStringList('daily_reflection', dailyReflections);
-    print("Done");
+    log_controller().record("Dagreflectie opgeslagen.");
+    if (dagRatingController.value.text == '') {
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                title: Text('Foutmelding'),
+                content: Text('Geen Rating gegeven'),
+              ));
+    } else {
+      dailyList.add(convertToJSON());
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RootScreen()),
+      );
+    }
   }
 
   addTags() {
@@ -226,20 +121,30 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       tagsToReturn.add(Row(children: [
         TextButton(
           child: Text(item),
-          onPressed: () => {gotoSubTag(item)},
+          onPressed: () =>
+              {directToSubTags(context, selectedTags.indexOf(item))},
         )
       ]));
     }
+
     return tagsToReturn;
   }
 
   generateBody() {
-    List<Row> tempBody = [
+    List<Row> screenForm = [
+      Row(children: const [
+        Text(""),
+      ]),
       Row(
         children: [
           const Text("Reflectie op dag: "),
           ElevatedButton(
-              child: Text(selectedDay), onPressed: () => {_selectDate(context)})
+              style: ElevatedButton.styleFrom(
+                onPrimary: Colors.white,
+                primary: Colors.orange,
+              ),
+              child: Text(selectedDay),
+              onPressed: () => {_selectDate(context)})
         ],
       ),
       Row(
@@ -270,19 +175,25 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
       Row(
         children: [
           TextButton(
-            child: const Text("Selecteer een tag"),
-            onPressed: () => {gotoTagBody()},
+            child: const Text("Selecteer een Tag"),
+            onPressed: () => {
+              _navigateAndDisplaySelection(context),
+            },
           ),
         ],
       ),
     ];
+    //MARK hier kijken
+    screenForm.addAll(addTags());
 
-    tempBody.addAll(addTags());
-
-    tempBody.add(
+    screenForm.add(
       Row(
         children: [
           ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                onPrimary: Colors.white,
+                primary: Colors.orange,
+              ),
               child: const Text("Sla reflectie op"),
               onPressed: () => {saveDailyReflection()})
         ],
@@ -290,28 +201,89 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     );
 
     setState(() {
-      generatedBody = tempBody;
+      generatedBody = screenForm;
+    });
+  }
+
+  void _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const DailyReflections()),
+    );
+
+    setState(() {
+      if (result != null) {
+        log_controller().record("Mogelijke Tag geselecteerd.");
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+              SnackBar(content: Text('Tag geselecteerd! - $result')));
+        selectedTags.add('$result');
+      }
+    });
+  }
+
+  void directToSubTags(BuildContext context, int tag) async {
+    final subTag = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SubTagsScreen()),
+    );
+
+    setState(() {
+      List<String> tagText = [];
+      if (subTag != null) {
+        if (subtags.isEmpty) {
+          // print("----Filled----");
+          Map<String, List<String>> map = {'sub_tags': []};
+          subtags.add(map);
+        }
+        for (int toAdd = tag - (subtags.length - 1); toAdd > 0; toAdd--) {
+          // print(toAdd);
+          // print("added map--------------------------");
+          Map<String, List<String>> map = {'sub_tags': []};
+          subtags.add(map);
+        }
+        // tagText.add("$subTag");
+        if (subtags.asMap().containsKey(tag)) {
+          for (List<String> t in subtags[tag].values) {
+            tagText = t;
+          }
+          tagText.add(subTag);
+          subtags[tag].update('sub_tags', (dynamic) => tagText);
+          // subtags[tag] = Tag.fromJson(map);
+        } else {
+          // if (subtags.length - 1 >= tag) {
+          //   tagText.add(subTag.toString());
+          //   Map<String, dynamic> map = {'sub_tags': tagText};
+          //   subtags.add(map);
+          // } else {
+
+          // }
+          // print(subtags.length);
+          // print('error - TAGS ---> :(');
+        }
+        log_controller().record("Mogelijke subtag geselecteerd.");
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    generateTagBody();
+    // generateTagBody();
     generateBody();
-    generateSubTagBody();
+    // generateSubTagBody();
     bodies.clear();
     bodies.add(generatedTagBody);
     bodies.add(generatedBody);
     bodies.add(generatedSubTagBody);
     return Scaffold(
-      //Topheader within the application
       appBar: AppBar(
         title: const Text('Hanze Verpleegkunde'),
         backgroundColor: themeColor,
         centerTitle: true,
       ),
       // Body of the application
-      body: Column(children: bodies[activatedPage]),
+      body: ListView(children: [Column(children: bodies[activatedPage])]),
     );
   }
 }

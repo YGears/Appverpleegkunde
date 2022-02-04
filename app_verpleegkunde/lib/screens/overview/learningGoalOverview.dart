@@ -1,9 +1,16 @@
+// ignore_for_file: file_names
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_application_1/database_connection/api.dart';
+import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
+import 'package:intl/intl.dart';
+
 import '../../controllers/list_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../style.dart';
+import 'dailyReflectionOverview.dart';
+import 'weeklyReflectionOverview.dart';
 
 // ignore: camel_case_types
 class learningGoalOverview extends StatefulWidget {
@@ -37,22 +44,15 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       }
 
       for (String vari in leerdoelen) {
-        Map<String, dynamic> decodedLearningGoals = jsonDecode(vari);
-        String temp = decodedLearningGoals["eind_datum"];
+        LearningGoal decodedLearningGoals =
+            LearningGoal.fromJson(jsonDecode(vari));
         double gemiddelde = await get_average_score(
-            formatDateTimes(decodedLearningGoals["begin_datum"]),
-            formatDateTimes(decodedLearningGoals["eind_datum"]));
+            decodedLearningGoals.getBeginingDate,
+            decodedLearningGoals.getEndingDate);
 
-        print(decodedLearningGoals);
         listToReturn.add(Row(
           children: [
-            itembox(
-                context,
-                decodedLearningGoals["begin_datum"],
-                decodedLearningGoals["eind_datum"],
-                decodedLearningGoals["onderwerp"],
-                decodedLearningGoals["streefcijfer"],
-                gemiddelde),
+            itembox(context, decodedLearningGoals, gemiddelde),
           ],
         ));
         listToReturn.add(const SizedBox(
@@ -97,14 +97,19 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
   }
 
   //Widget for selecting a period in which that learning goal will be set
-  Widget itembox(BuildContext context, String startDate, String endDate,
-      String onderwerp, String streefcijfer, double gemiddelde) {
+  Widget itembox(
+      BuildContext context, LearningGoal learningGoal, double gemiddelde) {
+    if (gemiddelde.isNaN) {
+      gemiddelde = 0;
+    }
+    var onderwerp = learningGoal.getSubject;
+    var startDate = learningGoal.getBeginingDate.toString().substring(0, 10);
+    var endDate = learningGoal.getEndingDate.toString().substring(0, 10);
+    var streefcijfer = learningGoal.getTargetGrade.toString();
     return Container(
-        // margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         width: 300,
-        // padding: const EdgeInsets.all(10.0),
         decoration: Style().borderStyling(),
-        child: Column(children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
             onderwerp,
             style: const TextStyle(
@@ -117,71 +122,68 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
           const SizedBox(
             height: 8,
           ),
-          Column(
+          Column(mainAxisAlignment: MainAxisAlignment.center, children: <
+              Widget>[
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('$startDate - $endDate'),
-                    const SizedBox(
-                      width: 20,
-                      height: 10,
-                    ),
-                  ],
+                Text('$startDate - $endDate'),
+                const SizedBox(
+                  width: 20,
+                  height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Streefcijfer: $streefcijfer/10"),
-                    const SizedBox(width: 20),
-                    Text("Gemiddelde: " + gemiddelde.toStringAsFixed(2) + "/10")
-                  ],
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Streefcijfer: $streefcijfer/10"),
+                const SizedBox(width: 20),
+                Text("Gemiddelde: " + gemiddelde.toStringAsFixed(2) + "/10")
+              ],
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              TextButton(
+                onPressed: () {
+                  _navigateAndDisplaySelection(context, 0, learningGoal);
+                },
+                child: const Text(
+                  'Dagreflecties',
+                  textAlign: TextAlign.left,
                 ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          'Dagreflecties',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          'Weekreflecties',
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
-                    ])
-              ])
+              ),
+              TextButton(
+                onPressed: () {
+                  //_navigateAndDisplaySelection(context, 1, learningGoal);
+                  null;
+                },
+                child: const Text(
+                  'Weekreflecties',
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ])
+          ])
         ]));
   }
 
   Future<double> get_average_score(DateTime start, DateTime end) async {
     List<dynamic> reflections = await reflectionController.getList;
-    var gem_cijfer = 0;
-    var amount_of_reflections = 0;
+    double gemCijfer = 0;
+    double amountOfReflections = 0;
 
-    for (var entry in reflections) {
+    for (String entryString in reflections) {
+      daily_reflection entry =
+          daily_reflection.fromJson(jsonDecode(entryString));
       if (entry != null) {
-        var decoded_entry = json.decode(entry);
-        if (start.difference(DateTime.parse(decoded_entry["datum"])).inHours <
-                0 &&
-            end.difference(DateTime.parse(decoded_entry["datum"])).inHours >
-                0) {
-          gem_cijfer += decoded_entry["rating"] as int;
-          amount_of_reflections += 1;
+        if (start.difference(entry.getDateType).inHours <= 0 &&
+            end.difference(entry.getDateType).inHours >= 0) {
+          gemCijfer += entry.getRating as double;
+          amountOfReflections += 1;
         }
       }
     }
-    return gem_cijfer / amount_of_reflections;
+    return gemCijfer / amountOfReflections;
   }
 
   DateTime formatDateTimes(String datum) {
@@ -196,5 +198,19 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
     DateTime result = DateTime.parse(reassemble);
     return result;
+  }
+
+  void _navigateAndDisplaySelection(
+      BuildContext context, int index, LearningGoal learninggoal) async {
+    //List of all screens
+    final List<Widget> pages = [
+      dailyReflectionOverview(learninggoal),
+      weeklyReflectionOverview(["onderwerp", "startdate", "enddate"]),
+    ];
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => pages[index]),
+    );
   }
 }

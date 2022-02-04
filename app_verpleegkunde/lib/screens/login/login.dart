@@ -134,6 +134,12 @@ class _loginScreenState extends State<loginScreen> {
             await Syncronisation.login(
                 myController.text, "KoekjesZijnGemaaktVanDeeg");
             print("you should be seeing something....");
+            var updated = await api.getOldInfo();
+            if (updated) {
+              print("prefs updated");
+            } else {
+              print("didn't work");
+            }
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const RootScreen()));
           } else {

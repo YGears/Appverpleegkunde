@@ -4,36 +4,31 @@ import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
-/// Class to create the Leerdoelen view, making a list of all leerdoelen available.
-/// can favorite leerdoel and look at leerdoelen at a different navigation
+/// Class to create the DailyReflections view, making a list of all DailyReflections available.
+/// can favorite leerdoel and look at DailyReflections at a different navigation
 /// Must run using flutter run --no-sound-null-safety because of shared_preferences
 
-class Leerdoelen extends StatefulWidget {
-  const Leerdoelen({Key? key}) : super(key: key);
+class DailyReflections extends StatefulWidget {
+  const DailyReflections({Key? key}) : super(key: key);
 
   @override
-  _Leerdoelen createState() => _Leerdoelen();
+  _DailyReflections createState() => _DailyReflections();
 }
 
-class _Leerdoelen extends State<Leerdoelen> {
+class _DailyReflections extends State<DailyReflections> {
   log_controller log = log_controller();
 
-  List leerdoelen = [];
-  List favorieten = [];
-
-  list_controller leerdoelenController = list_controller('leerdoelen');
-  list_controller favorietenController = list_controller('favorieten');
+  List listOfPossibleTags = [];
+  list_controller tagController = list_controller('tag');
 
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Future<void> update() async {
-    List savedLeerdoelen = await leerdoelenController.getList;
-    List savedFavorieten = await favorietenController.getList;
-
+    print('Updated!');
+    List savedDailyReflections = await tagController.getList;
     setState(() {
-      leerdoelen = savedLeerdoelen;
-      favorieten = savedFavorieten;
+      listOfPossibleTags = savedDailyReflections;
     });
   }
 
@@ -49,15 +44,8 @@ class _Leerdoelen extends State<Leerdoelen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Leerdoelen'),
+          title: const Text('Dag Reflectie Tags'),
           backgroundColor: themeColor,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.list),
-              onPressed: _favorietenLijst,
-              tooltip: 'Favoriete leerdoelen',
-            )
-          ],
         ),
         body: SingleChildScrollView(
           physics: const ScrollPhysics(),
@@ -67,9 +55,9 @@ class _Leerdoelen extends State<Leerdoelen> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 10.0),
-                  itemCount: leerdoelen.length,
+                  itemCount: listOfPossibleTags.length,
                   itemBuilder: (context, index) {
-                    return _buildRow(leerdoelen[index]);
+                    return _buildRow(listOfPossibleTags[index]);
                   }),
             ],
           ),
@@ -79,7 +67,7 @@ class _Leerdoelen extends State<Leerdoelen> {
             showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Nieuw Leerdoel:'),
+                        title: const Text('Nieuwe Tag:'),
                         content: TextField(
                           controller: myController,
                         ),
@@ -97,7 +85,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                               if (myController.text.isNotEmpty) {
-                                leerdoelenController.add(myController.text);
+                                tagController.add(myController.text);
                                 WidgetsBinding.instance!
                                     .addPostFrameCallback((_) => update());
                               } else {
@@ -118,82 +106,11 @@ class _Leerdoelen extends State<Leerdoelen> {
         ));
   }
 
-  void _favorietenLijst() async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute<String>(
-        builder: (context) {
-          if (!justOnce) {
-            justOnce = true;
-            update();
-          }
-          final tiles = favorieten.map(
-            (leerdoel) {
-              return Card(
-                child: ListTile(
-                  title: Text(
-                    leerdoel,
-                    style: _biggerFont,
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              favorietenController.remove(leerdoel);
-                              WidgetsBinding.instance!
-                                  .addPostFrameCallback((_) => update());
-                              Navigator.pop(context); // pop current page
-                              ScaffoldMessenger.of(this.context)
-                                ..removeCurrentSnackBar()
-                                ..showSnackBar(SnackBar(
-                                    content: Text(
-                                        '$leerdoel uit favorieten gehaald')));
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          )),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.pop(context, leerdoel);
-                  },
-                ),
-              );
-            },
-          );
-          final divided = tiles.isNotEmpty
-              ? ListTile.divideTiles(
-                  context: context,
-                  tiles: tiles,
-                ).toList()
-              : <Widget>[];
-
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Favoriete leerdoelen'),
-              backgroundColor: themeColor,
-            ),
-            body: ListView(children: divided),
-          );
-        },
-      ),
-    );
-    setState(() {
-      if ('$result' != 'null') {
-        Navigator.pop(context, result);
-      }
-    });
-  }
-
   Widget _buildRow(String value) {
     if (!justOnce) {
       justOnce = true;
       update();
     }
-    final alreadySaved = favorieten.contains(value);
     bool isPressed = false;
     return Card(
       child: ListTile(
@@ -213,7 +130,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                                   title: const Text(
-                                      'Wil je dit leerdoel verwijderen?'),
+                                      'Wil je deze tag verwijderen?'),
                                   content: Text(value),
                                   actions: <Widget>[
                                     TextButton(
@@ -228,8 +145,7 @@ class _Leerdoelen extends State<Leerdoelen> {
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
-                                        leerdoelenController.remove(value);
-                                        favorietenController.remove(value);
+                                        tagController.remove(value);
                                         WidgetsBinding.instance!
                                             .addPostFrameCallback(
                                                 (_) => update());
@@ -237,10 +153,10 @@ class _Leerdoelen extends State<Leerdoelen> {
                                           ..removeCurrentSnackBar()
                                           ..showSnackBar(const SnackBar(
                                               content: Text(
-                                                  'Leerdoel is verwijderd')));
+                                                  'De tag is verwijderd')));
                                       },
                                       child: const Text(
-                                        'Verwijder leerdoel',
+                                        'Verwijder tag',
                                         textAlign: TextAlign.right,
                                       ),
                                     ),
@@ -252,26 +168,6 @@ class _Leerdoelen extends State<Leerdoelen> {
                   isPressed ? Icons.delete : Icons.delete_outline,
                   color: isPressed ? Colors.green : null,
                   semanticLabel: isPressed ? 'Remove' : 'Keep',
-                )),
-            //end of Delete
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    if (alreadySaved) {
-                      favorietenController.remove(value);
-                      WidgetsBinding.instance!
-                          .addPostFrameCallback((_) => update());
-                    } else {
-                      favorietenController.add(value);
-                      WidgetsBinding.instance!
-                          .addPostFrameCallback((_) => update());
-                    }
-                  });
-                },
-                icon: Icon(
-                  alreadySaved ? Icons.favorite : Icons.favorite_border,
-                  color: alreadySaved ? Colors.red : null,
-                  semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
                 )),
           ],
         ),
