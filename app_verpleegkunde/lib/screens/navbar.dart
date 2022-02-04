@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../app_colors.dart';
 
 class BottomMenu extends StatelessWidget {
-  // ignore: prefer_typing_uninitialized_variables
   final selectedIndex;
   ValueChanged<int> onClicked;
   BottomMenu({Key? key, this.selectedIndex, required this.onClicked})

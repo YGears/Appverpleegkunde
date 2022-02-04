@@ -108,7 +108,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     var streefcijfer = learningGoal.getTargetGrade.toString();
     return Container(
         width: 300,
-        decoration: Style().borderStyling(),
+        decoration: Style().defaultBoxStyling(),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
             onderwerp,

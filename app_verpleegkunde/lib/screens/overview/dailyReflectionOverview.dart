@@ -111,7 +111,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
       children: [
         Container(
             width: 300,
-            decoration: Style().borderStyling(),
+            decoration: Style().defaultBoxStyling(),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(

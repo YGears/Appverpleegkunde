@@ -38,9 +38,9 @@ class RootScreenState extends State<RootScreen> {
     screens.add(const learningGoalOverview());
     screens.add(const LearningGoalScreen());
     screens.add(CalendarScreen(parent: this));
-    screens.add(dailyReflectionPage(selectedDate: currentDateTime));
+    screens.add(DailyReflectionScreen(selectedDate: currentDateTime));
     screens.add(WeekReflectionScreen(selectedDate: currentDateTime));
-    screens.add(dailyReflectionPage(selectedDate: currentDateTime));
+    screens.add(DailyReflectionScreen(selectedDate: currentDateTime));
   }
 
   void navigateToSelectedScreen(int index) {
@@ -64,7 +64,7 @@ class RootScreenState extends State<RootScreen> {
 
   void redirectToDailyReflectionScreen(DateTime date) {
     setState(() {
-      screens.remove(dailyReflectionPage(selectedDate: currentDateTime));
+      screens.remove(DailyReflectionScreen(selectedDate: currentDateTime));
       currentDateTime = date;
       selectedIndex = 3;
       selectedScreenIndex = 5;

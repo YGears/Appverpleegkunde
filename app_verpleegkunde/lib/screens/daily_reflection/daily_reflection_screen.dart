@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/controllers/log_controller.dart';
@@ -6,26 +5,23 @@ import 'package:flutter_application_1/screens/daily_reflection/dailyreflect.dart
 import 'package:flutter_application_1/screens/daily_reflection/sub_tags_screen.dart';
 import '../../app_colors.dart';
 import '../../controllers/list_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../daily_reflection/daily_reflection.dart';
-import '../../database_connection/syncronisatie.dart';
 import '../root_screen.dart';
 
-class dailyReflectionPage extends StatefulWidget {
-  const dailyReflectionPage({Key? key, required this.selectedDate})
+class DailyReflectionScreen extends StatefulWidget {
+  const DailyReflectionScreen({Key? key, required this.selectedDate})
       : super(key: key);
   final DateTime selectedDate;
   @override
-  State<dailyReflectionPage> createState() =>
-      // ignore: no_logic_in_create_state
-      _dailyReflectionPageState(selectedDate);
+  State<DailyReflectionScreen> createState() =>
+      DailyReflectionScreenState(selectedDate);
 }
 
-class _dailyReflectionPageState extends State<dailyReflectionPage> {
-  var selectedDate = DateTime.now();
+class DailyReflectionScreenState extends State<DailyReflectionScreen> {
+  DateTime selectedDate = DateTime.now();
   var selectedDay = "";
   String activatedMainTag = "";
-  List selectedTags = [];
+
   List<Row> generatedBody = [];
   List<Row> generatedTagBody = [];
   List<Row> generatedSubTagBody = [];
@@ -37,13 +33,14 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
   TextEditingController freeWriteController = TextEditingController();
 
   list_controller dailyList = list_controller('daily_reflection');
-  //MARK
   list_controller tagController = list_controller('tag');
-  List listOfTags = [];
   list_controller subtagController = list_controller('subtag');
+
+  List selectedTags = [];
+  List listOfTags = [];
   List listOfSubtags = [];
 
-  Future<void> update() async {
+  Future<void> updateListController() async {
     List savedTags = await tagController.getList;
     List savedSubtags = await subtagController.getList;
     setState(() {
@@ -52,7 +49,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
     });
   }
 
-  _dailyReflectionPageState(this.selectedDate) {
+  DailyReflectionScreenState(this.selectedDate) {
     selectedDay = selectedDate.year.toString() +
         "/" +
         selectedDate.month.toString() +
@@ -251,16 +248,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
           tagText.add(subTag);
           subtags[tag].update('sub_tags', (dynamic) => tagText);
           // subtags[tag] = Tag.fromJson(map);
-        } else {
-          // if (subtags.length - 1 >= tag) {
-          //   tagText.add(subTag.toString());
-          //   Map<String, dynamic> map = {'sub_tags': tagText};
-          //   subtags.add(map);
-          // } else {
-
-          // }
-          // print(subtags.length);
-          // print('error - TAGS ---> :(');
         }
         log_controller().record("Mogelijke subtag geselecteerd.");
       }
@@ -269,9 +256,7 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    // generateTagBody();
     generateBody();
-    // generateSubTagBody();
     bodies.clear();
     bodies.add(generatedTagBody);
     bodies.add(generatedBody);
@@ -282,7 +267,6 @@ class _dailyReflectionPageState extends State<dailyReflectionPage> {
         backgroundColor: themeColor,
         centerTitle: true,
       ),
-      // Body of the application
       body: ListView(children: [Column(children: bodies[activatedPage])]),
     );
   }

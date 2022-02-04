@@ -52,7 +52,7 @@ class CalendarState extends State<Calendar> {
       List weekNumsInMonth = Year().listOfWeeks(year, month);
       // Create x rows based on length of a given month in a given
       // Than for every row, give a week children if day is in week
-      for (var week = 0; week < weekNumsInMonth.length; week++) {
+      for (int week = 0; week < weekNumsInMonth.length; week++) {
         var calendarRow = TableRow(children: [
           Text(weekNumsInMonth[week].toString()),
           const Text(
