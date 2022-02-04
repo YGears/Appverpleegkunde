@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
 import 'package:flutter_application_1/screens/learning_goal/choose_learning_goal.dart';
 import 'package:intl/intl.dart';
+import '../screens/week_reflection/week_reflection_class.dart';
+import '../screens/learning_goal/learning_goal.dart';
 import '../controllers/list_controller.dart';
 import '../controllers/log_controller.dart';
 import 'package:http/http.dart' as http;
