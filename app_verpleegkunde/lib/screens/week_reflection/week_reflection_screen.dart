@@ -24,7 +24,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   String learningGoal = "Klik Hier";
   List selectedTags = [];
   List<Row> generatedBody = [];
-  List<Row> generatedTagBody = [];
+  List<Row> generatedLearningGoalBody = [];
   List<Row> generatedSubTagBody = [];
   Map subtags = HashMap<String, List<String>>();
   List<List<Row>> bodies = [];
@@ -90,19 +90,19 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     gotoWeeklyReflection();
   }
 
-  generateTagBody() async {
-    List<String> tags = await getTags();
+  generateLearningGoalBody() async {
+    List<String> learningGoals = await getLearningGoals();
     List<Row> tagBody = [];
 
-    for (String tag in tags) {
+    for (String goal in learningGoals) {
       tagBody.add(Row(children: [
         TextButton(
-          child: Text(json.decode(tag)["onderwerp"]),
-          onPressed: () => {selectLearningGoal(json.decode(tag)["onderwerp"])},
+          child: Text(json.decode(goal)["onderwerp"]),
+          onPressed: () => {selectLearningGoal(json.decode(goal)["onderwerp"])},
         )
       ]));
     }
-    generatedTagBody = tagBody;
+    generatedLearningGoalBody = tagBody;
   }
 
   String convertToJSON() {
@@ -114,23 +114,25 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     String json = "{";
 
     json += "\"datum\": \"$date\", \"weeknummer\": $weekNumber,";
+
     if (rating != "") {
       json += " \"rating\": $rating,";
     } else {
       json += " \"rating\": 0,";
     }
+
     json +=
         " \"leerdoel\": \"$learningGoal\", \"vooruitblik\": \"$freeWrite\"}";
-    print(json);
+
     return json;
   }
 
   Future<void> saveDailyReflection() async {
-    LogController().record("Weekreflectie opgeslagen.");
     final prefs = await SharedPreferences.getInstance();
-    List<String>? dailyReflections =
-        prefs.getStringList('week_reflectie');
+    List<String>? dailyReflections = prefs.getStringList('week_reflectie');
+
     dailyReflections ??= [];
+
     if (dagRatingController.value.text == '') {
       showDialog(
           context: context,
@@ -142,6 +144,8 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
       dailyReflections.add(convertToJSON());
 
       prefs.setStringList('week_reflectie', dailyReflections);
+      LogController().record("Weekreflectie opgeslagen.");
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const RootScreen()),
@@ -224,12 +228,13 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    generateTagBody();
+    generateLearningGoalBody();
     generateBody();
     bodies.clear();
-    bodies.add(generatedTagBody);
+    bodies.add(generatedLearningGoalBody);
     bodies.add(generatedBody);
     bodies.add(generatedSubTagBody);
+    
     return Scaffold(
       //Topheader within the application
       appBar: AppBar(
