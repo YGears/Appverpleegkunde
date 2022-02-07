@@ -25,12 +25,12 @@ class Response {
 }
 
 class LearningGoal {
-  String begin_datum;
-  String eind_datum;
-  String onderwerp;
-  int streefcijfer;
+  String startDate;
+  String endDate;
+  String subject;
+  int targetFigure;
   LearningGoal(
-      this.begin_datum, this.eind_datum, this.onderwerp, this.streefcijfer);
+      this.startDate, this.endDate, this.subject, this.targetFigure);
   factory LearningGoal.fromJson(Map<String, dynamic> parsedJson) {
     int grade;
     if (parsedJson['streefcijfer'].runtimeType == String) {
@@ -43,54 +43,48 @@ class LearningGoal {
   }
   @override
   String toString() {
-    return '{ "begin_datum": "$begin_datum", "eind_datum": "$eind_datum", "onderwerp": "$onderwerp", "streefcijfer": "$streefcijfer"}';
+    return '{ "begin_datum": "$startDate", "eind_datum": "$endDate", "onderwerp": "$subject", "streefcijfer": "$targetFigure"}';
   }
 
   DateTime get getBeginingDate {
-    List<String> gesplitst = begin_datum.split('/');
-    if (gesplitst[1].length < 2) {
-      gesplitst[1] = '0' + gesplitst[1];
+    List<String> splittedDate = startDate.split('/');
+    if (splittedDate[1].length < 2) {
+      splittedDate[1] = '0' + splittedDate[1];
     }
-    if (gesplitst[0].length < 2) {
-      gesplitst[0] = '0' + gesplitst[0];
+    if (splittedDate[0].length < 2) {
+      splittedDate[0] = '0' + splittedDate[0];
     }
-
-    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-    // DateTime result = DateTime.parse(reassemble);
-    return DateFormat("dd/MM/yyyy").parse(begin_datum);
+    return DateFormat("dd/MM/yyyy").parse(startDate);
   }
 
   DateTime get getEndingDate {
-    List<String> gesplitst = eind_datum.split('/');
-    if (gesplitst[1].length < 2) {
-      gesplitst[1] = '0' + gesplitst[1];
+    List<String> splittedDate = endDate.split('/');
+    if (splittedDate[1].length < 2) {
+      splittedDate[1] = '0' + splittedDate[1];
     }
-    if (gesplitst[0].length < 2) {
-      gesplitst[0] = '0' + gesplitst[0];
+    if (splittedDate[0].length < 2) {
+      splittedDate[0] = '0' + splittedDate[0];
     }
-
-    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-    // DateTime result = DateTime.parse(reassemble);
-    return DateFormat("dd/MM/yyyy").parse(eind_datum);
+    return DateFormat("dd/MM/yyyy").parse(endDate);
   }
 
   String get getSubject {
-    return onderwerp;
+    return subject;
   }
 
   double get getTargetGrade {
-    return streefcijfer.toDouble();
+    return targetFigure.toDouble();
   }
 }
 
 class WeekReflection {
-  String datum;
-  int weeknummer;
+  String date;
+  int weeknumber;
   double rating;
-  String leerdoel;
-  String vooruitblik;
-  WeekReflection(this.datum, this.weeknummer, this.rating, this.leerdoel,
-      this.vooruitblik);
+  String learningGoal;
+  String preview;
+  WeekReflection(this.date, this.weeknumber, this.rating, this.learningGoal,
+      this.preview);
   factory WeekReflection.fromJson(Map<String, dynamic> parsedJson) {
     return WeekReflection(
         parsedJson['datum'],
@@ -101,11 +95,11 @@ class WeekReflection {
   }
   @override
   String toString() {
-    return '{"datum": "$datum", "rating": $weeknummer, "rating": ${rating.toInt()}, "leerdoel": "$leerdoel", "vooruitblik": "$vooruitblik"}';
+    return '{"datum": "$date", "rating": $weeknumber, "rating": ${rating.toInt()}, "leerdoel": "$learningGoal", "vooruitblik": "$preview"}';
   }
 
   DateTime get getDate {
-    List<String> gesplitst = datum.split('/');
+    List<String> gesplitst = date.split('/');
     if (gesplitst[1].length < 2) {
       gesplitst[1] = '0' + gesplitst[1];
     }
@@ -119,7 +113,7 @@ class WeekReflection {
   }
 
   int get getWeekNumber {
-    return weeknummer;
+    return weeknumber;
   }
 
   double get getsubject {
@@ -127,11 +121,11 @@ class WeekReflection {
   }
 
   String get getLearningGoal {
-    return leerdoel;
+    return learningGoal;
   }
 
   String get getPreview {
-    return vooruitblik;
+    return preview;
   }
 }
 
@@ -143,7 +137,6 @@ class Api {
   var url = "https://nurseitapi.azure-api.net/";
 
   Future<bool> login(id, password) async {
-    // return true;
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
     if ((user == null || user == "") && id != "") {
@@ -168,7 +161,6 @@ class Api {
   }
 
   Future<bool> getOldInfo() async {
-    // return true;
     final prefs = await SharedPreferences.getInstance();
     String? user = prefs.getString('user');
 
@@ -182,7 +174,6 @@ class Api {
     var data = jsonDecode(response.body);
 
     if (data != null) {
-      print(response.body);
 
       if (data['reflecties'] != null) {
         List<String> reflecties = [];
@@ -190,42 +181,34 @@ class Api {
           DailyReflection re = DailyReflection.fromJson(r);
           reflecties.add(re.toString());
         }
-        print(reflecties.toString());
         prefs.setStringList('daily_reflection', reflecties);
       }
       if (data['leerdoel'] != null) {
-        List<String> leerdoel = [];
+        List<String> learningGoal = [];
         for (Map<String, dynamic> l in data['leerdoel']) {
           LearningGoal le = LearningGoal.fromJson(l);
-          leerdoel.add(le.toString());
+          learningGoal.add(le.toString());
         }
-        // print(leerdoel.toString());
-        prefs.setStringList('leerdoel', leerdoel);
+        prefs.setStringList('leerdoel', learningGoal);
       }
       if (data['week_reflectie'] != null) {
-        List<String> week_reflectie = [];
+        List<String> weekReflectie = [];
         for (Map<String, dynamic> w in data['week_reflectie']) {
           WeekReflection we = WeekReflection.fromJson(w);
-          week_reflectie.add(we.toString());
+          weekReflectie.add(we.toString());
         }
-        // print(week_reflectie.toString());
-        prefs.setStringList('week_reflectie', week_reflectie);
+        prefs.setStringList('week_reflectie', weekReflectie);
       }
-      print("Update completed");
-      print(prefs.get("daily_reflection"));
-      print(prefs.get("leerdoel"));
-      print(prefs.get("week_reflectie"));
       return true;
     }
     return false;
   }
 
-  Future<bool> syncUp(user_name, password, data) async {
+  Future<bool> syncUp(userName, password, data) async {
     var groupApi = url +
-        "UpdateUser?name=$user_name&password=$password&subscription-key=$key";
+        "UpdateUser?name=$userName&password=$password&subscription-key=$key";
 
     final response = await http.post(Uri.parse(groupApi), body: data);
-    print(response.body);
     if (response.body != "") {
       var responseText = jsonDecode(response.body);
 
@@ -239,9 +222,9 @@ class Api {
     return true;
   }
 
-  Future<bool> logUp(user_name, password, logs) async {
+  Future<bool> logUp(userName, password, logs) async {
     var groupApi = url +
-        "UpdateLogs?name=$user_name&password=$password&subscription-key=$key";
+        "UpdateLogs?name=$userName&password=$password&subscription-key=$key";
 
     final response = await http.post(Uri.parse(groupApi), body: logs);
     var data = jsonDecode(response.body);
