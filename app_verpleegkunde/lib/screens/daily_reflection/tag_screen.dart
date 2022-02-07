@@ -4,7 +4,7 @@ import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
-/// Class to create the DailyReflections view, making a list of all DailyReflections available.
+/// Class to create the tag_screen view, making a list of all tag_screen available.
 /// can favorite leerdoel and look at DailyReflections at a different navigation
 /// Must run using flutter run --no-sound-null-safety because of shared_preferences
 
@@ -24,8 +24,7 @@ class _TagScreen extends State<TagScreen> {
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  Future<void> update() async {
-    print('Updated!');
+  Future<void> updatePossibleTags() async {
     List savedDailyReflections = await tagController.getList;
     setState(() {
       listOfPossibleTags = savedDailyReflections;
@@ -39,7 +38,7 @@ class _TagScreen extends State<TagScreen> {
 
     if (!justOnce) {
       justOnce = true;
-      update();
+      updatePossibleTags();
     }
 
     return Scaffold(
@@ -87,7 +86,7 @@ class _TagScreen extends State<TagScreen> {
                               if (myController.text.isNotEmpty) {
                                 tagController.add(myController.text);
                                 WidgetsBinding.instance!
-                                    .addPostFrameCallback((_) => update());
+                                    .addPostFrameCallback((_) => updatePossibleTags());
                               } else {
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -109,7 +108,7 @@ class _TagScreen extends State<TagScreen> {
   Widget _buildRow(String value) {
     if (!justOnce) {
       justOnce = true;
-      update();
+      updatePossibleTags();
     }
     bool isPressed = false;
     return Card(
@@ -148,7 +147,7 @@ class _TagScreen extends State<TagScreen> {
                                         tagController.remove(value);
                                         WidgetsBinding.instance!
                                             .addPostFrameCallback(
-                                                (_) => update());
+                                                (_) => updatePossibleTags());
                                         ScaffoldMessenger.of(this.context)
                                           ..removeCurrentSnackBar()
                                           ..showSnackBar(const SnackBar(
