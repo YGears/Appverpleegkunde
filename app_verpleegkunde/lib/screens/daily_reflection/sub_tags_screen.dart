@@ -24,8 +24,7 @@ class _SubTagsScreen extends State<SubTagsScreen> {
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  Future<void> update() async {
-    print('Updated!');
+  Future<void> updatePossibleTags() async {
     List savedSubTagsScreen = await tagController.getList;
     setState(() {
       listOfPossibleTags = savedSubTagsScreen;
@@ -39,7 +38,7 @@ class _SubTagsScreen extends State<SubTagsScreen> {
 
     if (!justOnce) {
       justOnce = true;
-      update();
+      updatePossibleTags();
     }
 
     return Scaffold(
@@ -87,7 +86,7 @@ class _SubTagsScreen extends State<SubTagsScreen> {
                               if (myController.text.isNotEmpty) {
                                 tagController.add(myController.text);
                                 WidgetsBinding.instance!
-                                    .addPostFrameCallback((_) => update());
+                                    .addPostFrameCallback((_) => updatePossibleTags());
                               } else {
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -109,7 +108,7 @@ class _SubTagsScreen extends State<SubTagsScreen> {
   Widget _buildRow(String value) {
     if (!justOnce) {
       justOnce = true;
-      update();
+      updatePossibleTags();
     }
     bool isPressed = false;
     return Card(
@@ -148,7 +147,7 @@ class _SubTagsScreen extends State<SubTagsScreen> {
                                         tagController.remove(value);
                                         WidgetsBinding.instance!
                                             .addPostFrameCallback(
-                                                (_) => update());
+                                                (_) => updatePossibleTags());
                                         ScaffoldMessenger.of(this.context)
                                           ..removeCurrentSnackBar()
                                           ..showSnackBar(const SnackBar(
