@@ -62,17 +62,17 @@ class Syncronisation {
 
       var name = prefs.getString('user');
       var password = prefs.getString('password');
-      var reflectieJson = await list_controller("daily_reflection").getList;
+      var reflectieJson = await ListController("daily_reflection").getList;
       List<DailyReflection> reflections = [];
       for (String i in reflectieJson) {
         reflections.add(DailyReflection.fromJson(jsonDecode(i)));
       }
-      var leerdoelJson = await list_controller("leerdoel").getList;
+      var leerdoelJson = await ListController("leerdoel").getList;
       List<LearningGoal> leerdoel = [];
       for (String i in leerdoelJson) {
         leerdoel.add(LearningGoal.fromJson(jsonDecode(i)));
       }
-      var weekReflectieJson = await list_controller("week_reflectie").getList;
+      var weekReflectieJson = await ListController("week_reflectie").getList;
       List<WeekReflection> weekreflecties = [];
       for (String i in weekReflectieJson) {
         weekreflecties.add(WeekReflection.fromJson(jsonDecode(i)));
@@ -124,7 +124,6 @@ class Syncronisation {
                 time.second.toString() +
                 "\", \"action\": \"syncronised with DB\"}"
           ]);
-          print(list_controller("log").getList);
           return true;
         }
       }

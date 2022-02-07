@@ -1,7 +1,7 @@
 import "list_controller.dart";
 
 class log_controller {
-  var log_save_controller = list_controller("log");
+  var log_save_controller = ListController("log");
 
   record(String action) {
     var time = DateTime.now();

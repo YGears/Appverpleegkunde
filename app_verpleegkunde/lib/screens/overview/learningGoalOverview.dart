@@ -24,7 +24,7 @@ class learningGoalOverview extends StatefulWidget {
 class learningGoalOverviewState extends State<learningGoalOverview> {
   List<Widget> generatedBody = [];
   bool justOnce = false;
-  list_controller reflectionController = list_controller('daily_reflection');
+  ListController reflectionController = ListController('daily_reflection');
 
   @override
   Widget build(BuildContext context) {

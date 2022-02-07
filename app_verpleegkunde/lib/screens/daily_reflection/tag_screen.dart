@@ -19,7 +19,7 @@ class _TagScreen extends State<TagScreen> {
   log_controller log = log_controller();
 
   List listOfPossibleTags = [];
-  list_controller tagController = list_controller('tag');
+  ListController tagController = ListController('tag');
 
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);

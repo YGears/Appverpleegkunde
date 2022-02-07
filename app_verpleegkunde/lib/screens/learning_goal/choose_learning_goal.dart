@@ -21,8 +21,8 @@ class _Leerdoelen extends State<Leerdoelen> {
   List leerdoelen = [];
   List favorieten = [];
 
-  list_controller leerdoelenController = list_controller('leerdoelen');
-  list_controller favorietenController = list_controller('favorieten');
+  ListController leerdoelenController = ListController('leerdoelen');
+  ListController favorietenController = ListController('favorieten');
 
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);

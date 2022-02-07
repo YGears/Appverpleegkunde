@@ -31,9 +31,9 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   final dailyRatingController = TextEditingController();
   TextEditingController freeWriteController = TextEditingController();
 
-  list_controller dailyReflectionController = list_controller('daily_reflection');
-  list_controller tagController = list_controller('tag');
-  list_controller subtagController = list_controller('subtag');
+  ListController dailyReflectionController = ListController('daily_reflection');
+  ListController tagController = ListController('tag');
+  ListController subtagController = ListController('subtag');
 
   List selectedTags = [];
   List listOfTags = [];

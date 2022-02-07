@@ -19,7 +19,7 @@ class _SubTagsScreen extends State<SubTagsScreen> {
   log_controller log = log_controller();
 
   List listOfPossibleTags = [];
-  list_controller tagController = list_controller('subtag');
+  ListController tagController = ListController('subtag');
 
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
