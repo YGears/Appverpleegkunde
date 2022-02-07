@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/controllers/log_controller.dart';
-import 'package:flutter_application_1/screens/daily_reflection/dailyreflect.dart';
+import 'package:flutter_application_1/screens/daily_reflection/tag_screen.dart';
 import 'package:flutter_application_1/screens/daily_reflection/sub_tags_screen.dart';
 import '../../app_colors.dart';
 import '../../controllers/list_controller.dart';
 import '../daily_reflection/daily_reflection.dart';
 import '../root_screen.dart';
+import 'tag.dart';
 
 class DailyReflectionScreen extends StatefulWidget {
   const DailyReflectionScreen({Key? key, required this.selectedDate})
@@ -25,13 +26,12 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   List<Row> listOfBodyComponents = [];
   List<Map<String, dynamic>> subtags = [];
 
-  List<List<Row>> Body = [];
+  List<List<Row>> body = [];
   int activatedPage = 1;
   final dailyRatingController = TextEditingController();
   TextEditingController freeWriteController = TextEditingController();
 
-  list_controller dailyReflectionController =
-      list_controller('daily_reflection');
+  list_controller dailyReflectionController = list_controller('daily_reflection');
   list_controller tagController = list_controller('tag');
   list_controller subtagController = list_controller('subtag');
 
@@ -40,11 +40,11 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   List listOfSubtags = [];
 
   Future<void> updateListController() async {
-    List savedTags = await tagController.getList;
-    List savedSubtags = await subtagController.getList;
+    List localTags = await tagController.getList;
+    List localSubtags = await subtagController.getList;
     setState(() {
-      listOfTags = savedTags;
-      listOfSubtags = savedSubtags;
+      listOfTags = localTags;
+      listOfSubtags = localSubtags;
     });
   }
 
@@ -64,15 +64,15 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   }
 
   selectDate(BuildContext context) async {
-    final DateTime? selected = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2010),
       lastDate: DateTime(2025),
     );
-    if (selected != null && selected != selectedDate) {
+    if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
-        selectedDate = selected;
+        selectedDate = pickedDate;
         selectedDay = selectedDate.year.toString() +
             "/" +
             selectedDate.month.toString() +
@@ -120,12 +120,10 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
     }
   }
 
-  addTags() {
-    //Function that will return a List of Row components of the selectedTags
-    // A Row component is a tag that is selected and can redirect to assign its subtags
-    List<Row> rowOfSelectedTags = [];
+  convertSelectedTagsToRows() {
+    List<Row> rowsOfSelectedTags = [];
     for (String tag in selectedTags) {
-      rowOfSelectedTags.add(Row(children: [
+      rowsOfSelectedTags.add(Row(children: [
         TextButton(
           child: Text(tag),
           onPressed: () => {
@@ -134,7 +132,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
         )
       ]));
     }
-    return rowOfSelectedTags;
+    return rowsOfSelectedTags;
   }
 
   generateDailyReflectionScreen() {
@@ -191,7 +189,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
       ),
     ];
 
-    screenContent.addAll(addTags());
+    screenContent.addAll(convertSelectedTagsToRows());
     screenContent.add(
       Row(
         children: [
@@ -214,7 +212,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   void navigateAndSelectTagScreen(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const DailyReflections()),
+      MaterialPageRoute(builder: (context) => const TagScreen()),
     );
 
     setState(() {
@@ -264,15 +262,15 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   @override
   Widget build(BuildContext context) {
     generateDailyReflectionScreen();
-    Body.clear();
-    Body.add(listOfBodyComponents);
+    body.clear();
+    body.add(listOfBodyComponents);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hanze Verpleegkunde'),
         backgroundColor: themeColor,
         centerTitle: true,
       ),
-      body: ListView(children: [Column(children: Body[activatedPage])]),
+      body: ListView(children: [Column(children: body[activatedPage])]),
     );
   }
 }
