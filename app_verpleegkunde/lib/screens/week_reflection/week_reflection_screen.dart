@@ -135,7 +135,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   }
 
   Future<void> saveDailyReflection() async {
-    log_controller().record("Weekreflectie opgeslagen.");
+    LogController().record("Weekreflectie opgeslagen.");
     final prefs = await SharedPreferences.getInstance();
     List<String>? dailyReflections =
         prefs.getStringList('WeekReflectionScreen');
@@ -172,7 +172,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   }
 
   generateBody() {
-    log_controller().record("Naar pagina weekreflectie maken gegaan.");
+    LogController().record("Naar pagina weekreflectie maken gegaan.");
     List<Row> tempBody = [
       Row(children: const [
         Text(""),

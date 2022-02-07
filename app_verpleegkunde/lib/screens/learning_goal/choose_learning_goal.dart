@@ -16,7 +16,7 @@ class Leerdoelen extends StatefulWidget {
 }
 
 class _Leerdoelen extends State<Leerdoelen> {
-  log_controller log = log_controller();
+  LogController log = LogController();
 
   List leerdoelen = [];
   List favorieten = [];

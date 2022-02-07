@@ -16,7 +16,7 @@ class SubTagsScreen extends StatefulWidget {
 }
 
 class _SubTagsScreen extends State<SubTagsScreen> {
-  log_controller log = log_controller();
+  LogController log = LogController();
 
   List listOfPossibleTags = [];
   ListController tagController = ListController('subtag');

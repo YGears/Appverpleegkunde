@@ -24,7 +24,7 @@ class dailyReflectionOverview extends StatefulWidget {
 }
 
 class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
-  log_controller log = log_controller();
+  LogController log = LogController();
   ListController reflectionController = ListController('daily_reflection');
   bool justOnce = false;
   List<dynamic> generatedBody = [];

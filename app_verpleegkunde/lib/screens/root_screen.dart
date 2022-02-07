@@ -18,7 +18,7 @@ class RootScreen extends StatefulWidget {
 }
 
 class RootScreenState extends State<RootScreen> {
-  log_controller log = log_controller();
+  LogController log = LogController();
   int selectedIndex = 2;
   int selectedScreenIndex = 2;
   DateTime currentDateTime = DateTime.now();

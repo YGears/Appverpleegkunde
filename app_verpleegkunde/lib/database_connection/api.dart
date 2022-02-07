@@ -139,7 +139,7 @@ class WeekReflection {
 // comment out line 32
 class Api {
   var key = "77375a9effb64452bf5d2952cf76ee80";
-  var log = log_controller();
+  var log = LogController();
   var url = "https://nurseitapi.azure-api.net/";
 
   Future<bool> login(id, password) async {

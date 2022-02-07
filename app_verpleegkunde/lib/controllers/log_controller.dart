@@ -1,10 +1,10 @@
 import "list_controller.dart";
 
-class log_controller {
-  var log_save_controller = ListController("log");
+class LogController {
+  ListController logController = ListController("log");
 
   record(String action) {
-    var time = DateTime.now();
+    DateTime time = DateTime.now();
     String now = "{\"timestamp\": \"" +
         time.year.toString() +
         "-" +
@@ -20,11 +20,10 @@ class log_controller {
         "\", \"action\": \"" +
         action +
         "\"}";
-    log_save_controller.add(now);
-    print(now);
+    logController.add(now);
   }
 
   get() {
-    return log_save_controller.getList;
+    return logController.getList;
   }
 }

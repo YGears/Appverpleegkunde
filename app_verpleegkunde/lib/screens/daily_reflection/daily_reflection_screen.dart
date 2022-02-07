@@ -100,7 +100,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   Future<void> saveDailyReflection() async {
     //Function to save daily reflection to JSON of daily reflections
     //Create a log
-    log_controller().record("Dagreflectie opgeslagen.");
+    LogController().record("Dagreflectie opgeslagen.");
     //When trying to make a reflection without rating throw dialog
     if (dailyRatingController.value.text == '') {
       showDialog(
@@ -217,7 +217,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
 
     setState(() {
       if (result != null) {
-        log_controller().record("Mogelijke Tag geselecteerd.");
+        LogController().record("Mogelijke Tag geselecteerd.");
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(
@@ -254,7 +254,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
           tagText.add(subTag);
           subtags[maintagIndex].update('sub_tags', (dynamic) => tagText);
         }
-        log_controller().record("Mogelijke subtag geselecteerd.");
+        LogController().record("Mogelijke subtag geselecteerd.");
       }
     });
   }

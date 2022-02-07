@@ -24,7 +24,7 @@ class Syncronisation {
     final prefs = await SharedPreferences.getInstance();
     Api api = new Api();
 
-    log_controller logControl = log_controller();
+    LogController logControl = LogController();
 
     var data = await logControl.get();
     // print(data);
@@ -45,18 +45,13 @@ class Syncronisation {
   static Future<bool> syncUp() async {
     final prefs = await SharedPreferences.getInstance();
     var syncCheck = prefs.getString("syncCheck");
-    var timeDiff = 1;
 
     if (syncCheck != null) {
-      timeDiff = DateTime.now()
-          .difference(
-              DateTime.parse(jsonDecode(syncCheck.toString())["timestamp"]))
-          .inHours;
     }
 
     // if (time_diff > 0) {
     if (true) {
-      Api api = new Api();
+      Api api = Api();
       var time = DateTime.now();
       var today = DateFormat('yyyy-MM-dd kk:mm:ss').format(time).toString();
 
