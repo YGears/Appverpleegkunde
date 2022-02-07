@@ -187,7 +187,7 @@ class Api {
       if (data['reflecties'] != null) {
         List<String> reflecties = [];
         for (Map<String, dynamic> r in data['reflecties']) {
-          daily_reflection re = daily_reflection.fromJson(r);
+          DailyReflection re = DailyReflection.fromJson(r);
           reflecties.add(re.toString());
         }
         print(reflecties.toString());

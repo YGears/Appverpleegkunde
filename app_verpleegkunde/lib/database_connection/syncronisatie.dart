@@ -13,9 +13,9 @@ import 'api.dart';
 // in order to use the group api, replace privateApi with groupApi on line 30,
 // comment out line 32
 class Syncronisation {
-  static Future<bool> login(String user_name, String password) async {
+  static Future<bool> login(String userName, String password) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('user', user_name);
+    prefs.setString('user', userName);
     prefs.setString('password', password);
     return true;
   }
@@ -24,9 +24,9 @@ class Syncronisation {
     final prefs = await SharedPreferences.getInstance();
     Api api = new Api();
 
-    log_controller log_control = log_controller();
+    log_controller logControl = log_controller();
 
-    var data = await log_control.get();
+    var data = await logControl.get();
     // print(data);
     // var json_data = "[";
     // for(var log in data){
@@ -45,10 +45,10 @@ class Syncronisation {
   static Future<bool> syncUp() async {
     final prefs = await SharedPreferences.getInstance();
     var syncCheck = prefs.getString("syncCheck");
-    var time_diff = 1;
+    var timeDiff = 1;
 
     if (syncCheck != null) {
-      time_diff = DateTime.now()
+      timeDiff = DateTime.now()
           .difference(
               DateTime.parse(jsonDecode(syncCheck.toString())["timestamp"]))
           .inHours;
@@ -62,25 +62,25 @@ class Syncronisation {
 
       var name = prefs.getString('user');
       var password = prefs.getString('password');
-      var reflectie_json = await list_controller("daily_reflection").getList;
-      List<daily_reflection> reflections = [];
-      for (String i in reflectie_json) {
-        reflections.add(daily_reflection.fromJson(jsonDecode(i)));
+      var reflectieJson = await list_controller("daily_reflection").getList;
+      List<DailyReflection> reflections = [];
+      for (String i in reflectieJson) {
+        reflections.add(DailyReflection.fromJson(jsonDecode(i)));
       }
-      var leerdoel_json = await list_controller("leerdoel").getList;
+      var leerdoelJson = await list_controller("leerdoel").getList;
       List<LearningGoal> leerdoel = [];
-      for (String i in leerdoel_json) {
+      for (String i in leerdoelJson) {
         leerdoel.add(LearningGoal.fromJson(jsonDecode(i)));
       }
-      var week_reflectie_json = await list_controller("week_reflectie").getList;
+      var weekReflectieJson = await list_controller("week_reflectie").getList;
       List<WeekReflection> weekreflecties = [];
-      for (String i in week_reflectie_json) {
+      for (String i in weekReflectieJson) {
         weekreflecties.add(WeekReflection.fromJson(jsonDecode(i)));
       }
 
       var data = "{";
       data += "\"reflectie\":[";
-      for (daily_reflection i in reflections) {
+      for (DailyReflection i in reflections) {
         data += i.toString();
         if (i != reflections.last) {
           data += ",";
