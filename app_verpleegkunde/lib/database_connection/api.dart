@@ -46,7 +46,7 @@ class LearningGoal {
     return '{ "begin_datum": "$startDate", "eind_datum": "$endDate", "onderwerp": "$subject", "streefcijfer": "$targetFigure"}';
   }
 
-  DateTime get getBeginingDate {
+  DateTime get getStartDate {
     List<String> splittedDate = startDate.split('/');
     if (splittedDate[1].length < 2) {
       splittedDate[1] = '0' + splittedDate[1];
@@ -57,7 +57,7 @@ class LearningGoal {
     return DateFormat("dd/MM/yyyy").parse(startDate);
   }
 
-  DateTime get getEndingDate {
+  DateTime get getEndDate {
     List<String> splittedDate = endDate.split('/');
     if (splittedDate[1].length < 2) {
       splittedDate[1] = '0' + splittedDate[1];

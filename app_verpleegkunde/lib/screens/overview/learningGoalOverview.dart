@@ -103,8 +103,8 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       gemiddelde = 0;
     }
     var onderwerp = learningGoal.getSubject;
-    var startDate = learningGoal.getBeginingDate.toString().substring(0, 10);
-    var endDate = learningGoal.getEndingDate.toString().substring(0, 10);
+    var startDate = learningGoal.getStartDate.toString().substring(0, 10);
+    var endDate = learningGoal.getEndDate.toString().substring(0, 10);
     var streefcijfer = learningGoal.getTargetGrade.toString();
     return Container(
         width: 300,
