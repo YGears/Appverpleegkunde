@@ -1,23 +1,23 @@
 class Tag {
-  List<dynamic> sub_tags;
-  Tag(this.sub_tags);
+  List<dynamic> subTags;
+  Tag(this.subTags);
   factory Tag.fromJson(Map<String, dynamic> parsedJson) {
     List<String> tags = [];
-    for (String w in parsedJson['sub_tags']) {
-      tags.add("\"$w\"");
+    for (String subtag in parsedJson['sub_tags']) {
+      tags.add("\"$subtag\"");
     }
     return Tag(parsedJson['sub_tags']);
   }
   @override
   String toString() {
     List<String> stringlist = [];
-    for (dynamic i in sub_tags) {
-      stringlist.add("\"$i\"");
+    for (dynamic subtag in subTags) {
+      stringlist.add("\"$subtag\"");
     }
     return '{"sub_tags": $stringlist}';
   }
 
   List<dynamic> get getSubTagList {
-    return sub_tags;
+    return subTags;
   }
 }
