@@ -1,7 +1,6 @@
-// ignore_for_file: camel_case_types
-
 import 'dart:collection';
 import 'dart:convert';
+import 'package:flutter_application_1/controllers/list_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,19 +11,20 @@ import '../root_screen.dart';
 class WeekReflectionScreen extends StatefulWidget {
   const WeekReflectionScreen({Key? key, required this.selectedDate})
       : super(key: key);
+
   final DateTime selectedDate;
+
   @override
-  State<WeekReflectionScreen> createState() =>
-      WeekReflectionScreen_State(selectedDate);
+  State<WeekReflectionScreen> createState() => WeekReflectionScreen_State(selectedDate);
 }
 
 class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   var selectedDate = DateTime.now();
   var selectedDay = "";
-  String activatedMainTag = "Klik Hier";
+  String learningGoal = "Klik Hier";
   List selectedTags = [];
   List<Row> generatedBody = [];
-  List<Row> generatedTagBody = [];
+  List<Row> generatedLearningGoalBody = [];
   List<Row> generatedSubTagBody = [];
   Map subtags = HashMap<String, List<String>>();
   List<List<Row>> bodies = [];
@@ -54,6 +54,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
       firstDate: DateTime(2010),
       lastDate: DateTime(2025),
     );
+
     if (selected != null && selected != selectedDate) {
       setState(() {
         selectedDate = selected;
@@ -66,51 +67,42 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     }
   }
 
-  Future<List<String>> getTags() async {
-    final prefs = await SharedPreferences.getInstance();
-    var list = prefs.getStringList('leerdoel') ?? [];
-    return list;
+  Future<List<String>> getLearningGoals() async {
+    return await list_controller("leerdoel").getList as List<String>;
   }
 
-  gotoTagBody() {
+  gotoSelectLearningGoalScreen() {
     setState(() {
       activatedPage = 0;
     });
   }
 
-  gotoSubTag(tag) {
-    setState(() {
-      activatedMainTag = tag;
-      activatedPage = 2;
-    });
-  }
-
-  gotoDailyReflection() {
+  gotoWeeklyReflection() {
     setState(() {
       activatedPage = 1;
     });
   }
 
-  addMainTag(tag) {
+  selectLearningGoal(selectedLearningGoal) {
     setState(() {
-      activatedMainTag = tag;
+      learningGoal = selectedLearningGoal;
     });
-    gotoDailyReflection();
+    gotoWeeklyReflection();
   }
 
-  generateTagBody() async {
-    List<String> tags = await getTags();
+  generateLearningGoalBody() async {
+    List<String> learningGoals = await getLearningGoals();
     List<Row> tagBody = [];
 
-    for (String tag in tags) {
+    for (String goal in learningGoals) {
       tagBody.add(Row(children: [
         TextButton(
-          child: Text(json.decode(tag)["onderwerp"]),
-          onPressed: () => {addMainTag(json.decode(tag)["onderwerp"])},
+          child: Text(json.decode(goal)["onderwerp"]),
+          onPressed: () => {selectLearningGoal(json.decode(goal)["onderwerp"])},
         )
       ]));
     }
-    generatedTagBody = tagBody;
+    generatedLearningGoalBody = tagBody;
   }
 
   String convertToJSON() {
@@ -122,23 +114,25 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     String json = "{";
 
     json += "\"datum\": \"$date\", \"weeknummer\": $weekNumber,";
+
     if (rating != "") {
       json += " \"rating\": $rating,";
     } else {
       json += " \"rating\": 0,";
     }
+
     json +=
-        " \"leerdoel\": \"$activatedMainTag\", \"vooruitblik\": \"$freeWrite\"}";
-    print(json);
+        " \"leerdoel\": \"$learningGoal\", \"vooruitblik\": \"$freeWrite\"}";
+
     return json;
   }
 
   Future<void> saveDailyReflection() async {
-    LogController().record("Weekreflectie opgeslagen.");
     final prefs = await SharedPreferences.getInstance();
-    List<String>? dailyReflections =
-        prefs.getStringList('week_reflectie');
+    List<String>? dailyReflections = prefs.getStringList('week_reflectie');
+
     dailyReflections ??= [];
+
     if (dagRatingController.value.text == '') {
       showDialog(
           context: context,
@@ -150,24 +144,13 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
       dailyReflections.add(convertToJSON());
 
       prefs.setStringList('week_reflectie', dailyReflections);
+      LogController().record("Weekreflectie opgeslagen.");
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const RootScreen()),
       );
     }
-  }
-
-  addTags() {
-    List<Row> tags_to_return = [];
-    for (var item in selectedTags) {
-      tags_to_return.add(Row(children: [
-        TextButton(
-          child: Text(item),
-          onPressed: () => {gotoSubTag(item)},
-        )
-      ]));
-    }
-    return tags_to_return;
   }
 
   generateBody() {
@@ -217,14 +200,12 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
         children: [
           const Text("Select tag"),
           TextButton(
-            child: Text(activatedMainTag),
-            onPressed: () => {gotoTagBody()},
+            child: Text(learningGoal),
+            onPressed: () => {gotoSelectLearningGoalScreen()},
           ),
         ],
       ),
     ];
-
-    tempBody.addAll(addTags());
 
     tempBody.add(
       Row(
@@ -247,12 +228,13 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    generateTagBody();
+    generateLearningGoalBody();
     generateBody();
     bodies.clear();
-    bodies.add(generatedTagBody);
+    bodies.add(generatedLearningGoalBody);
     bodies.add(generatedBody);
     bodies.add(generatedSubTagBody);
+    
     return Scaffold(
       //Topheader within the application
       appBar: AppBar(
