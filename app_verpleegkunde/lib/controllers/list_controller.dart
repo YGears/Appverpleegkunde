@@ -1,8 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class list_controller {
+class ListController {
   String type;
-  list_controller(this.type);
+  ListController(this.type);
 
   Future<List> get getList async {
     //Get the shared preferences

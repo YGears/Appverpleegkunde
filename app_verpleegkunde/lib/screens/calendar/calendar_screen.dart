@@ -4,15 +4,15 @@ import 'calendar.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({Key? key, required this.parent}) : super(key: key);
-  final parent;
+  final parent; //Andere naam
   @override
-  State<CalendarScreen> createState() => _CalendarScreenState(parent);
+  State<CalendarScreen> createState() => CalendarScreenState(parent);
 }
 
-class _CalendarScreenState extends State<CalendarScreen> {
-  var par;
-  _CalendarScreenState(newParent){
-    par = newParent;
+class CalendarScreenState extends State<CalendarScreen> {
+  var par; //Andere naam
+  CalendarScreenState(newParent) {
+    par = newParent; //Andere naam
   }
 
   @override
@@ -23,7 +23,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         backgroundColor: themeColor,
         centerTitle: true,
       ),
-      body: Calendar(parent: par),
+      body: Calendar(parent: par), //Andere naam
     );
   }
 }

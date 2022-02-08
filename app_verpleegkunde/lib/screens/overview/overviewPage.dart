@@ -67,7 +67,7 @@ Widget itembox(BuildContext context, String type, int index) {
         width: 300,
         height: 90,
         padding: const EdgeInsets.only(top: 28),
-        decoration: Style().borderStyling(),
+        decoration: Style().defaultBoxStyling(),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
             type,

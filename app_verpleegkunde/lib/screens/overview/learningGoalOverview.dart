@@ -26,7 +26,7 @@ class learningGoalOverview extends StatefulWidget {
 class learningGoalOverviewState extends State<learningGoalOverview> {
   List<Widget> generatedBody = [];
   bool justOnce = false;
-  list_controller reflectionController = list_controller('daily_reflection');
+  ListController reflectionController = ListController('daily_reflection');
 
   @override
   Widget build(BuildContext context) {
@@ -105,12 +105,12 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
       gemiddelde = 0;
     }
     var onderwerp = learningGoal.getSubject;
-    var startDate = learningGoal.getBeginingDate.toString().substring(0, 10);
-    var endDate = learningGoal.getEndingDate.toString().substring(0, 10);
+    var startDate = learningGoal.getStartDate.toString().substring(0, 10);
+    var endDate = learningGoal.getEndDate.toString().substring(0, 10);
     var streefcijfer = learningGoal.getTargetGrade.toString();
     return Container(
         width: 300,
-        decoration: Style().borderStyling(),
+        decoration: Style().defaultBoxStyling(),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
             onderwerp,
@@ -175,8 +175,7 @@ class learningGoalOverviewState extends State<learningGoalOverview> {
     double amountOfReflections = 0;
 
     for (String entryString in reflections) {
-      daily_reflection entry =
-          daily_reflection.fromJson(jsonDecode(entryString));
+      DailyReflection entry = DailyReflection.fromJson(jsonDecode(entryString));
       if (entry != null) {
         if (start.difference(entry.getDateType).inHours <= 0 &&
             end.difference(entry.getDateType).inHours >= 0) {

@@ -27,7 +27,7 @@ class dailyReflectionOverview extends StatefulWidget {
 
 class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
   LogController log = LogController();
-  list_controller reflectionController = list_controller('daily_reflection');
+  ListController reflectionController = ListController('daily_reflection');
   bool justOnce = false;
   List<dynamic> generatedBody = [];
 
@@ -41,7 +41,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     log.record("Is naar de kies leerdoel pagina gegaan.");
 
     fillBody() async {
-      List<daily_reflection> dailyReflections = await getDailyReflections(
+      List<DailyReflection> dailyReflections = await getDailyReflections(
           learninggoalSubject.getBeginingDate,
           learninggoalSubject.getEndingDate);
       // print("test: " + dailyReflections[0].toString());
@@ -78,16 +78,16 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     );
   }
 
-  Widget _buildRow(daily_reflection reflection) {
+  Widget _buildRow(DailyReflection reflection) {
     List<Widget> buildSubTagList() {
       var body = <Widget>[
         Text('Rating: ${reflection.getRating}', textAlign: TextAlign.left),
-        Text(
+        const Text(
           " ",
           textAlign: TextAlign.right,
         ),
         Text('Opmerking: ${reflection.getComment}'),
-        Text(
+        const Text(
           " ",
           textAlign: TextAlign.right,
         ),
@@ -100,7 +100,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
           tag_amount++) {
         body.add(Text('Tag: ${reflection.getTagsByIndex(tag_amount)}'));
         body.add(Text('Subtag: ${reflection.getSubTagsByIndex(tag_amount)}'));
-        body.add(Text(
+        body.add(const Text(
           " ",
           textAlign: TextAlign.right,
         ));
@@ -113,7 +113,7 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
       children: [
         Container(
             width: 300,
-            decoration: Style().borderStyling(),
+            decoration: Style().defaultBoxStyling(),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
@@ -136,15 +136,15 @@ class dailyReflectionOverviewState extends State<dailyReflectionOverview> {
     );
   }
 
-  Future<List<daily_reflection>> getDailyReflections(
+  Future<List<DailyReflection>> getDailyReflections(
       DateTime start, DateTime end) async {
     final prefs = await SharedPreferences.getInstance();
     List<dynamic> reflections = await reflectionController.getList;
-    List<daily_reflection> result = [];
+    List<DailyReflection> result = [];
 
     for (var entry in reflections) {
-      daily_reflection decodedEntry =
-          daily_reflection.fromJson(json.decode(entry));
+      DailyReflection decodedEntry =
+          DailyReflection.fromJson(json.decode(entry));
       if (start.difference(decodedEntry.getDateType).inHours <= 0 &&
           end.difference(decodedEntry.getDateType).inHours >= 0) {
         result.add(decodedEntry);

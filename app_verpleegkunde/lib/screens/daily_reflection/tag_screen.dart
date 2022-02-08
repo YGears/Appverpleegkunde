@@ -4,28 +4,27 @@ import '../../controllers/log_controller.dart';
 import '../../controllers/list_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
-/// Class to create the DailyReflections view, making a list of all DailyReflections available.
+/// Class to create the tag_screen view, making a list of all tag_screen available.
 /// can favorite leerdoel and look at DailyReflections at a different navigation
 /// Must run using flutter run --no-sound-null-safety because of shared_preferences
 
-class DailyReflections extends StatefulWidget {
-  const DailyReflections({Key? key}) : super(key: key);
+class TagScreen extends StatefulWidget {
+  const TagScreen({Key? key}) : super(key: key);
 
   @override
-  _DailyReflections createState() => _DailyReflections();
+  _TagScreen createState() => _TagScreen();
 }
 
-class _DailyReflections extends State<DailyReflections> {
+class _TagScreen extends State<TagScreen> {
   LogController log = LogController();
 
   List listOfPossibleTags = [];
-  list_controller tagController = list_controller('tag');
+  ListController tagController = ListController('tag');
 
   bool justOnce = false;
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  Future<void> update() async {
-    print('Updated!');
+  Future<void> updatePossibleTags() async {
     List savedDailyReflections = await tagController.getList;
     setState(() {
       listOfPossibleTags = savedDailyReflections;
@@ -39,7 +38,7 @@ class _DailyReflections extends State<DailyReflections> {
 
     if (!justOnce) {
       justOnce = true;
-      update();
+      updatePossibleTags();
     }
 
     return Scaffold(
@@ -87,7 +86,7 @@ class _DailyReflections extends State<DailyReflections> {
                               if (myController.text.isNotEmpty) {
                                 tagController.add(myController.text);
                                 WidgetsBinding.instance!
-                                    .addPostFrameCallback((_) => update());
+                                    .addPostFrameCallback((_) => updatePossibleTags());
                               } else {
                                 ScaffoldMessenger.of(this.context)
                                   ..removeCurrentSnackBar()
@@ -109,7 +108,7 @@ class _DailyReflections extends State<DailyReflections> {
   Widget _buildRow(String value) {
     if (!justOnce) {
       justOnce = true;
-      update();
+      updatePossibleTags();
     }
     bool isPressed = false;
     return Card(
@@ -148,7 +147,7 @@ class _DailyReflections extends State<DailyReflections> {
                                         tagController.remove(value);
                                         WidgetsBinding.instance!
                                             .addPostFrameCallback(
-                                                (_) => update());
+                                                (_) => updatePossibleTags());
                                         ScaffoldMessenger.of(this.context)
                                           ..removeCurrentSnackBar()
                                           ..showSnackBar(const SnackBar(
