@@ -98,10 +98,16 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
   }
 
   Future<void> saveDailyReflection() async {
-    if (dagRatingController.value.text == '') {
+    LogController().record("Dagreflectie opgeslagen.");
+    if (dailyRatingController.value.text == '') {
       showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                title: Text('Foutmelding'),
+                content: Text('Geen Rating gegeven'),
+              ));
+    } else {
       dailyReflectionController.add(convertToJSON());
-      //Redirect to the calendar/home view
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const RootScreen()),
@@ -259,7 +265,7 @@ class DailyReflectionScreenState extends State<DailyReflectionScreen> {
         backgroundColor: themeColor,
         centerTitle: true,
       ),
-      body: ListView(children: [Column(children: body[activatedPage])]),
+      body: ListView(children: [Column(children: body[0])]),
     );
   }
 }

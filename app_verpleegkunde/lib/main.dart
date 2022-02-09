@@ -18,7 +18,7 @@ class HanzeVerpleegkundeApp extends StatelessWidget {
       title: 'Hanze Verpleegkunde',
       theme: ThemeData(
           primaryColor: themeColor, scaffoldBackgroundColor: backgroundColor),
-      home: const loginScreen(),
+      home: const LoginScreen(),
     );
   }
 }

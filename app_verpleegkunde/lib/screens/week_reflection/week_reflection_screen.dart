@@ -15,7 +15,8 @@ class WeekReflectionScreen extends StatefulWidget {
   final DateTime selectedDate;
 
   @override
-  State<WeekReflectionScreen> createState() => WeekReflectionScreen_State(selectedDate);
+  State<WeekReflectionScreen> createState() =>
+      WeekReflectionScreen_State(selectedDate);
 }
 
 class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
@@ -68,7 +69,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
   }
 
   Future<List<String>> getLearningGoals() async {
-    return await list_controller("leerdoel").getList as List<String>;
+    return await ListController("leerdoel").getList as List<String>;
   }
 
   gotoSelectLearningGoalScreen() {
@@ -234,7 +235,7 @@ class WeekReflectionScreen_State extends State<WeekReflectionScreen> {
     bodies.add(generatedLearningGoalBody);
     bodies.add(generatedBody);
     bodies.add(generatedSubTagBody);
-    
+
     return Scaffold(
       //Topheader within the application
       appBar: AppBar(

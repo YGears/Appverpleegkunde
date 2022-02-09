@@ -1,19 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_application_1/screens/daily_reflection/daily_reflection.dart';
-import 'package:flutter_application_1/screens/learning_goal/choose_learning_goal.dart';
 import 'package:intl/intl.dart';
 import '../screens/week_reflection/week_reflection_class.dart';
 import '../screens/learning_goal/learning_goal.dart';
 import '../controllers/list_controller.dart';
 import '../controllers/log_controller.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
-// import "list_controller.dart";
 
-// in order to use the group api, replace privateApi with groupApi on line 30,
-// comment out line 32
 class Syncronisation {
   static Future<bool> login(String userName, String password) async {
     final prefs = await SharedPreferences.getInstance();
@@ -22,9 +17,9 @@ class Syncronisation {
     return true;
   }
 
-  static Future<bool> send_log_data() async {
+  static Future<bool> sendLogData() async {
     final prefs = await SharedPreferences.getInstance();
-    Api api = new Api();
+    Api api = Api();
 
     LogController logControl = LogController();
 
@@ -38,11 +33,16 @@ class Syncronisation {
     final prefs = await SharedPreferences.getInstance();
     var syncCheck = prefs.getString("syncCheck");
 
+    int timeDiff = 1;
+
     if (syncCheck != null) {
+      timeDiff = DateTime.now()
+          .difference(
+              DateTime.parse(jsonDecode(syncCheck.toString())["timestamp"]))
+          .inHours;
     }
 
-    // if (time_diff > 0) {
-    if (true) {
+    if (timeDiff > 0) {
       Api api = Api();
       var time = DateTime.now();
       var today = DateFormat('yyyy-MM-dd kk:mm:ss').format(time).toString();
@@ -92,7 +92,7 @@ class Syncronisation {
       data += "]}";
 
       if (await api.syncUp(name, password, data.toString())) {
-        if (await send_log_data()) {
+        if (await sendLogData()) {
           prefs.setString("syncCheck", "{\"timestamp\":\"$today\"}");
           prefs.setStringList("log", [
             "{\"timestamp\": \"" +

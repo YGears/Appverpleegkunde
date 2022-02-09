@@ -2,35 +2,30 @@
 import 'package:flutter/material.dart';
 import '../../controllers/log_controller.dart';
 
-class weeklyReflectionOverview extends StatefulWidget {
+class WeeklyReflectionOverview extends StatefulWidget {
   List<String> learningGoal = [];
 
-  weeklyReflectionOverview(List<String> learninggoal, {Key? key})
+  WeeklyReflectionOverview(List<String> learninggoal, {Key? key})
       : super(key: key) {
     learningGoal = learninggoal;
   }
 
-  // List<Widget> getLearninggoal(){
-  //   return learningGoal;
-  // }
-
   @override
-  weeklyReflectionOverviewState createState() =>
-      weeklyReflectionOverviewState(learningGoal);
+  WeeklyReflectionOverviewState createState() =>
+      WeeklyReflectionOverviewState(learningGoal);
 }
 
-class weeklyReflectionOverviewState extends State<weeklyReflectionOverview> {
+class WeeklyReflectionOverviewState extends State<WeeklyReflectionOverview> {
   LogController log = LogController();
 
   List<String> learninggoal = [];
-  weeklyReflectionOverviewState(this.learninggoal);
+  WeeklyReflectionOverviewState(this.learninggoal);
 
-  List<String> dagreflecties = ['a', 'b', 'c', 'd', 'e'];
+  List<String> listOfWeeklyReflections = ['a', 'b', 'c', 'd', 'e'];
 
   @override
   Widget build(BuildContext context) {
     log.record("Is naar de kies leerdoel pagina gegaan.");
-    final myController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -44,9 +39,10 @@ class weeklyReflectionOverviewState extends State<weeklyReflectionOverview> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(top: 10.0),
-                itemCount: dagreflecties.length,
+                itemCount: listOfWeeklyReflections.length,
                 itemBuilder: (context, index) {
-                  return _buildRow(dagreflecties[index]);
+                  return buildRowOfWeeklyReflections(
+                      listOfWeeklyReflections[index]);
                 }),
           ],
         ),
@@ -54,7 +50,7 @@ class weeklyReflectionOverviewState extends State<weeklyReflectionOverview> {
     );
   }
 
-  Widget _buildRow(String value) {
+  Widget buildRowOfWeeklyReflections(String value) {
     return Text(value);
   }
 }

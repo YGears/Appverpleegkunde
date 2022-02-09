@@ -25,16 +25,15 @@ class Album {
   }
 }
 
-class loginScreen extends StatefulWidget {
-  // Iets voor de routes maar wat?
-  const loginScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  _loginScreenState createState() => _loginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
 // ignore: camel_case_types
-class _loginScreenState extends State<loginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   late Future<Album> futureAlbum;
   String error = "";
   final myController = TextEditingController();

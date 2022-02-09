@@ -1,13 +1,12 @@
 import 'package:intl/intl.dart';
 
 class LearningGoal {
-  String begin_datum;
-  String eind_datum;
-  String onderwerp;
-  int streefcijfer;
-  
-  LearningGoal(
-      this.begin_datum, this.eind_datum, this.onderwerp, this.streefcijfer);
+  String beginDate;
+  String endDate;
+  String subject;
+  int targetmark;
+
+  LearningGoal(this.beginDate, this.endDate, this.subject, this.targetmark);
 
   factory LearningGoal.fromJson(Map<String, dynamic> parsedJson) {
     int grade;
@@ -21,25 +20,22 @@ class LearningGoal {
   }
   @override
   String toString() {
-    return '{ "begin_datum": "$begin_datum", "eind_datum": "$eind_datum", "onderwerp": "$onderwerp", "streefcijfer": "$streefcijfer"}';
+    return '{ "begin_datum": "$beginDate", "eind_datum": "$endDate", "onderwerp": "$subject", "streefcijfer": "$targetmark"}';
   }
 
   DateTime get getBeginingDate {
-    List<String> gesplitst = begin_datum.split('/');
+    List<String> gesplitst = beginDate.split('/');
     if (gesplitst[1].length < 2) {
       gesplitst[1] = '0' + gesplitst[1];
     }
     if (gesplitst[0].length < 2) {
       gesplitst[0] = '0' + gesplitst[0];
     }
-
-    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-    // DateTime result = DateTime.parse(reassemble);
-    return DateFormat("dd/MM/yyyy").parse(begin_datum);
+    return DateFormat("dd/MM/yyyy").parse(beginDate);
   }
 
   DateTime get getEndingDate {
-    List<String> gesplitst = eind_datum.split('/');
+    List<String> gesplitst = endDate.split('/');
     if (gesplitst[1].length < 2) {
       gesplitst[1] = '0' + gesplitst[1];
     }
@@ -47,16 +43,14 @@ class LearningGoal {
       gesplitst[0] = '0' + gesplitst[0];
     }
 
-    String reassemble = gesplitst[2] + gesplitst[1] + gesplitst[0];
-    // DateTime result = DateTime.parse(reassemble);
-    return DateFormat("dd/MM/yyyy").parse(eind_datum);
+    return DateFormat("dd/MM/yyyy").parse(endDate);
   }
 
   String get getSubject {
-    return onderwerp;
+    return subject;
   }
 
   double get getTargetGrade {
-    return streefcijfer.toDouble();
+    return targetmark.toDouble();
   }
 }
